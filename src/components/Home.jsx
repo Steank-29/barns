@@ -464,7 +464,7 @@ const getStepContent = (step) => {
         </Typography>
       </Box>
 
-<Box sx={{ maxWidth: '100%', overflow: 'hidden', py: 2 }}>
+<Box sx={{ maxWidth: '100%', overflow: 'hidden', py: 2}}>
       <Slider {...settings}>
         {duplicatedImages.map((image, index) => (
           <Box key={index} sx={{ px: 1 }}>
@@ -475,7 +475,7 @@ const getStepContent = (step) => {
                 width: '60%', 
                 height: '160px',
                 objectFit: 'cover',
-                borderRadius: '8px',
+                borderRadius: '8px', mt:2 
               }} 
             />
           </Box>
@@ -486,12 +486,13 @@ const getStepContent = (step) => {
 
     <Box sx={{
   position: 'relative',
-  height: '90vh',
+  height: '85vh',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   background: '#38598b',
-  overflow: 'hidden'
+  overflow: 'hidden',
+  mt:4
 }}>
 
   {/* Horse Image */}
