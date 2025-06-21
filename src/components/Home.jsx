@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { Box, Typography, Button, styled, Paper, Card, CardContent, CardMedia, Rating, Grid, Container, Modal, IconButton,  } from '@mui/material';
+import { Box, Typography, Button, styled, Paper, Card, CardContent, CardMedia, Rating, Grid, Container, Modal, IconButton, Stepper, Step, StepLabel } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import backgroundVideo from '../assets/barnvideo.mp4';
 import barn1 from '../assets/barn1.jpeg';
@@ -20,6 +20,7 @@ import equip8 from '../assets/equip8.jpeg';
 import equip9 from '../assets/equip9.jpeg';
 import equip10 from '../assets/equip10.jpeg';
 
+import horsey from "../assets/goldenbh_logo.png";
 import horse from "../assets/horsey.png";
 
 import HealthIcon from "../assets/light.png"
@@ -35,7 +36,7 @@ const CircleButton = styled(IconButton)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
   color: 'white',
   '&:hover': {
-    backgroundColor: "#38598b",
+    backgroundColor: "#222831",
     transform: 'scale(1.1)'
   },
   transition: 'all 0.3s ease',
@@ -152,6 +153,9 @@ const PriceText = styled(Typography)(({ theme }) => ({
   marginTop: theme.spacing(1)
 }));
 
+
+
+
 const Home = () => {
   const theme = useTheme();
 
@@ -217,7 +221,7 @@ const Home = () => {
         objectFit: 'contain',
         color:'white'
       }}/>,
-      position: { top: '20%', left: '20%', backgroundColor:'#38598b' },
+      position: { top: '20%', left: '20%', backgroundColor:'#222831' },
       title: 'Horse Breeds',
       content: 'We specialize in caring for various horse breeds including Thoroughbreds, Arabians, and Quarter Horses. Each breed has unique needs we accommodate.'
     },
@@ -229,7 +233,7 @@ const Home = () => {
         objectFit: 'contain',
         color:'white'
       }}/> ,
-      position: { top: '20%', right: '20%', backgroundColor:'#38598b' },
+      position: { top: '20%', right: '20%', backgroundColor:'#222831' },
       title: 'Barn Features',
       content: 'Our demountable barns feature weather-resistant materials, optimal ventilation, and modular designs that can be customized to your needs.'
     },
@@ -241,7 +245,7 @@ const Home = () => {
         objectFit: 'contain',
         color:'white'
       }}/>,
-      position: { bottom: '20%', left: '20%', backgroundColor:'#38598b' },
+      position: { bottom: '20%', left: '20%', backgroundColor:'#222831' },
       title: 'Construction',
       content: 'Quick assembly structures that maintain structural integrity while being eco-friendly. No foundation required for most installations.'
     },
@@ -253,7 +257,7 @@ const Home = () => {
         objectFit: 'contain',
         color:'white'
       }}/>,
-      position: { bottom: '20%', right: '20%', backgroundColor:'#38598b'  },
+      position: { bottom: '20%', right: '20%', backgroundColor:'#222831'  },
       title: 'Horse Health',
       content: 'Our designs prioritize equine welfare with features that reduce stress, prevent injuries, and promote overall health.'
     }
@@ -264,7 +268,79 @@ const Home = () => {
     setOpenModal(true);
   };
 
-  const handleClose = () => setOpenModal(false);
+
+
+  const [activeStep, setActiveStep] = React.useState(0);
+
+  const handleClose = () => {
+  setOpenModal(false);
+  setActiveStep(0);  // Reset stepper to first step
+};
+
+const steps = [
+  { label: 'Introduction' },
+  { label: 'Structural Safety' },
+  { label: 'Weather Protection' },
+  { label: 'Flexibility' },
+  { label: 'Conclusion' }
+];
+
+const handleNext = () => {
+  setActiveStep((prevActiveStep) => prevActiveStep + 1);
+};
+
+const handleBack = () => {
+  setActiveStep((prevActiveStep) => prevActiveStep - 1);
+};
+
+const getStepContent = (step) => {
+  switch (step) {
+    case 0:
+      return (
+        <Typography paragraph sx={{ fontFamily: 'Savate' }}>
+          Demountable horse barns provide exceptional security and safety for your horses. 
+          These versatile structures offer protection while maintaining flexibility for 
+          different locations and needs.
+        </Typography>
+      );
+    case 1:
+      return (
+        <Typography paragraph sx={{ fontFamily: 'Savate' }}>
+          <strong>Structural Safety:</strong> Our demountable barns are engineered with 
+          reinforced frames and secure fastenings to ensure stability even in harsh conditions. 
+          The modular design doesn't compromise on strength, providing a safe environment 
+          for your horses.
+        </Typography>
+      );
+    case 2:
+      return (
+        <Typography paragraph sx={{ fontFamily: 'Savate' }}>
+          <strong>Weather Protection:</strong> Designed to withstand various weather conditions, 
+          these barns offer excellent insulation and waterproofing. Your horses will be 
+          protected from rain, wind, and extreme temperatures.
+        </Typography>
+      );
+    case 3:
+      return (
+        <Typography paragraph sx={{ fontFamily: 'Savate' }}>
+          <strong>Flexibility Advantage:</strong> Unlike permanent structures, demountable barns 
+          can be relocated as needed. This means you can always ensure your horses are in 
+          the most secure location, whether that's near grazing areas or sheltered from 
+          prevailing winds.
+        </Typography>
+      );
+    case 4:
+      return (
+        <Typography paragraph sx={{ fontFamily: 'Savate' }}>
+          <strong>Final Thoughts:</strong> Choosing a demountable horse barn means choosing 
+          adaptable security. You get all the safety features of a traditional barn with 
+          the added benefit of mobility and customization options.
+        </Typography>
+      );
+    default:
+      return 'Unknown step';
+  }
+};
 
   return (
     <React.Fragment>
@@ -408,84 +484,129 @@ const Home = () => {
     </Box>
 
 
-    <Box sx={{ textAlign: 'center', mt: 6 }}>
-        <Typography sx={{ fontWeight: 700, fontFamily:'Savate', fontSize:22 }}>
-          Pas de grand cheval sans une bonne écurie.
-        </Typography>
-        <Typography variant="subtitle1" color="text.secondary" sx={{color:'black', fontFamily:'Savate', fontSize:18}}>
-        "Une écurie solide protège plus que des chevaux : elle préserve des passions, des histoires, et des rêves."
-        </Typography>
-      </Box>
-
     <Box sx={{
-      position: 'relative',
-      height: '100vh',
+  position: 'relative',
+  height: '90vh',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  background: '#38598b',
+  overflow: 'hidden'
+}}>
+
+  {/* Horse Image */}
+  <Box
+    component="img"
+    src={horse}
+    alt="Beautiful horse"
+    sx={{
+      maxWidth: '40%',
+      maxHeight: '40%',
+      objectFit: 'contain',
+      borderRadius: 0,
+      boxShadow: 0,
+    }}
+  />
+
+  {/* Interactive Circles */}
+  {infoItems.map((item) => (
+    <CircleButton
+      key={item.id}
+      sx={item.position}
+      onClick={() => handleOpen(item.title, item.content)}
+    >
+      {item.icon}
+    </CircleButton>
+  ))}
+
+  {/* Enhanced Modal */}
+  <Modal
+    open={openModal}
+    onClose={handleClose}
+    aria-labelledby="horse-info-modal"
+    sx={{
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      background: 'linear-gradient(135deg,rgb(255, 255, 255) 0%,rgb(255, 255, 255) 100%)',
-      overflow: 'hidden'
+    }}
+  >
+    <Paper sx={{
+      width: '80%',  // Larger width
+      maxWidth: 900,  // Maximum size
+      maxHeight: '90vh',
+      p: 4,
+      borderRadius: 2,
+      outline: 'none',
+      display: 'flex',
+      flexDirection: 'column'
     }}>
-      {/* Horse Image */}
-      <Box
-        component="img"
-        src={horse}
-        alt="Beautiful horse"
-        sx={{
-          maxWidth: '40%',
-          maxHeight: '40%',
-          objectFit: 'contain',
-          borderRadius: 0,
-          boxShadow: 0,
-        }}
-      />
-
-      {/* Interactive Circles */}
-      {infoItems.map((item) => (
-        <CircleButton
-          key={item.id}
-          sx={item.position}
-          onClick={() => handleOpen(item.title, item.content)}
-          
-        >
-          {item.icon}
-        </CircleButton>
-      ))}
-
-      {/* Modal for displaying information */}
-      <Modal
-        open={openModal}
-        onClose={handleClose}
-        aria-labelledby="horse-info-modal"
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
+      {/* Logo at top left */}
+      <Box sx={{ position: 'relative', top: 20, left: 20 }}>
+        <img src={horsey} alt="Logo" style={{ height: '50px' }} />
+      </Box>
+      
+      {/* Centered Title */}
+      <Typography 
+        variant="h4" 
+        align="center" 
+        gutterBottom 
+        sx={{ 
+          fontWeight: 'bold',
+          mt: 2,
+          mb: 4, 
+          fontFamily:'Savate'
         }}
       >
-        <Paper sx={{
-          width: 400,
-          p: 4,
-          borderRadius: 2,
-          outline: 'none'
-        }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            {modalContent.title}
-          </Typography>
-          <Typography variant="body1">
-            {modalContent.content}
-          </Typography>
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-            <IconButton 
-              onClick={handleClose}
-              sx={{ color: 'primary.main' }}
-            >
-              Close
-            </IconButton>
-          </Box>
-        </Paper>
-      </Modal>
-    </Box>
+        {modalContent.title}
+      </Typography>
+      
+      {/* Vertical Stepper and Content */}
+      <Box sx={{ display: 'flex', flexGrow: 1, overflow: 'hidden' }}>
+        <Stepper
+          activeStep={activeStep}
+          orientation="vertical"
+          sx={{
+            width: '200px',
+            pr: 4,
+            flexShrink: 0
+          }}
+        >
+          {steps.map((step, index) => (
+            <Step key={step.label}>
+              <StepLabel>{step.label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+        
+        {/* Content Area */}
+        <Box sx={{ flexGrow: 1, overflowY: 'auto', p: 2 }}>
+          {getStepContent(activeStep)}
+        </Box>
+      </Box>
+      
+      {/* Navigation Buttons */}
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
+        <Button
+          disabled={activeStep === 0}
+          onClick={handleBack}
+          variant="outlined"
+          sx={{ width: 120, backgroundColor: 'white',borderColor:'white', color: '#38598b', '&:hover': { transform: 'scale(1.03)', backgroundColor: '#38598b', color: 'white',borderColor:'#38598b'
+  } }}
+        >
+          Back
+        </Button>
+        
+        <Button
+          onClick={activeStep === steps.length - 1 ? handleClose : handleNext}
+          variant="contained"
+          sx={{ width: 120, backgroundColor: '#38598b', borderColor:'#38598b', color: 'white', '&:hover': { transform: 'scale(1.03)', backgroundColor: 'white', color: '#38598b', borderColor:'white' } }}
+        >
+          {activeStep === steps.length - 1 ? 'Finish' : 'Continue'}
+        </Button>
+      </Box>
+    </Paper>
+  </Modal>
+</Box>
 
     </React.Fragment>
   );
