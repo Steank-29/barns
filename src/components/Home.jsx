@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { Box, Typography, Button, styled, Paper, Card, CardContent, CardMedia, Rating, Grid, Container, Modal, IconButton, Stepper, Step, StepLabel } from '@mui/material';
+import { Box, Typography, Button, styled, Paper, Card, CardContent, CardMedia, Rating, Grid, Container, Modal, IconButton, Stepper, Step, StepLabel, Accordion, AccordionSummary, AccordionDetails, Divider,Link,ListItem,ListItemIcon, List } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import backgroundVideo from '../assets/barnvideo.mp4';
 import barn1 from '../assets/barn1.jpeg';
@@ -27,6 +27,15 @@ import HealthIcon from "../assets/light.png"
 import HorseIcon from "../assets/hoof.png"
 import BarnIcon from "../assets/recycling.png"
 import ConstructionIcon from "../assets/bio.png"
+
+import {
+  ExpandMore,
+  CheckCircle,
+  LocalShipping,
+  Construction,
+  Euro,
+  Help
+} from '@mui/icons-material';
 
 
 const CircleButton = styled(IconButton)(({ theme }) => ({
@@ -151,6 +160,18 @@ const PriceText = styled(Typography)(({ theme }) => ({
   color: '#38598b',
   fontWeight: 'bold',
   marginTop: theme.spacing(1)
+}));
+
+
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: '#fff',
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: 'center',
+  color: (theme.vars ?? theme).palette.text.secondary,
+  ...theme.applyStyles('dark', {
+    backgroundColor: '#1A2027',
+  }),
 }));
 
 
@@ -297,50 +318,123 @@ const getStepContent = (step) => {
   switch (step) {
     case 0:
       return (
-        <Typography paragraph sx={{ fontFamily: 'Savate' }}>
-          Demountable horse barns provide exceptional security and safety for your horses. 
-          These versatile structures offer protection while maintaining flexibility for 
-          different locations and needs.
+        <Typography paragraph sx={{ fontFamily: 'Savate', textAlign: 'justify', fontSize:22 }}>
+          Les écuries démontables offrent une sécurité exceptionnelle pour vos chevaux.
+          Ces structures polyvalentes assurent une protection tout en conservant la flexibilité
+          nécessaire pour différents emplacements et besoins.
         </Typography>
       );
     case 1:
       return (
-        <Typography paragraph sx={{ fontFamily: 'Savate' }}>
-          <strong>Structural Safety:</strong> Our demountable barns are engineered with 
-          reinforced frames and secure fastenings to ensure stability even in harsh conditions. 
-          The modular design doesn't compromise on strength, providing a safe environment 
-          for your horses.
+        <Typography paragraph sx={{ fontFamily: 'Savate', textAlign: 'justify', fontSize:22  }}>
+          <strong>Sécurité structurelle :</strong> Nos écuries démontables sont conçues avec
+          des cadres renforcés et des fixations sécurisées pour garantir une stabilité même
+          dans des conditions difficiles. Le design modulaire n'altère pas la solidité,
+          offrant un environnement sûr pour vos chevaux.
         </Typography>
       );
     case 2:
       return (
-        <Typography paragraph sx={{ fontFamily: 'Savate' }}>
-          <strong>Weather Protection:</strong> Designed to withstand various weather conditions, 
-          these barns offer excellent insulation and waterproofing. Your horses will be 
-          protected from rain, wind, and extreme temperatures.
+        <Typography paragraph sx={{ fontFamily: 'Savate', textAlign: 'justify', fontSize:22  }}>
+          <strong>Protection contre les intempéries :</strong> Conçues pour résister à diverses
+          conditions météorologiques, ces écuries offrent une excellente isolation et étanchéité.
+          Vos chevaux seront protégés de la pluie, du vent et des températures extrêmes.
         </Typography>
       );
     case 3:
       return (
-        <Typography paragraph sx={{ fontFamily: 'Savate' }}>
-          <strong>Flexibility Advantage:</strong> Unlike permanent structures, demountable barns 
-          can be relocated as needed. This means you can always ensure your horses are in 
-          the most secure location, whether that's near grazing areas or sheltered from 
-          prevailing winds.
+        <Typography paragraph sx={{ fontFamily: 'Savate', textAlign: 'justify', fontSize:22  }}>
+          <strong>Avantage de flexibilité :</strong> Contrairement aux structures permanentes,
+          les écuries démontables peuvent être déplacées selon les besoins. Vous pouvez ainsi
+          toujours assurer que vos chevaux se trouvent dans l'emplacement le plus sécurisé,
+          que ce soit près des zones de pâturage ou à l'abri des vents dominants.
         </Typography>
       );
     case 4:
       return (
-        <Typography paragraph sx={{ fontFamily: 'Savate' }}>
-          <strong>Final Thoughts:</strong> Choosing a demountable horse barn means choosing 
-          adaptable security. You get all the safety features of a traditional barn with 
-          the added benefit of mobility and customization options.
+        <Typography paragraph sx={{ fontFamily: 'Savate', textAlign: 'justify', fontSize:22  }}>
+          <strong>Conclusion :</strong> Choisir une écurie démontable, c'est opter pour une
+          sécurité adaptable. Vous bénéficiez de toutes les caractéristiques de sécurité d'une
+          écurie traditionnelle, avec en plus l'avantage de la mobilité et des options de personnalisation.
         </Typography>
       );
     default:
-      return 'Unknown step';
+      return 'Étape inconnue';
   }
 };
+
+const faqItems = [
+    {
+      question: (<Typography variant="body2" sx={{fontFamily:'Savate' , fontSize:20, color:'white'}}>Vos écuries démontables sont-elles vraiment mobiles ?</Typography>),
+      answer: (
+        <>
+          <Typography variant="body2" sx={{fontFamily:'Savate' , fontSize:16}}>Nos structures sont conçues pour un montage et démontage faciles :</Typography>
+          <List dense sx={{ mt: 1 }}>
+            <ListItem>
+              <ListItemIcon sx={{ minWidth: 32 }}><CheckCircle color="success" fontSize="small"/></ListItemIcon>
+              <Typography variant="body2" sx={{fontFamily:'Savate' ,}}>Aucune fondation permanente nécessaire</Typography>
+            </ListItem>
+            <ListItem>
+              <ListItemIcon sx={{ minWidth: 32 }}><CheckCircle color="success" fontSize="small"/></ListItemIcon>
+              <Typography variant="body2" sx={{fontFamily:'Savate' ,}}>Panneaux modulaires transportables par remorque standard</Typography>
+            </ListItem>
+            <ListItem>
+              <ListItemIcon sx={{ minWidth: 32 }}><CheckCircle color="success" fontSize="small"/></ListItemIcon>
+              <Typography variant="body2" sx={{fontFamily:'Savate' ,}}>Relocalisation possible en moins de 2 jours</Typography>
+            </ListItem>
+          </List>
+        </>
+      ),
+      icon: <LocalShipping sx={{color:'white'}}/>
+    },
+    {
+      question: (<Typography variant="body2" sx={{fontFamily:'Savate' , fontSize:20, color:'white'}}>Quels matériaux utilisez-vous ?</Typography>),
+      answer: (<Typography variant="body2" sx={{fontFamily:'Savate' , fontSize:16}}>Nous employons du pin traité premium (résistance 50 ans à la pourriture), des toitures en acier galvanisé et des parois en PVC renforcé. Tous nos matériaux sont certifiés sans danger pour les équidés et résistent à des températures de -30°C à 50°C.</Typography>),
+      icon: <Construction  sx={{color:'white'}} />
+    },
+    {
+      question: (<Typography variant="body2" sx={{fontFamily:'Savate' , fontSize:20, color:'white'}}>Qu'est-ce qui est inclus dans le prix de base ?</Typography>),
+      answer: (
+        <>
+          <Typography  sx={{fontFamily:'Savate' , fontSize:18, color:'black'}}>Notre package standard 3 900€ à 12 500€ selon taille comprend :</Typography>
+          <ul style={{ marginTop: '8px', paddingLeft: '20px', fontFamily:'Savate' , fontSize:16 }}>
+            <li style={{fontSize:16, fontFamily:'Savate'}}>Éléments structurels pré-découpés avec fixations</li>
+            <li style={{fontSize:16, fontFamily:'Savate'}}>Système de toiture étanche</li>
+            <li style={{fontSize:16, fontFamily:'Savate'}}>Panneaux de ventilation (4 par box)</li>
+            <li style={{fontSize:16, fontFamily:'Savate'}}>Manuel d'assemblage détaillé</li>
+            <li style={{fontSize:16, fontFamily:'Savate'}}>Garantie structurelle 1 an</li>
+          </ul>
+          <Typography variant="body2" sx={{ mt: 1, fontStyle: 'italic', fontFamily:'Savate' }}>
+            Options : Installation professionnelle (850€/jour), séparations de box sur mesure, abreuvoirs automatiques.
+          </Typography>
+        </>
+      ),
+      icon: <Euro sx={{color:'white'}} />
+    },
+    {
+      question: (<Typography variant="body2" sx={{fontFamily:'Savate' , fontSize:20, color:'white'}}>Quel support après l'achat ?</Typography>),
+      answer: (
+        <>
+          <Typography variant="body2" sx={{fontFamily:'Savate' , fontSize:20, fontWeight:700}}>Nous offrons un accompagnement complet :</Typography>
+          <List dense sx={{ mt: 1 }}>
+            <ListItem>
+              <ListItemIcon sx={{ minWidth: 32 }}><Help sx={{color:'#38598b'}} fontSize="small"/></ListItemIcon>
+              <Typography variant="body2" sx={{fontFamily:'Savate' , fontSize:16}}>Assistance téléphonique technique 24h/7j</Typography>
+            </ListItem>
+            <ListItem>
+              <ListItemIcon sx={{ minWidth: 32 }}><Help sx={{color:'#38598b'}} fontSize="small"/></ListItemIcon>
+              <Typography variant="body2" sx={{fontFamily:'Savate' , fontSize:16}}>Tutoriels vidéo pour montage et entretien</Typography>
+            </ListItem>
+            <ListItem>
+              <ListItemIcon sx={{ minWidth: 32 }}><Help sx={{color:'#38598b'}} fontSize="small"/></ListItemIcon>
+              <Typography variant="body2" sx={{fontFamily:'Savate' , fontSize:16}}>Intervention sur site (95€/h dans un rayon de 150km)</Typography>
+            </ListItem>
+          </List>
+        </>
+      ),
+      icon: <Help sx={{color:'white'}} />
+    }
+  ];
 
   return (
     <React.Fragment>
@@ -608,6 +702,72 @@ const getStepContent = (step) => {
     </Paper>
   </Modal>
 </Box>
+
+<Box sx={{ 
+      maxWidth: 800, 
+      mx: 'auto', 
+      my: 4, 
+      p: 3, 
+      bgcolor: 'background.paper', 
+      borderRadius: 2,
+      boxShadow: 1,
+      border: '1px solid',
+      borderColor: 'divider'
+    }}>
+      <Typography variant="h5" gutterBottom sx={{ 
+        fontWeight: 'bold', 
+        mb: 2,
+        color: 'primary.main',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 1,
+        fontFamily:'Savate',
+      }}>
+        FAQ - Écuries Démontables
+      </Typography>
+      <Divider sx={{ mb: 3 }} />
+      
+      {faqItems.map((item, index) => (
+        <Accordion key={index} defaultExpanded={index === 0} sx={{ 
+          mb: 1,
+          '&:before': { display: 'none' }
+        }}>
+          <AccordionSummary
+            expandIcon={<ExpandMore sx={{color:'white'}} />}
+            sx={{ 
+              bgcolor: '#38598b',
+              '&:hover': { bgcolor: '#38598b' },
+              borderRadius: 1
+            }}
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              {item.icon}
+              <Typography variant="subtitle1" sx={{ fontWeight: 'medium' }}>
+                {item.question}
+              </Typography>
+            </Box>
+          </AccordionSummary>
+          <AccordionDetails sx={{ 
+            pt: 2, 
+            pb: 3,
+            bgcolor: 'background.default',
+            borderBottomLeftRadius: 4,
+            borderBottomRightRadius: 4
+          }}>
+            <Typography variant="body1" component="div">
+              {item.answer}
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+      ))}
+
+      <Box sx={{ mt: 3, textAlign: 'center' }}>
+        <Typography variant="body2" color="text.secondary" sx={{ fontFamily:'Savate' }}>
+          Vous avez d'autres questions ? <Link href="#contact" sx={{ cursor: 'pointer' }}>Contactez notre équipe</Link>
+        </Typography>
+      </Box>
+    </Box>
+
 
     </React.Fragment>
   );
