@@ -59,9 +59,10 @@ function Navbar() {
 
           {/* Navigation Links */}
           <Box sx={{ flexGrow: 2, display: { xs: 'none', md: 'flex' } }}>
-            <Typography sx={navLinkStyle} component={Link} to="/">
+            <a href="/" style={{ textDecoration: 'none' }}>
+            <Typography sx={navLinkStyle}>
               <FontAwesomeIcon icon={faHouse} fontSize="meduim" style={{color:'#38598b'}} />&nbsp; Accueil
-            </Typography>
+            </Typography></a>
             <Typography sx={navLinkStyle}>
               <FontAwesomeIcon icon={faCircleInfo} fontSize="meduim" style={{color:'#38598b'}} /> &nbsp; Qui sommes-nous
             </Typography>

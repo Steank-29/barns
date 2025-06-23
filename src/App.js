@@ -3,7 +3,8 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import HorseSpinner from './tools/HorseSpinner';
 import Home from './components/Home';
 import Layout from './components/Layout';
-import ScrollToTop from './components/ScrollToTop'; // Add this import
+import ScrollToTop from './components/ScrollToTop'; 
+import ErrorPage from './components/ErrorPage';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -27,6 +28,10 @@ function App() {
         </>
       )
     },
+    {
+      path: '*',
+      element: <ErrorPage />
+    }
   ]);
 
   return (
