@@ -34,8 +34,28 @@ import {
   LocalShipping,
   Construction,
   Euro,
-  Help
+  Help,
+  ArrowForward 
 } from '@mui/icons-material';
+
+
+
+
+const ServiceCard = styled(Card)(({ theme }) => ({
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  cursor: 'pointer',
+  transition: 'all 0.3s ease',
+  '&:hover': {
+    transform: 'translateY(-5px)',
+    boxShadow: theme.shadows[8],
+    '& .arrow-icon': {
+      color: theme.palette.primary.main,
+      transform: 'translateX(3px)'
+    }
+  }
+}));
 
 
 const CircleButton = styled(IconButton)(({ theme }) => ({
@@ -53,7 +73,24 @@ const CircleButton = styled(IconButton)(({ theme }) => ({
   position: 'absolute',
 }));
 
-
+const services = [
+  {
+    title: "Barns Demontable",
+    description: "Écuries modulaires spécialement conçues pour le confort des chevaux, faciles à installer et adapter selon vos besoins équestres."
+  },
+  {
+    title: "Installation et Montage",
+    description: "Installation professionnelle de vos infrastructures équestres pour garantir la sécurité et le bien-être de vos chevaux."
+  },
+  {
+    title: "Facade Porte",
+    description: "Entrées d'écuries esthétiques et fonctionnelles, conçues pour le passage sécurisé des chevaux et l'aération optimale."
+  },
+  {
+    title: "Dalles et Tapis",
+    description: "Revêtements de sols spécialement étudiés pour les boxes, offrant confort aux sabots et facilité d'entretien pour les écuries."
+  }
+];
 
 const HeroContainer = styled(Box)(({ theme }) => ({
   position: 'relative',
@@ -115,7 +152,7 @@ const products = [
     id: 1,
     name: "Écurie Démontable Standard",
     description: "Structure de base 3 boxes avec allée centrale. Parfait pour centres équestres.",
-    price: "12 500 DT",
+    price: "12 500 €",
     image: barn1,
     rating: 4
   },
@@ -123,7 +160,7 @@ const products = [
     id: 2,
     name: "Écurie Premium Luxe",
     description: "4 boxes spacieux avec sellerie intégrée et système de ventilation avancé.",
-    price: "18 900 DT",
+    price: "18 900 €",
     image: barn2,
     rating: 5
   },
@@ -131,7 +168,7 @@ const products = [
     id: 3,
     name: "Mini-Écurie Compacte",
     description: "Solution 2 boxes pour propriétaires privés. Installation en 48h.",
-    price: "8 750 DT",
+    price: "8 750 €",
     image: barn3,
     rating: 4.5
   },
@@ -139,7 +176,7 @@ const products = [
     id: 4,
     name: "Écurie Professionnelle",
     description: "Configurable jusqu'à 10 boxes avec bureau et espace soins. Sur devis.",
-    price: "À partir de 25 000 DT",
+    price: "À partir de 25 000 €",
     image: barn4,
     rating: 4
   }
@@ -173,6 +210,7 @@ const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: '#1A2027',
   }),
 }));
+
 
 
 
@@ -436,6 +474,14 @@ const faqItems = [
     }
   ];
 
+
+
+const handleCardClick = (serviceTitle) => {
+    console.log(`Service selected: ${serviceTitle}`);
+    // Add your navigation logic here
+  };
+
+
   return (
     <React.Fragment>
     <HeroContainer component="section">
@@ -510,43 +556,95 @@ const faqItems = [
       </Box>
 
       {/* Product cards - single row */}
-      <Grid 
-        container 
-        spacing={4}
-        justifyContent="center"
-        sx={{
-          flexWrap: 'nowrap', // Prevent wrapping to new line
-          overflowX: 'auto', // Enable horizontal scrolling on small screens
-          py: 2,
-          '&::-webkit-scrollbar': { display: 'none' } // Hide scrollbar
-        }}
-      >
-        {products.map((product) => (
-          <Grid item key={product.id} xs={12} sm={6} md={4} lg={3} sx={{ minWidth: 300 }}>
-            <StyledCard>
-              <CardMedia
-                component="img"
-                height="200"
-                image={product.image}
-                alt={product.name}
-                sx={{ objectFit: 'cover' }}
-              />
-              <CardContent sx={{ flexGrow: 1 }}>
-                <Typography gutterBottom variant="h6" component="div" sx={{fontFamily:'Savate'}}>
-                  {product.name}
-                </Typography>
-                <Rating value={product.rating} precision={0.5} readOnly />
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 1, mb: 2 ,fontFamily:'Savate' }}>
-                  {product.description}
-                </Typography>
-                <PriceText variant="h6" sx={{fontFamily:'Savate'}}>
-                  {product.price}
-                </PriceText>
-              </CardContent>
-            </StyledCard>
-          </Grid>
-        ))}
-      </Grid>
+<Grid
+  container
+  spacing={3}
+  sx={{
+    flexWrap: 'nowrap',
+    overflowX: 'auto',
+    scrollSnapType: 'x mandatory',
+    py: 2,
+    px: 1,
+    mx: -1, // Compensate for padding
+    '&::-webkit-scrollbar': { 
+      height: 6,
+      backgroundColor: 'transparent'
+    },
+    '&::-webkit-scrollbar-thumb': {
+      backgroundColor: 'text.secondary',
+      borderRadius: 3
+    },
+    // Hide scrollbar on mobile if needed
+    '@media (hover: none)': {
+      '&::-webkit-scrollbar': { display: 'none' }
+    }
+  }}
+>
+  {products.map((product) => (
+    <Grid 
+      item 
+      key={product.id} 
+      sx={{ 
+        minWidth: { xs: '75vw', sm: 300, md: 350 },
+        scrollSnapAlign: 'center',
+        px: 1 // Add horizontal spacing
+      }}
+    >
+      <StyledCard sx={{ height: '100%' }}>
+        <CardMedia
+          component="img"
+          height="200"
+          image={product.image}
+          alt={product.name}
+          sx={{ 
+            objectFit: 'cover',
+            aspectRatio: '4/3' // Consistent image ratio
+          }}
+        />
+        <CardContent sx={{ flexGrow: 1 }}>
+          <Typography 
+            gutterBottom 
+            variant="h6" 
+            component="div" 
+            sx={{
+              fontFamily: 'Savate',
+              fontSize: { xs: '1rem', sm: '1.1rem' }
+            }}
+          >
+            {product.name}
+          </Typography>
+          <Rating 
+            value={product.rating} 
+            precision={0.5} 
+            readOnly 
+            size="small"
+          />
+          <Typography 
+            variant="body2" 
+            color="text.secondary" 
+            sx={{ 
+              mt: 1, 
+              mb: 2,
+              fontFamily: 'Savate',
+              fontSize: { xs: '0.875rem', sm: '0.9rem' }
+            }}
+          >
+            {product.description}
+          </Typography>
+          <PriceText 
+            variant="h6" 
+            sx={{
+              fontFamily: 'Savate',
+              fontSize: { xs: '1rem', sm: '1.1rem' }
+            }}
+          >
+            {product.price}
+          </PriceText>
+        </CardContent>
+      </StyledCard>
+    </Grid>
+  ))}
+</Grid>
     </Container>
 
           <Box sx={{ textAlign: 'center', mt: 2, mb:2 }}>
@@ -595,8 +693,8 @@ const faqItems = [
     src={horse}
     alt="Beautiful horse"
     sx={{
-      maxWidth: '40%',
-      maxHeight: '40%',
+      maxWidth: { xs: '30%', sm: '30%', md: '30%', lg: '40%' },
+    maxHeight: { xs: '30%', sm: '30%', md: '30%', lg: '40%' },
       objectFit: 'contain',
       borderRadius: 0,
       boxShadow: 0,
@@ -768,6 +866,94 @@ const faqItems = [
       </Box>
     </Box>
 
+
+<Box sx={{ 
+      width: '90%',
+  maxWidth: '1400px', // prevents the box from becoming too wide on large screens
+  px: { xs: 2, md: 4 },
+  py: 6,
+  backgroundColor: 'background.paper',
+  mx: 'auto', // horizontal centering
+  my: 4, // vertical margin
+
+    }}>
+      {/* Section Title */}
+      <Typography 
+        variant="h3" 
+        component="h2" 
+        sx={{ 
+          mb: 6,
+          textAlign: 'center',
+          fontWeight: 700,
+          color: 'black',
+          fontFamily: 'Savate',
+        }}
+      >
+        Le confort de votre cheval, notre priorité absolue
+      </Typography>
+      
+      {/* Services Grid */}
+      <Box sx={{
+        display: 'grid',
+        gridTemplateColumns: { 
+          xs: '1fr', 
+          sm: 'repeat(2, 1fr)', 
+          md: 'repeat(4, 1fr)' 
+        },
+        gap: 4,
+        maxWidth: '1400px',
+        mx: 'auto'
+      }}>
+        {services.map((service, index) => (
+          <ServiceCard 
+            key={index} 
+            onClick={() => handleCardClick(service.title)}
+            elevation={3}
+          >
+            <CardContent sx={{ 
+              flexGrow: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              p: 3
+            }}>
+              <Typography 
+                variant="h5" 
+                component="h3"
+                sx={{ 
+                  fontWeight: 600,
+                  mb: 2,
+                  color: 'text.primary',
+                  fontFamily: 'Savate',
+                }}
+              >
+                {service.title}
+              </Typography>
+              
+              <Typography 
+                variant="body1" 
+                color="text.secondary"
+                sx={{ mb: 2, flexGrow: 1, fontFamily: 'Savate', }}
+              >
+                {service.description}
+              </Typography>
+              
+              <Box sx={{ 
+                display: 'flex',
+                justifyContent: 'flex-end'
+              }}>
+                <ArrowForward
+                  className="arrow-icon" 
+                  sx={{ 
+                    transition: 'all 0.3s ease',
+                    color: '#38598b',
+                  }} 
+                />
+              </Box>
+            </CardContent>
+          </ServiceCard>
+        ))}
+      </Box>
+    </Box>
 
     </React.Fragment>
   );

@@ -24,7 +24,6 @@ function App() {
           <Layout>
             <Home />
           </Layout>
-          <ScrollToTop /> {/* Add this component */}
         </>
       )
     },
@@ -35,7 +34,11 @@ function App() {
       {isLoading ? (
         <HorseSpinner />
       ) : (
-        <RouterProvider router={router} />
+        <>
+          <ScrollToTop />
+          <RouterProvider router={router} />
+        </>
+
       )}
     </React.Fragment>
   );

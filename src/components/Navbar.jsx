@@ -44,22 +44,22 @@ function Navbar() {
       <Container maxWidth="xl">
         {/* Main Navbar with Logo, Links, and Connexion */}
         <Toolbar disableGutters sx={{ py: 1 }}>
-          {/* Logo */}
+          {/* Logo - Fixed to show on all screen sizes */}
           <Avatar
             src={Logo}
             alt="golden box horse Logo"
             sx={{ 
-              width: 90, 
-              height: 90, 
+              width: { xs: 70, md: 90 },
+              height: { xs: 70, md: 90 },
               borderRadius: '8px', 
-              mr: 2,
-              display: { xs: 'none', md: 'flex' }
+              mr: { xs: 1, md: 2 },
+              display: 'flex' // Now visible on all screen sizes
             }}
           />
 
           {/* Navigation Links */}
           <Box sx={{ flexGrow: 2, display: { xs: 'none', md: 'flex' } }}>
-            <Typography sx={navLinkStyle}>
+            <Typography sx={navLinkStyle} component={Link} to="/">
               <FontAwesomeIcon icon={faHouse} fontSize="meduim" style={{color:'#38598b'}} />&nbsp; Accueil
             </Typography>
             <Typography sx={navLinkStyle}>
