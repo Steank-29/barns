@@ -868,92 +868,102 @@ const handleCardClick = (serviceTitle) => {
 
 
 <Box sx={{ 
-      width: '90%',
-  maxWidth: '1400px', // prevents the box from becoming too wide on large screens
+  width: '90%',
+  maxWidth: '1400px',
   px: { xs: 2, md: 4 },
   py: 6,
   backgroundColor: 'background.paper',
-  mx: 'auto', // horizontal centering
-  my: 4, // vertical margin
-
-    }}>
-      {/* Section Title */}
-      <Typography 
-        variant="h3" 
-        component="h2" 
-        sx={{ 
-          mb: 6,
-          textAlign: 'center',
-          fontWeight: 700,
-          color: 'black',
-          fontFamily: 'Savate',
+  mx: 'auto',
+  my: 4,
+}}>
+  {/* Section Title */}
+  <Typography 
+    variant="h3" 
+    component="h2" 
+    sx={{ 
+      mb: 6,
+      textAlign: 'center',
+      fontWeight: 700,
+      color: 'black',
+      fontFamily: 'Savate',
+    }}
+  >
+    Le confort de votre cheval, notre priorité absolue
+  </Typography>
+  
+  {/* Services Grid */}
+  <Box sx={{
+    display: 'grid',
+    gridTemplateColumns: { 
+      xs: '1fr', 
+      sm: 'repeat(2, 1fr)', 
+      md: 'repeat(4, 1fr)' 
+    },
+    gap: 4,
+    maxWidth: '1400px',
+    mx: 'auto'
+  }}>
+    {services.map((service, index) => (
+      <ServiceCard 
+        key={index} 
+        onClick={() => handleCardClick(service.title)}
+        elevation={3}
+        sx={{
+          backgroundColor: (index + 1) % 2 === 0 ? '#38598b' : 'background.paper',
+          '& .MuiTypography-root': {
+            color: (index + 1) % 2 === 0 ? 'white' : 'inherit'
+          },
+          '& .arrow-icon': {
+            color: (index + 1) % 2 === 0 ? 'white' : '#38598b'
+          }
         }}
       >
-        Le confort de votre cheval, notre priorité absolue
-      </Typography>
-      
-      {/* Services Grid */}
-      <Box sx={{
-        display: 'grid',
-        gridTemplateColumns: { 
-          xs: '1fr', 
-          sm: 'repeat(2, 1fr)', 
-          md: 'repeat(4, 1fr)' 
-        },
-        gap: 4,
-        maxWidth: '1400px',
-        mx: 'auto'
-      }}>
-        {services.map((service, index) => (
-          <ServiceCard 
-            key={index} 
-            onClick={() => handleCardClick(service.title)}
-            elevation={3}
+        <CardContent sx={{ 
+          flexGrow: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          p: 3
+        }}>
+          <Typography 
+            variant="h5" 
+            component="h3"
+            sx={{ 
+              fontWeight: 600,
+              mb: 2,
+              fontFamily: 'Savate',
+            }}
           >
-            <CardContent sx={{ 
-              flexGrow: 1,
-              display: 'flex',
-              flexDirection: 'column',
-              p: 3
-            }}>
-              <Typography 
-                variant="h5" 
-                component="h3"
-                sx={{ 
-                  fontWeight: 600,
-                  mb: 2,
-                  color: 'text.primary',
-                  fontFamily: 'Savate',
-                }}
-              >
-                {service.title}
-              </Typography>
-              
-              <Typography 
-                variant="body1" 
-                color="text.secondary"
-                sx={{ mb: 2, flexGrow: 1, fontFamily: 'Savate', }}
-              >
-                {service.description}
-              </Typography>
-              
-              <Box sx={{ 
-                display: 'flex',
-                justifyContent: 'flex-end'
-              }}>
-                <ArrowForward
-                  className="arrow-icon" 
-                  sx={{ 
-                    transition: 'all 0.3s ease',
-                    color: '#38598b',
-                  }} 
-                />
-              </Box>
-            </CardContent>
-          </ServiceCard>
-        ))}
-      </Box>
-    </Box>
+            {service.title}
+          </Typography>
+          
+          <Typography 
+            variant="body1"
+            sx={{ 
+              mb: 2, 
+              flexGrow: 1, 
+              fontFamily: 'Savate',
+            }}
+          >
+            {service.description}
+          </Typography>
+          
+          <Box sx={{ 
+            display: 'flex',
+            justifyContent: 'flex-end'
+          }}>
+            <ArrowForward
+              className="arrow-icon" 
+              sx={{ 
+                transition: 'all 0.3s ease',
+                
+              }} 
+            />
+          </Box>
+        </CardContent>
+      </ServiceCard>
+    ))}
+  </Box>
+</Box>
 
     </React.Fragment>
   );
