@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { Box, Typography, Button, styled, Paper, Card, CardContent, CardMedia, Rating, Grid, Container, Modal, IconButton, Stepper, Step, StepLabel, Accordion, AccordionSummary, AccordionDetails, Divider,Link,ListItem,ListItemIcon, List } from '@mui/material';
+import { Box, Typography, Button, styled, Paper, Card, CardContent, CardMedia, Rating, Grid, Container, Modal, IconButton, Stepper, Step, StepLabel, Accordion, AccordionSummary, AccordionDetails, Divider,Link,ListItem,ListItemIcon, List, Avatar } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import backgroundVideo from '../assets/barnvideo.mp4';
 import barn1 from '../assets/barn1.jpeg';
@@ -28,6 +28,10 @@ import HorseIcon from "../assets/hoof.png"
 import BarnIcon from "../assets/recycling.png"
 import ConstructionIcon from "../assets/bio.png"
 
+import founder1 from "../assets/founder1.jpeg";
+import founder2 from "../assets/founder2.jpeg"
+
+
 import {
   ExpandMore,
   CheckCircle,
@@ -35,10 +39,91 @@ import {
   Construction,
   Euro,
   Help,
-  ArrowForward 
+  ArrowForward ,
+  Settings as OperationsIcon,
+  ShoppingCart as SalesIcon,
+  Engineering as EngineeringIcon,
+  HeadsetMic as SupportIcon,
 } from '@mui/icons-material';
 
 
+// Team data
+const teamData = [
+  { 
+    name: "Alex Morgan", 
+    role: "Co-Founder", 
+    isFounder: true, 
+    image: founder1 
+  },
+  { 
+    name: "Jamie Rivera", 
+    role: "Co-Founder", 
+    isFounder: true, 
+    image: founder2 
+  },
+  { 
+    name: "Operations", 
+    role: "Production Manager", 
+    icon: <OperationsIcon fontSize="large" /> 
+  },
+  { 
+    name: "Sales", 
+    role: "Marketing Specialist", 
+    icon: <SalesIcon fontSize="large" /> 
+  },
+  { 
+    name: "Engineering", 
+    role: "Design Expert", 
+    icon: <EngineeringIcon fontSize="large" /> 
+  },
+  { 
+    name: "Support", 
+    role: "Customer Success", 
+    icon: <SupportIcon fontSize="large" /> 
+  },
+];
+
+// Styled Ship Component
+const Ship = styled(Box)(({ isFounder }) => ({
+  width: isFounder ? 180 : 140,
+  height: isFounder ? 200 : 160,
+  background: isFounder 
+    ? "linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)" 
+    : "linear-gradient(135deg, #4b6cb7 0%, #182848 100%)",
+  borderRadius: "50% 50% 10% 10%",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
+  color: "white",
+  boxShadow: "0 8px 16px rgba(0,0,0,0.2)",
+  position: "relative",
+  margin: "0 10px",
+  transition: "transform 0.3s",
+  padding: isFounder ? "20px 0" : "10px 0",
+  "&:hover": {
+    transform: "translateY(-10px)",
+  },
+}));
+
+// Creative Arrow (SVG)
+const ArrowConnector = () => (
+  <Box sx={{ mx: { xs: -4, md: -2 }, position: "relative", width: 60 }}>
+    <svg width="60" height="40" viewBox="0 0 100 40">
+      <path 
+        d="M0,20 Q50,40 100,20" 
+        stroke="#4b6cb7" 
+        strokeWidth="2" 
+        fill="none"
+        strokeDasharray="5,3"
+      />
+      <polygon 
+        points="90,20 100,20 95,25" 
+        fill="#4b6cb7"
+      />
+    </svg>
+  </Box>
+);
 
 
 const ServiceCard = styled(Card)(({ theme }) => ({
@@ -874,7 +959,7 @@ const handleCardClick = (serviceTitle) => {
   py: 6,
   backgroundColor: 'background.paper',
   mx: 'auto',
-  my: 4,
+  my: 1,
 }}>
   {/* Section Title */}
   <Typography 
@@ -964,6 +1049,52 @@ const handleCardClick = (serviceTitle) => {
     ))}
   </Box>
 </Box>
+
+<Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        flexWrap: "wrap",
+        py: 6,
+        bgcolor: "white",
+      }}
+    >
+      {teamData.map((member, index) => (
+        <React.Fragment key={member.name}>
+          <Ship isFounder={member.isFounder}>
+            {member.isFounder ? (
+              <>
+                <Avatar 
+                  src={member.image} 
+                  sx={{ 
+                    width: 80, 
+                    height: 80, 
+                    border: "3px solid white",
+                    mb: 1 
+                  }} 
+                />
+                <Typography variant="h6" fontWeight="bold">
+                  {member.name}
+                </Typography>
+                <Typography variant="body2">{member.role}</Typography>
+              </>
+            ) : (
+              <>
+                <Box sx={{ color: "white", mb: 1 }}>
+                  {member.icon}
+                </Box>
+                <Typography variant="subtitle1" fontWeight="bold">
+                  {member.name}
+                </Typography>
+                <Typography variant="caption">{member.role}</Typography>
+              </>
+            )}
+          </Ship>
+          {index < teamData.length - 1 && <ArrowConnector />}
+        </React.Fragment>
+      ))}
+    </Box>
 
     </React.Fragment>
   );
