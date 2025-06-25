@@ -95,6 +95,7 @@ function Navbar() {
               display: { xs: 'none', md: 'flex' },
               ml: 2
             }}
+            href='/signin'
           >
             Connexion
           </Button>
@@ -313,6 +314,7 @@ function Navbar() {
                 borderColor: '#38598b'
               }
             }}
+            href='/signin'
           >
             Connexion
           </Button>

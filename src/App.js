@@ -5,6 +5,8 @@ import Home from './components/Home';
 import Layout from './components/Layout';
 import ScrollToTop from './components/ScrollToTop'; 
 import ErrorPage from './components/ErrorPage';
+import About from './components/About';
+import Signin from './components/Signin';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -24,6 +26,26 @@ function App() {
         <>
           <Layout>
             <Home />
+          </Layout>
+        </>
+      )
+    },
+    {
+      path: '/about',
+      element: (
+        <>
+          <Layout>
+            <About />
+          </Layout>
+        </>
+      )
+    },
+        {
+      path: '/signin',
+      element: (
+        <>
+          <Layout>
+            <Signin />
           </Layout>
         </>
       )
