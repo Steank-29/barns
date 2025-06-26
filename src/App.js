@@ -7,6 +7,7 @@ import ScrollToTop from './components/ScrollToTop';
 import ErrorPage from './components/ErrorPage';
 import About from './components/About';
 import Signin from './components/Signin';
+import Signup from './components/Signup';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -40,12 +41,22 @@ function App() {
         </>
       )
     },
-        {
+    {
       path: '/signin',
       element: (
         <>
           <Layout>
             <Signin />
+          </Layout>
+        </>
+      )
+    },
+    {
+      path: '/signup',
+      element: (
+        <>
+          <Layout>
+            <Signup />
           </Layout>
         </>
       )
