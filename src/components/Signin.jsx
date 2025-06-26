@@ -195,7 +195,7 @@ const Signin = () => {
                     </Grid>
                     <Grid item>
                       <Link 
-                        href="#" 
+                        href="/signup" 
                         variant="body2" 
                         sx={{ 
                           display: 'block',
