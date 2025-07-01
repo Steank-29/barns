@@ -8,6 +8,8 @@ import ErrorPage from './components/ErrorPage';
 import About from './components/About';
 import Signin from './components/Signin';
 import Signup from './components/Signup';
+import Cards from './admin/Cards';
+import EditCards from './admin/EditCards';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -58,6 +60,22 @@ function App() {
           <Layout>
             <Signup />
           </Layout>
+        </>
+      )
+    },
+     {
+      path: '/admin-cards',
+      element: (
+        <>
+            <Cards />
+        </>
+      )
+    },
+         {
+      path: '/admin-cards-edit',
+      element: (
+        <>
+            <EditCards />
         </>
       )
     },
