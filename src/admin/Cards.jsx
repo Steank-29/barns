@@ -23,6 +23,49 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   marginTop: theme.spacing(2),
 }));
 
+const StyledTextField = styled(TextField)(({ theme }) => ({
+  '& .MuiOutlinedInput-root': {
+    borderRadius: '8px',
+    backgroundColor: '#FFFFFF',
+    '& fieldset': {
+      borderColor: '#755139',
+    },
+    '&:hover fieldset': {
+      borderColor: '#755139',
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: '#755139',
+    },
+  },
+  '& .MuiInputLabel-root': {
+    color: '#755139',
+    fontFamily: 'Savate',
+  },
+  '& .MuiInputBase-input': {
+    fontFamily: 'Savate',
+    color: '#755139',
+  },
+  width: '100%',
+  marginBottom: theme.spacing(2),
+}));
+
+const StyledTextarea = styled(TextareaAutosize)(({ theme }) => ({
+  width: '100%',
+  fontFamily: 'Savate',
+  padding: theme.spacing(1),
+  borderRadius: '8px',
+  borderColor: '#755139',
+  backgroundColor: '#FFFFFF',
+  color: '#755139',
+  '&:focus': {
+    outline: 'none',
+    borderColor: '#755139',
+    borderWidth: '2px',
+  },
+  minHeight: '120px',
+  resize: 'vertical',
+}));
+
 const optionLabels = {
   metre3: '3 mètres',
   metre4: '4 mètres',
@@ -32,7 +75,6 @@ const optionLabels = {
   cygne3: 'avec cole de cygne 300',
   cygne35: 'avec cole de cygne 350',
   cygne4: 'avec cole de cygne 400',
-
 };
 
 const Cards = () => {
@@ -121,51 +163,56 @@ const Cards = () => {
     return total.toFixed(2);
   };
 
-const apiUrl = process.env.RENDER_API_URL || 'https://barns.onrender.com';
+  const apiUrl = process.env.RENDER_API_URL || 'https://barns.onrender.com';
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  try {
-    const formPayload = new FormData();
-    formPayload.append('reference', formData.reference);
-    formPayload.append('productName', formData.productName);
-    formPayload.append('price', calculateTotalPrice());
-    formPayload.append('height', formData.height);
-    formPayload.append('width', formData.width);
-    formPayload.append('thickness', formData.thickness);
-    formPayload.append('description', formData.description);
-    formPayload.append('image', formData.image);
+    try {
+      const formPayload = new FormData();
+      formPayload.append('reference', formData.reference);
+      formPayload.append('productName', formData.productName);
+      formPayload.append('price', calculateTotalPrice());
+      formPayload.append('height', formData.height);
+      formPayload.append('width', formData.width);
+      formPayload.append('thickness', formData.thickness);
+      formPayload.append('description', formData.description);
+      formPayload.append('image', formData.image);
 
-    // Ajouter les options sélectionnées (nom + prix)
-    const selectedOptions = Object.entries(formData.options)
-      .filter(([_, opt]) => opt.selected)
-      .map(([key, opt]) => ({
-        name: key,
-        priceIncrease: opt.priceIncrease
-      }));
-    formPayload.append('options', JSON.stringify(selectedOptions));
+      const selectedOptions = Object.entries(formData.options)
+        .filter(([_, opt]) => opt.selected)
+        .map(([key, opt]) => ({
+          name: key,
+          priceIncrease: opt.priceIncrease
+        }));
+      formPayload.append('options', JSON.stringify(selectedOptions));
 
-    const response = await axios.post(`${apiUrl}/api/products`, formPayload, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
+      const response = await axios.post(`${apiUrl}/api/products`, formPayload, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
 
-    console.log(response.data);
-    alert('Produit ajouté avec succès !');
-  } catch (error) {
-    console.error('Erreur lors de l’envoi :', error);
-    alert('Erreur lors de la création du produit');
-  }
-};
-
+      console.log(response.data);
+      alert('Produit ajouté avec succès !');
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi ', error);
+      alert('Erreur lors de la création du produit');
+    }
+  };
 
   return (
     <Box sx={{ display: 'flex', height: '100vh', p: 2 }}>
       {/* Left Side Form */}
       <Box sx={{ width: '50%', overflowY: 'auto', pr: 2 }}>
-        <Typography variant="h4" gutterBottom sx={{ fontFamily: 'Savate', fontWeight: 'bolder', textAlign: 'center', color: '#755139', textTransform: 'uppercase' }}>
+        <Typography variant="h4" gutterBottom sx={{ 
+          fontFamily: 'Savate', 
+          fontWeight: 'bolder', 
+          textAlign: 'center', 
+          color: '#755139', 
+          textTransform: 'uppercase',
+          mb: 4
+        }}>
           Création d'une fiche produit FACADE
         </Typography>
 
@@ -173,32 +220,27 @@ const handleSubmit = async (e) => {
           <form onSubmit={handleSubmit}>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
+                <StyledTextField
                   label="Référence"
                   name="reference"
                   value={formData.reference}
                   onChange={handleInputChange}
                   required
-                  sx={{ fontFamily: 'Savate'}}
                 />
               </Grid>
 
               <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
+                <StyledTextField
                   label="Nom du produit"
                   name="productName"
                   value={formData.productName}
                   onChange={handleInputChange}
                   required
-                  sx={{ fontFamily: 'Savate'}}
                 />
               </Grid>
 
               <Grid item xs={12}>
-                <TextField
-                  fullWidth
+                <StyledTextField
                   type="file"
                   label="Image du produit"
                   InputLabelProps={{ shrink: true }}
@@ -208,8 +250,7 @@ const handleSubmit = async (e) => {
               </Grid>
 
               <Grid item xs={12} sm={4}>
-                <TextField
-                  fullWidth
+                <StyledTextField
                   label="Hauteur (cm)"
                   name="height"
                   type="number"
@@ -218,13 +259,11 @@ const handleSubmit = async (e) => {
                   InputProps={{
                     endAdornment: <InputAdornment position="end">cm</InputAdornment>,
                   }}
-                  sx={{ fontFamily: 'Savate'}}
                 />
               </Grid>
 
               <Grid item xs={12} sm={4}>
-                <TextField
-                  fullWidth
+                <StyledTextField
                   label="Largeur (cm)"
                   name="width"
                   type="number"
@@ -233,14 +272,12 @@ const handleSubmit = async (e) => {
                   InputProps={{
                     endAdornment: <InputAdornment position="end">cm</InputAdornment>,
                   }}
-                  sx={{ fontFamily: 'Savate'}}
                 />
               </Grid>
 
               <Grid item xs={12} sm={4}>
-                <TextField
-                  fullWidth
-                  label="Épaisseur (cm)"
+                <StyledTextField
+                  label="Épaisseur (mm)"
                   name="thickness"
                   type="number"
                   value={formData.thickness}
@@ -248,13 +285,11 @@ const handleSubmit = async (e) => {
                   InputProps={{
                     endAdornment: <InputAdornment position="end">mm</InputAdornment>,
                   }}
-                  sx={{ fontFamily: 'Savate'}}
                 />
               </Grid>
 
               <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
+                <StyledTextField
                   label="Prix de base (€)"
                   name="price"
                   type="number"
@@ -264,39 +299,42 @@ const handleSubmit = async (e) => {
                     startAdornment: <InputAdornment position="start">€</InputAdornment>,
                   }}
                   required
-                  sx={{ fontFamily: 'Savate'}}
                 />
               </Grid>
 
               <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
+                <StyledTextField
                   label="Prix total"
                   value={calculateTotalPrice()}
                   InputProps={{
                     startAdornment: <InputAdornment position="start">€</InputAdornment>,
                     readOnly: true,
                   }}
-                  sx={{ fontFamily: 'Savate'}}
                 />
               </Grid>
 
               <Grid item xs={12}>
-                <TextareaAutosize
-                  fullWidth
-                  label="Description"
+                <Typography variant="subtitle1" sx={{ 
+                  color: '#755139', 
+                  fontFamily: 'Savate',
+                  mb: 1
+                }}>
+                  Description
+                </Typography>
+                <StyledTextarea
                   name="description"
                   value={formData.description}
                   onChange={handleInputChange}
-                  minRows={4}
-                  style={{width: 350, height:40}}
                   placeholder='Description du produit...'
-                  sx={{ fontFamily: 'Savate'}}
                 />
               </Grid>
 
               <Grid item xs={12}>
-                <Typography variant="h6" gutterBottom>
+                <Typography variant="h6" gutterBottom sx={{ 
+                  color: '#755139', 
+                  fontFamily: 'Savate',
+                  mb: 2
+                }}>
                   Options supplémentaires
                 </Typography>
                 <Grid container spacing={2}>
@@ -309,23 +347,31 @@ const handleSubmit = async (e) => {
                               checked={option.selected}
                               onChange={handleOptionChange(key)}
                               color="primary"
+                              sx={{
+                                color: '#755139',
+                                '&.Mui-checked': {
+                                  color: '#755139',
+                                },
+                              }}
                             />
                           }
                           label={optionLabels[key]}
+                          sx={{ 
+                            color: '#755139',
+                            fontFamily: 'Savate'
+                          }}
                         />
                       </Grid>
                       {option.selected && (
                         <Grid item xs={12} sm={6}>
-                          <TextField
+                          <StyledTextField
                             label="Montant à ajouter (€)"
                             type="number"
                             value={option.priceIncrease}
                             onChange={handleOptionPriceChange(key)}
-                            fullWidth
                             InputProps={{
                               startAdornment: <InputAdornment position="start">€</InputAdornment>,
                             }}
-                            sx={{ fontFamily: 'Savate'}}
                           />
                         </Grid>
                       )}
@@ -334,13 +380,25 @@ const handleSubmit = async (e) => {
                 </Grid>
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{ mt: 3 }}>
                 <Button
                   type="submit"
                   variant="contained"
-                  color="primary"
                   fullWidth
-                  sx={{ fontFamily: 'Savate', fontWeight: 'bold', backgroundColor: '#755139', color:'#F2EDD7', '&:hover': { backgroundColor: '#F2EDD7', color:'#755139' } }}
+                  sx={{ 
+                    fontFamily: 'Savate', 
+                    fontWeight: 'bold', 
+                    backgroundColor: '#755139', 
+                    color: '#F2EDD7', 
+                    '&:hover': { 
+                      backgroundColor: '#F2EDD7', 
+                      color: '#755139',
+                      border: '1px solid #755139'
+                    },
+                    py: 1.5,
+                    fontSize: '1rem',
+                    borderRadius: '8px'
+                  }}
                 >
                   Créer la fiche produit
                 </Button>
@@ -351,50 +409,110 @@ const handleSubmit = async (e) => {
       </Box>
 
       {/* Divider */}
-      <Divider orientation="vertical" flexItem sx={{ mx: 2 }} />
+      <Divider orientation="vertical" flexItem sx={{ mx: 2, borderColor: '#755139' }} />
 
       {/* Preview */}
-      <Box sx={{ width: '50%', backgroundColor: '#F2EDD7'}}>
-        <Typography variant="h4" gutterBottom sx={{ fontFamily: 'Savate' , fontWeight: 'bolder', textAlign: 'center', color: '#755139', textTransform: 'uppercase' }}>
+      <Box sx={{ width: '50%', backgroundColor: '#F2EDD7', p: 3 }}>
+        <Typography variant="h4" gutterBottom sx={{ 
+          fontFamily: 'Savate', 
+          fontWeight: 'bolder', 
+          textAlign: 'center', 
+          color: '#755139', 
+          textTransform: 'uppercase',
+          mb: 4
+        }}>
           Aperçu du produit
         </Typography>
-        <Card>
+        <Card sx={{ 
+          borderRadius: '12px',
+          boxShadow: '0 4px 20px rgba(117, 81, 57, 0.2)'
+        }}>
           {previewImage && (
             <CardMedia
               component="img"
               height="280"
               image={previewImage}
               alt="Aperçu du produit"
+              sx={{ objectFit: 'fill' }}
             />
           )}
-          <CardContent>
-            <Typography variant="h6">
-              {formData.productName} — <span style={{ color: '#2e7d32' }}>€{calculateTotalPrice()}</span>
+          <CardContent sx={{ backgroundColor: '#FFFFFF' }}>
+            <Typography variant="h6" sx={{ 
+              fontFamily: 'Savate',
+              color: '#755139',
+              mb: 1
+            }}>
+              {formData.productName || 'Nom du produit'} — <span style={{ color: '#2e7d32' }}>€{calculateTotalPrice()}</span>
             </Typography>
-            <Typography color="text.secondary">Réf: {formData.reference}</Typography>
-            <Typography variant="body2" mt={1}>{formData.description}</Typography>
+            <Typography sx={{ 
+              color: '#755139',
+              fontFamily: 'Savate',
+              mb: 2
+            }}>
+              Réf: {formData.reference || 'N/A'}
+            </Typography>
+            <Typography variant="body2" sx={{ 
+              color: '#755139',
+              fontFamily: 'Savate',
+              mb: 3
+            }}>
+              {formData.description || 'Aucune description fournie'}
+            </Typography>
 
-            <Typography variant="subtitle2" mt={2}>
-              Hauteur : {formData.height} cm
+            <Divider sx={{ my: 2, borderColor: '#755139' }} />
+
+            <Typography variant="subtitle2" sx={{ 
+              color: '#755139',
+              fontFamily: 'Savate',
+              mb: 1
+            }}>
+              Hauteur : {formData.height || 'N/A'} cm
             </Typography>
-            <Typography variant="subtitle2">
-              Largeur : {formData.width} cm
+            <Typography variant="subtitle2" sx={{ 
+              color: '#755139',
+              fontFamily: 'Savate',
+              mb: 1
+            }}>
+              Largeur : {formData.width || 'N/A'} cm
             </Typography>
-            <Typography variant="subtitle2" gutterBottom>
-              Épaisseur : {formData.thickness} cm
+            <Typography variant="subtitle2" sx={{ 
+              color: '#755139',
+              fontFamily: 'Savate',
+              mb: 3
+            }}>
+              Épaisseur : {formData.thickness || 'N/A'} mm
             </Typography>
 
-            <Box mt={2}>
-              {Object.entries(formData.options).map(([key, opt]) =>
-                opt.selected && parseFloat(opt.priceIncrease) > 0 ? (
-                  <FormControlLabel
-                    key={key}
-                    control={<Checkbox checked disabled />}
-                    label={`${optionLabels[key]} (+${opt.priceIncrease} €)`}
-                  />
-                ) : null
-              )}
-            </Box>
+            {Object.entries(formData.options).some(([_, opt]) => opt.selected && parseFloat(opt.priceIncrease) > 0) && (
+              <>
+                <Divider sx={{ my: 2, borderColor: '#755139' }} />
+                <Typography variant="subtitle1" sx={{ 
+                  color: '#755139',
+                  fontFamily: 'Savate',
+                  mb: 1
+                }}>
+                  Options sélectionnées:
+                </Typography>
+                <Box>
+                  {Object.entries(formData.options).map(([key, opt]) =>
+                    opt.selected && parseFloat(opt.priceIncrease) > 0 ? (
+                      <FormControlLabel
+                        key={key}
+                        control={<Checkbox checked disabled sx={{ color: '#755139' }} />}
+                        label={`${optionLabels[key]} (+${opt.priceIncrease} €)`}
+                        sx={{ 
+                          color: '#755139',
+                          fontFamily: 'Savate',
+                          display: 'block',
+                          ml: 0.5,
+                          mb: 0.5
+                        }}
+                      />
+                    ) : null
+                  )}
+                </Box>
+              </>
+            )}
           </CardContent>
         </Card>
       </Box>

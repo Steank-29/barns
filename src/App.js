@@ -10,6 +10,8 @@ import Signin from './components/Signin';
 import Signup from './components/Signup';
 import Cards from './admin/Cards';
 import EditCards from './admin/EditCards';
+import AdminBar from './admin/AdminBar';
+import AdminDash from './admin/AdminDash';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -67,15 +69,29 @@ function App() {
       path: '/admin-cards',
       element: (
         <>
+          <AdminBar>
             <Cards />
+            </AdminBar>
         </>
       )
     },
-         {
+    {
       path: '/admin-cards-edit',
       element: (
         <>
-            <EditCards />
+          <AdminBar >
+          <EditCards />
+          </AdminBar>
+        </>
+      )
+    },
+    {
+      path: '/admin-dashboard',
+      element: (
+        <>
+          <AdminBar >
+          <AdminDash />
+          </AdminBar>
         </>
       )
     },
