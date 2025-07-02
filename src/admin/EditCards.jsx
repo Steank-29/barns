@@ -48,7 +48,7 @@ const EditCards = () => {
     severity: 'success'
   });
 
-    const apiUrl = process.env.RENDER_API_URL;
+    const apiUrl = process.env.RENDER_API_URL || 'https://barns.onrender.com';
 
   // Handle image load states
   const handleImageLoad = (productId) => {

@@ -121,11 +121,10 @@ const Cards = () => {
     return total.toFixed(2);
   };
 
-
+const apiUrl = process.env.RENDER_API_URL || 'https://barns.onrender.com';
 
 const handleSubmit = async (e) => {
   e.preventDefault();
-  const apiUrl = process.env.RENDER_API_URL;
 
   try {
     const formPayload = new FormData();
