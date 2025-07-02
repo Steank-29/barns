@@ -125,6 +125,7 @@ const Cards = () => {
 
 const handleSubmit = async (e) => {
   e.preventDefault();
+  const apiUrl = process.env.RENDER_API_URL;
 
   try {
     const formPayload = new FormData();
@@ -146,7 +147,7 @@ const handleSubmit = async (e) => {
       }));
     formPayload.append('options', JSON.stringify(selectedOptions));
 
-    const response = await axios.post('https://barns.onrender.com/api/products', formPayload, {
+    const response = await axios.post(`${apiUrl}/api/products`, formPayload, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
