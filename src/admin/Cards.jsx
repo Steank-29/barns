@@ -146,7 +146,7 @@ const handleSubmit = async (e) => {
       }));
     formPayload.append('options', JSON.stringify(selectedOptions));
 
-    const response = await axios.post('http://localhost:5000/api/products', formPayload, {
+    const response = await axios.post('https://barns.onrender.com/api/products', formPayload, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }

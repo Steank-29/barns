@@ -76,7 +76,7 @@ const EditCards = () => {
     
     // If it's a relative path, prepend the base URL
     if (imageUrl.startsWith('/') || !imageUrl.startsWith('http')) {
-      return `http://localhost:5000${imageUrl.startsWith('/') ? imageUrl : '/' + imageUrl}`;
+      return `https://barns.onrender.com${imageUrl.startsWith('/') ? imageUrl : '/' + imageUrl}`;
     }
     
     return imageUrl;
@@ -86,7 +86,7 @@ const EditCards = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/products/getallfacades');
+        const response = await fetch('https://barns.onrender.com/api/products/getallfacades');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -142,7 +142,7 @@ const EditCards = () => {
   // Confirm delete
   const confirmDelete = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/products/deletefacade/${productToDelete.reference}`, {
+      const response = await fetch(`https://barns.onrender.com/api/products/deletefacade/${productToDelete.reference}`, {
         method: 'DELETE'
       });
 
@@ -183,7 +183,7 @@ const EditCards = () => {
   // Save updated product
   const saveChanges = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/products/updatefacade/${selectedProduct.reference}`, {
+      const response = await fetch(`https://barns.onrender.com/api/products/updatefacade/${selectedProduct.reference}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
