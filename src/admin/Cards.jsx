@@ -28,22 +28,22 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
     borderRadius: '8px',
     backgroundColor: '#FFFFFF',
     '& fieldset': {
-      borderColor: '#755139',
+      borderColor: '#38598b',
     },
     '&:hover fieldset': {
-      borderColor: '#755139',
+      borderColor: '#38598b',
     },
     '&.Mui-focused fieldset': {
-      borderColor: '#755139',
+      borderColor: '#38598b',
     },
   },
   '& .MuiInputLabel-root': {
-    color: '#755139',
+    color: '#38598b',
     fontFamily: 'Savate',
   },
   '& .MuiInputBase-input': {
     fontFamily: 'Savate',
-    color: '#755139',
+    color: '#38598b',
   },
   width: '100%',
   marginBottom: theme.spacing(2),
@@ -54,12 +54,12 @@ const StyledTextarea = styled(TextareaAutosize)(({ theme }) => ({
   fontFamily: 'Savate',
   padding: theme.spacing(1),
   borderRadius: '8px',
-  borderColor: '#755139',
+  borderColor: '#38598b',
   backgroundColor: '#FFFFFF',
-  color: '#755139',
+  color: '#38598b',
   '&:focus': {
     outline: 'none',
-    borderColor: '#755139',
+    borderColor: '#38598b',
     borderWidth: '2px',
   },
   minHeight: '120px',
@@ -209,7 +209,7 @@ const Cards = () => {
           fontFamily: 'Savate', 
           fontWeight: 'bolder', 
           textAlign: 'center', 
-          color: '#755139', 
+          color: '#38598b', 
           textTransform: 'uppercase',
           mb: 4
         }}>
@@ -315,7 +315,7 @@ const Cards = () => {
 
               <Grid item xs={12}>
                 <Typography variant="subtitle1" sx={{ 
-                  color: '#755139', 
+                  color: '#38598b', 
                   fontFamily: 'Savate',
                   mb: 1
                 }}>
@@ -331,7 +331,7 @@ const Cards = () => {
 
               <Grid item xs={12}>
                 <Typography variant="h6" gutterBottom sx={{ 
-                  color: '#755139', 
+                  color: '#38598b', 
                   fontFamily: 'Savate',
                   mb: 2
                 }}>
@@ -348,16 +348,16 @@ const Cards = () => {
                               onChange={handleOptionChange(key)}
                               color="primary"
                               sx={{
-                                color: '#755139',
+                                color: '#38598b',
                                 '&.Mui-checked': {
-                                  color: '#755139',
+                                  color: '#38598b',
                                 },
                               }}
                             />
                           }
                           label={optionLabels[key]}
                           sx={{ 
-                            color: '#755139',
+                            color: '#38598b',
                             fontFamily: 'Savate'
                           }}
                         />
@@ -388,12 +388,12 @@ const Cards = () => {
                   sx={{ 
                     fontFamily: 'Savate', 
                     fontWeight: 'bold', 
-                    backgroundColor: '#755139', 
-                    color: '#F2EDD7', 
+                    backgroundColor: '#38598b', 
+                    color: 'white', 
                     '&:hover': { 
-                      backgroundColor: '#F2EDD7', 
-                      color: '#755139',
-                      border: '1px solid #755139'
+                      backgroundColor: 'white', 
+                      color: '#38598b',
+                      border: '1px solid #38598b'
                     },
                     py: 1.5,
                     fontSize: '1rem',
@@ -409,15 +409,15 @@ const Cards = () => {
       </Box>
 
       {/* Divider */}
-      <Divider orientation="vertical" flexItem sx={{ mx: 2, borderColor: '#755139' }} />
+      <Divider orientation="vertical" flexItem sx={{ mx: 2, borderColor: '#38598b' }} />
 
       {/* Preview */}
-      <Box sx={{ width: '50%', backgroundColor: '#F2EDD7', p: 3 }}>
+      <Box sx={{ width: '50%', backgroundColor: 'white', p: 3 }}>
         <Typography variant="h4" gutterBottom sx={{ 
           fontFamily: 'Savate', 
           fontWeight: 'bolder', 
           textAlign: 'center', 
-          color: '#755139', 
+          color: '#38598b', 
           textTransform: 'uppercase',
           mb: 4
         }}>
@@ -439,44 +439,44 @@ const Cards = () => {
           <CardContent sx={{ backgroundColor: '#FFFFFF' }}>
             <Typography variant="h6" sx={{ 
               fontFamily: 'Savate',
-              color: '#755139',
+              color: '#38598b',
               mb: 1
             }}>
               {formData.productName || 'Nom du produit'} — <span style={{ color: '#2e7d32' }}>€{calculateTotalPrice()}</span>
             </Typography>
             <Typography sx={{ 
-              color: '#755139',
+              color: '#38598b',
               fontFamily: 'Savate',
               mb: 2
             }}>
               Réf: {formData.reference || 'N/A'}
             </Typography>
             <Typography variant="body2" sx={{ 
-              color: '#755139',
+              color: '#38598b',
               fontFamily: 'Savate',
               mb: 3
             }}>
               {formData.description || 'Aucune description fournie'}
             </Typography>
 
-            <Divider sx={{ my: 2, borderColor: '#755139' }} />
+            <Divider sx={{ my: 2, borderColor: '#38598b' }} />
 
             <Typography variant="subtitle2" sx={{ 
-              color: '#755139',
+              color: '#38598b',
               fontFamily: 'Savate',
               mb: 1
             }}>
               Hauteur : {formData.height || 'N/A'} cm
             </Typography>
             <Typography variant="subtitle2" sx={{ 
-              color: '#755139',
+              color: '#38598b',
               fontFamily: 'Savate',
               mb: 1
             }}>
               Largeur : {formData.width || 'N/A'} cm
             </Typography>
             <Typography variant="subtitle2" sx={{ 
-              color: '#755139',
+              color: '#38598b',
               fontFamily: 'Savate',
               mb: 3
             }}>
@@ -485,9 +485,9 @@ const Cards = () => {
 
             {Object.entries(formData.options).some(([_, opt]) => opt.selected && parseFloat(opt.priceIncrease) > 0) && (
               <>
-                <Divider sx={{ my: 2, borderColor: '#755139' }} />
+                <Divider sx={{ my: 2, borderColor: '#38598b' }} />
                 <Typography variant="subtitle1" sx={{ 
-                  color: '#755139',
+                  color: '#38598b',
                   fontFamily: 'Savate',
                   mb: 1
                 }}>
@@ -498,10 +498,10 @@ const Cards = () => {
                     opt.selected && parseFloat(opt.priceIncrease) > 0 ? (
                       <FormControlLabel
                         key={key}
-                        control={<Checkbox checked disabled sx={{ color: '#755139' }} />}
+                        control={<Checkbox checked disabled sx={{ color: '#38598b' }} />}
                         label={`${optionLabels[key]} (+${opt.priceIncrease} €)`}
                         sx={{ 
-                          color: '#755139',
+                          color: '#38598b',
                           fontFamily: 'Savate',
                           display: 'block',
                           ml: 0.5,

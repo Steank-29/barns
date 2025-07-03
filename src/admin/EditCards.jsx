@@ -282,7 +282,7 @@ const EditCards = () => {
         alignItems: 'center', 
         height: '50vh' 
       }}>
-        <CircularProgress size={60} sx={{ color: '#755139' }} />
+        <CircularProgress size={60} sx={{ color: '#38598b' }} />
       </Box>
     );
   }
@@ -291,7 +291,7 @@ const EditCards = () => {
     <div style={{ padding: '20px' }}>
       <Typography variant="h4" gutterBottom sx={{ 
         textAlign: 'center', textTransform: 'uppercase', 
-        color: '#755139',
+        color: '#38598b',
       }}>
         Gestion des Façades
       </Typography>
@@ -312,7 +312,7 @@ const EditCards = () => {
             ),
           }}
           sx={{ 
-            backgroundColor: '#F2EDD7', 
+            backgroundColor: 'white', 
             borderRadius: 2,
           }}
         />
@@ -345,8 +345,8 @@ const EditCards = () => {
                     transform: 'translateY(-5px)',
                     boxShadow: 6
                   },
-                  backgroundColor: '#755139',
-                  color: '#F2EDD7',
+                  backgroundColor: '#38598b',
+                  color: 'white',
                   borderRadius: 2
                 }}>
                   {/* Image du produit */}
@@ -367,7 +367,7 @@ const EditCards = () => {
                   }}>
                     <Typography gutterBottom variant="h6" component="div" sx={{ 
                       fontWeight: 600,
-                      color: '#F2EDD7'
+                      color: 'white'
                     }}>
                       {product.productName}
                     </Typography>
@@ -385,15 +385,15 @@ const EditCards = () => {
                         size="small" 
                         sx={{ 
                           backgroundColor: 'rgba(242, 237, 215, 0.2)',
-                          color: '#F2EDD7'
+                          color: 'white'
                         }}
                       />
                       <Chip 
                         label={`${product.price?.toFixed(2) || '0.00'}€`} 
                         size="medium"
                         sx={{
-                          backgroundColor: '#F2EDD7',
-                          color: '#755139',
+                          backgroundColor: 'white',
+                          color: '#38598b',
                           fontWeight: 'bold',
                           fontSize: '0.9rem',
                           height: 32
@@ -426,7 +426,7 @@ const EditCards = () => {
                       <Tooltip title="Voir détails">
                         <IconButton 
                           onClick={() => handleView(product)}
-                          sx={{ color: '#F2EDD7' }}
+                          sx={{ color: 'white' }}
                         >
                           <ViewIcon />
                         </IconButton>
@@ -434,7 +434,7 @@ const EditCards = () => {
                       <Tooltip title="Modifier">
                         <IconButton 
                           onClick={() => handleEdit(product)}
-                          sx={{ color: '#F2EDD7' }}
+                          sx={{ color: 'white' }}
                         >
                           <EditIcon />
                         </IconButton>
@@ -442,7 +442,7 @@ const EditCards = () => {
                       <Tooltip title="Supprimer">
                         <IconButton 
                           onClick={() => handleDeleteClick(product)}
-                          sx={{ color: '#F2EDD7' }}
+                          sx={{ color: 'white' }}
                         >
                           <DeleteIcon />
                         </IconButton>
@@ -458,14 +458,14 @@ const EditCards = () => {
                 textAlign: 'center',
                 p: 4,
                 border: '1px dashed',
-                borderColor: '#755139',
+                borderColor: '#38598b',
                 borderRadius: 2,
                 backgroundColor: 'rgba(117, 81, 57, 0.1)'
               }}>
-                <Typography variant="h6" sx={{ color: '#755139' }}>
+                <Typography variant="h6" sx={{ color: '#38598b' }}>
                   {searchTerm ? 'Aucun produit ne correspond à votre recherche' : 'Aucun produit disponible'}
                 </Typography>
-                <Typography variant="body2" sx={{ mt: 1, color: '#755139' }}>
+                <Typography variant="body2" sx={{ mt: 1, color: '#38598b' }}>
                   {searchTerm ? 'Essayez un autre terme de recherche' : 'Ajoutez des produits pour commencer'}
                 </Typography>
               </Box>

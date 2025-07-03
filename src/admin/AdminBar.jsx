@@ -169,7 +169,7 @@ const AdminBar = ({ children }) => {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open} sx={{ backgroundColor: '#F2EDD7', color: '#755139' }}>
+      <AppBar position="fixed" open={open} sx={{ backgroundColor: '#38598b', color: 'white' }}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -188,7 +188,7 @@ const AdminBar = ({ children }) => {
             <Avatar 
               src={adminlogo} 
               alt="Logo" 
-              sx={{ mr: 2, bgcolor: 'transparent' }}
+              sx={{ mr: 2, bgcolor: 'white' }}
             />
             <Typography 
               variant="h5" 
@@ -198,7 +198,7 @@ const AdminBar = ({ children }) => {
                 fontFamily: 'Savate', 
                 textTransform: 'uppercase',
                 fontWeight: 'bold',
-                color: '#755139',
+                color: 'white',
               }}
             >
               Bonjour Super Administrateur de Golden Box Horse
@@ -297,8 +297,8 @@ const AdminBar = ({ children }) => {
 
       <Drawer variant="permanent" open={open} sx={{
         '& .MuiDrawer-paper': {
-          backgroundColor: '#F2EDD7',
-          color: '#755139',
+          backgroundColor: '#38598b',
+          color: 'white',
         }
       }}>
         <DrawerHeader>
@@ -319,7 +319,7 @@ const AdminBar = ({ children }) => {
                         minHeight: 48,
                         justifyContent: open ? 'initial' : 'center',
                         px: 2.5,
-                        color: '#755139',
+                        color: 'white',
                         '&:hover': {
                           backgroundColor: 'rgba(117, 81, 57, 0.12)',
                         },
@@ -331,7 +331,7 @@ const AdminBar = ({ children }) => {
                           minWidth: 0,
                           mr: open ? 3 : 'auto',
                           justifyContent: 'center',
-                          color: '#755139',
+                          color: 'white',
                         }}
                         onClick={handleFacadeClick}
                       >
@@ -364,7 +364,7 @@ const AdminBar = ({ children }) => {
                               pl: 4,
                               minHeight: 48,
                               justifyContent: open ? 'initial' : 'center',
-                              color: '#755139',
+                              color: 'white',
                             }}
                           >
                             <ListItemIcon
@@ -372,7 +372,7 @@ const AdminBar = ({ children }) => {
                                 minWidth: 0,
                                 mr: open ? 3 : 'auto',
                                 justifyContent: 'center',
-                                color: '#755139',
+                                color: 'white',
                               }}
                               component={Link}
                               to={nestedTab.path}
@@ -403,7 +403,7 @@ const AdminBar = ({ children }) => {
                       minHeight: 48,
                       justifyContent: open ? 'initial' : 'center',
                       px: 2.5,
-                      color: '#755139',
+                      color: 'white',
                     }}
                   >
                     <ListItemIcon
@@ -411,7 +411,7 @@ const AdminBar = ({ children }) => {
                         minWidth: 0,
                         mr: open ? 3 : 'auto',
                         justifyContent: 'center',
-                        color: '#755139',
+                        color: 'white',
                       }}
                       component={Link}
                       to={tab.path}

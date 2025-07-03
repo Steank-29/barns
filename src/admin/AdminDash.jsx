@@ -21,7 +21,7 @@ const AdminDash = () => {
         variant="h4"
         align="center"
         sx={{
-          color: '#755139',
+          color: 'black',
           fontFamily: 'Savate, sans-serif',
           mb: 6,
           textTransform: 'uppercase',
@@ -37,8 +37,8 @@ const AdminDash = () => {
           <Grid container spacing={4}>
             {boxData.map((box, index) => {
               const isEven = index % 2 === 0;
-              const bgColor = isEven ? '#755139' : '#F2EDD7';
-              const textColor = isEven ? '#F2EDD7' : '#755139';
+              const bgColor = isEven ? '#38598b' : 'white';
+              const textColor = isEven ? 'white' : '#38598b';
 
               return (
                 <Grid item xs={12} sm={6} key={index}>
@@ -75,7 +75,7 @@ const AdminDash = () => {
         <Grid item xs={12} md={6}>
           <Grid container spacing={4}>
             <Grid item xs={12}>
-              <Card sx={{ backgroundColor: '#F2EDD7', color: '#755139', borderRadius: 3 }}>
+              <Card sx={{ backgroundColor: 'white', color: '#38598b', borderRadius: 3 }}>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>Statistiques de Vente</Typography>
                   <BarChart
@@ -87,7 +87,7 @@ const AdminDash = () => {
               </Card>
             </Grid>
             <Grid item xs={12}>
-              <Card sx={{ backgroundColor: '#755139', color: '#F2EDD7', borderRadius: 3 }}>
+              <Card sx={{ backgroundColor: '#38598b', color: 'white', borderRadius: 3 }}>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>Répartition des Produits</Typography>
                   <PieChart
