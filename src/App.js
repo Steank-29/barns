@@ -12,6 +12,7 @@ import Cards from './admin/Cards';
 import EditCards from './admin/EditCards';
 import AdminBar from './admin/AdminBar';
 import AdminDash from './admin/AdminDash';
+import Barriere from './admin/Barriere';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -92,6 +93,16 @@ function App() {
           <AdminBar >
           <AdminDash />
           </AdminBar>
+        </>
+      )
+    },
+         {
+      path: '/admin-barriere',
+      element: (
+        <>
+          <AdminBar>
+            <Barriere />
+            </AdminBar>
         </>
       )
     },

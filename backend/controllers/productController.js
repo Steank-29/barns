@@ -10,9 +10,8 @@ const addProduct = async (req, res) => {
       width,
       thickness,
       description,
+      type
     } = req.body;
-
-    const options = JSON.parse(req.body.options || '[]');
 
     const imageUrl = req.file ? `/uploads/${req.file.filename}` : '';
 
@@ -24,16 +23,27 @@ const addProduct = async (req, res) => {
       width,
       thickness,
       description,
-      imageUrl,
-      options
+      type,
+      imageUrl
     });
 
     await newProduct.save();
+
     res.status(201).json({ message: 'Produit créé avec succès', product: newProduct });
 
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Erreur lors de la création du produit' });
+
+    // Handle duplicate key error (MongoDB code 11000)
+    if (err.code === 11000 && err.keyPattern?.reference) {
+      return res.status(400).json({
+        message: 'La référence existe déjà. Veuillez en choisir une autre.'
+      });
+    }
+
+    res.status(500).json({
+      message: 'Erreur lors de la création du produit'
+    });
   }
 };
 

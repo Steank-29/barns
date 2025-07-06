@@ -1,20 +1,15 @@
 const mongoose = require('mongoose');
 
-const optionSchema = new mongoose.Schema({
-  name: String,
-  priceIncrease: Number
-}, { _id: false });
-
 const productSchema = new mongoose.Schema({
-  reference: { type: String, required: true },
+  reference: { type: String, required: true , unique: true },
   productName: { type: String, required: true },
+  type: { type: String }, // Added to match your frontend
   price: { type: Number, required: true },
   height: String,
   width: String,
   thickness: String,
   description: String,
-  imageUrl: String, // path local de l'image
-  options: [optionSchema]
+  imageUrl: String
 }, {
   timestamps: true
 });

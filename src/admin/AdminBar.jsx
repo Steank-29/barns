@@ -124,7 +124,7 @@ const sidebarTabs = [
       { text: 'Création d\'une façade', icon: <DesignServicesIcon />, path: '/admin-cards' }
     ],
   },
-  { text: 'Products', icon: <InventoryIcon />, path: '/products' },
+  { text: 'Barrière', icon: <InventoryIcon />, path: '/admin-barriere' },
   { text: 'Orders', icon: <ReceiptIcon />, path: '/orders' },
   { text: 'Calendar', icon: <CalendarTodayIcon />, path: '/calendar' },
   { text: 'Reports', icon: <ReportIcon />, path: '/reports' },

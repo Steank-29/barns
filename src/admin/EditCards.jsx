@@ -475,210 +475,252 @@ const EditCards = () => {
       </Box>
 
       {/* View Product Dialog */}
-      <Dialog open={viewMode} onClose={closeDialog} maxWidth="md" fullWidth>
-        <DialogTitle>
-          <Box display="flex" justifyContent="space-between" alignItems="center">
-            <Typography variant="h6">Product Details</Typography>
-            <IconButton onClick={closeDialog}>
-              <CloseIcon />
-            </IconButton>
-          </Box>
-        </DialogTitle>
-        <DialogContent dividers>
-          {selectedProduct && (
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
-                {getValidImageUrl(selectedProduct.imageUrl) ? (
-                  <CardMedia
-                    component="img"
-                    height="300"
-                    image={getValidImageUrl(selectedProduct.imageUrl)}
-                    alt={selectedProduct.productName}
-                    style={{ objectFit: 'contain', alignItems: 'center', justifyContent: 'center' }}
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                      e.target.nextSibling.style.display = 'flex';
-                    }}
-                  />
-                ) : null}
-                <Box sx={{
-                  height: 300,
-                  display: 'none',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: '#f5f5f5',
-                  border: '1px dashed #ccc'
-                }}>
-                  <Typography variant="body2" color="textSecondary">
-                    No image available
-                  </Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Typography variant="h5" gutterBottom>
-                  {selectedProduct.productName}
-                </Typography>
-                <Typography variant="subtitle1" gutterBottom>
-                  Reference: {selectedProduct.reference}
-                </Typography>
-                <Typography variant="h6" gutterBottom>
-                  Price: {selectedProduct.price?.toFixed(2) || '0.00'}€
-                </Typography>
-                <Typography variant="body1" gutterBottom>
-                  Dimensions: {selectedProduct.height || 'N/A'}cm (H) × {selectedProduct.width || 'N/A'}cm (W) × {selectedProduct.thickness || 'N/A'}cm (D)
-                </Typography>
-                <Typography variant="body1" gutterBottom>
-                  Description: {selectedProduct.description || 'No description available'}
-                </Typography>
-                <Typography variant="body1" gutterBottom>
-                  Options: {selectedProduct.options?.join(', ') || 'No options available'}
-                </Typography>
-              </Grid>
-            </Grid>
-          )}
-        </DialogContent>
-      </Dialog>
+<Dialog open={viewMode} onClose={closeDialog} maxWidth="md" fullWidth>
+  <DialogTitle sx={{ px: 4, py: 2, backgroundColor: '#38598b', color: '#fff' }}>
+    <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Typography variant="h6" fontWeight={600} color="#fff" sx={{ fontFamily: 'Savate', textTransform: 'uppercase' }}>
+        Fiche technique des façades
+      </Typography>
+      <IconButton onClick={closeDialog} sx={{ color: '#fff' }}>
+        <CloseIcon />
+      </IconButton>
+    </Box>
+  </DialogTitle>
+
+<DialogContent dividers sx={{ px: 4, py: 3 }}>
+  {selectedProduct && (
+    <Grid container spacing={4}>
+      <Grid item xs={24}>
+        <Box sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          flexDirection: 'column'
+        }}>
+          {getValidImageUrl(selectedProduct.imageUrl) ? (
+            <CardMedia
+              component="img"
+              height="300"
+              image={getValidImageUrl(selectedProduct.imageUrl)}
+              alt={selectedProduct.productName}
+              style={{
+                objectFit: 'contain',
+                borderRadius: 8,
+                maxWidth: '100%',
+                maxHeight: '300px',
+              }}
+              onError={(e) => {
+                e.target.style.display = 'none';
+                e.target.nextSibling.style.display = 'flex';
+              }}
+            />
+          ) : null}
+        </Box>
+
+        <Box
+          sx={{
+            height: 300,
+            display: 'none',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#f5f5f5',
+            border: '2px dashed #ccc',
+            borderRadius: 2,
+            textAlign: 'center',
+            mt: 2,
+          }}
+        >
+          <Typography variant="body2" color="text.secondary">
+            No image available
+          </Typography>
+        </Box>
+      </Grid>
+
+      <Grid item xs={12}>
+        <Typography
+          variant="h5"
+          fontWeight={600}
+          align="center"
+          sx={{ fontFamily: 'Savate', textTransform: 'uppercase' }}
+          gutterBottom
+        >
+          {selectedProduct.productName}
+        </Typography>
+
+        <Typography
+          variant="body1"
+          sx={{ mt: 1, mb: 2, fontFamily: 'Savate', textTransform: 'uppercase' }}
+          align="center"
+        >
+          {selectedProduct.description || 'No description available'}
+        </Typography>
+
+        <Typography
+          variant="body2"
+          align="center"
+          sx={{ fontFamily: 'Savate', textTransform: 'uppercase' }}
+          gutterBottom
+        >
+          📐 Dimensions: {selectedProduct.height || 'N/A'}cm (H) × {selectedProduct.width || 'N/A'}cm (W) × {selectedProduct.thickness || 'N/A'}cm (D)
+        </Typography>
+
+        <Typography
+          variant="h6"
+          align="center"
+          fontWeight="bold"
+          color="primary"
+          sx={{ mt: 3, fontFamily: 'Savate', textTransform: 'uppercase' }}
+        >
+          💶 Price: {selectedProduct.price?.toFixed(2) || '0.00'}€
+        </Typography>
+      </Grid>
+    </Grid>
+  )}
+</DialogContent>
+
+</Dialog>
+
+
 
       {/* Edit Product Dialog */}
-      <Dialog open={editMode} onClose={closeDialog} maxWidth="sm" fullWidth>
-        <DialogTitle>
-          <Box display="flex" justifyContent="space-between" alignItems="center">
-            <Typography variant="h6">Edit Product</Typography>
-            <IconButton onClick={closeDialog}>
-              <CloseIcon />
-            </IconButton>
-          </Box>
-        </DialogTitle>
-        <DialogContent dividers>
-          {selectedProduct && (
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Product Name"
-                  name="productName"
-                  value={selectedProduct.productName || ''}
-                  onChange={handleFieldChange}
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Reference"
-                  name="reference"
-                  value={selectedProduct.reference || ''}
-                  onChange={handleFieldChange}
-                  margin="normal"
-                  disabled
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Price"
-                  name="price"
-                  type="number"
-                  value={selectedProduct.price || ''}
-                  onChange={handleFieldChange}
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <TextField
-                  fullWidth
-                  label="Height (cm)"
-                  name="height"
-                  type="number"
-                  value={selectedProduct.height || ''}
-                  onChange={handleFieldChange}
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <TextField
-                  fullWidth
-                  label="Width (cm)"
-                  name="width"
-                  type="number"
-                  value={selectedProduct.width || ''}
-                  onChange={handleFieldChange}
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <TextField
-                  fullWidth
-                  label="Thickness (cm)"
-                  name="thickness"
-                  type="number"
-                  value={selectedProduct.thickness || ''}
-                  onChange={handleFieldChange}
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Image URL"
-                  name="imageUrl"
-                  value={selectedProduct.imageUrl || ''}
-                  onChange={handleFieldChange}
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Description"
-                  name="description"
-                  value={selectedProduct.description || ''}
-                  onChange={handleFieldChange}
-                  margin="normal"
-                  multiline
-                  rows={3}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Options (comma separated)"
-                  name="options"
-                  value={selectedProduct.options?.join(', ') || ''}
-                  onChange={(e) => {
-                    const options = e.target.value.split(',').map(opt => opt.trim()).filter(opt => opt);
-                    setSelectedProduct(prev => ({ ...prev, options }));
-                  }}
-                  margin="normal"
-                />
-              </Grid>
-            </Grid>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button startIcon={<CancelIcon />} onClick={closeDialog} color="secondary">
-            Cancel
-          </Button>
-          <Button startIcon={<SaveIcon />} onClick={saveChanges} color="primary" variant="contained">
-            Save Changes
-          </Button>
-        </DialogActions>
-      </Dialog>
+<Dialog open={editMode} onClose={closeDialog} maxWidth="sm" fullWidth>
+  <DialogTitle sx={{ backgroundColor: '#38598b', color: '#fff', px: 3, py: 2 }}>
+    <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Typography variant="h6" fontWeight={600}>
+        ✏️ Modifier le façade
+      </Typography>
+      <IconButton onClick={closeDialog} sx={{ color: '#fff' }}>
+        <CloseIcon />
+      </IconButton>
+    </Box>
+  </DialogTitle>
+
+  <DialogContent dividers sx={{ px: 3, py: 3 }}>
+    {selectedProduct && (
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <TextField
+            fullWidth
+            label="Nom du produit"
+            name="productName"
+            value={selectedProduct.productName || ''}
+            onChange={handleFieldChange}
+            margin="normal"
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={6}>
+          <TextField
+            fullWidth
+            label="Référence"
+            name="reference"
+            value={selectedProduct.reference || ''}
+            onChange={handleFieldChange}
+            margin="normal"
+            disabled
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={6}>
+          <TextField
+            fullWidth
+            label="Prix (€)"
+            name="price"
+            type="number"
+            value={selectedProduct.price || ''}
+            onChange={handleFieldChange}
+            margin="normal"
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={4}>
+          <TextField
+            fullWidth
+            label="Hauteur (cm)"
+            name="height"
+            type="number"
+            value={selectedProduct.height || ''}
+            onChange={handleFieldChange}
+            margin="normal"
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={4}>
+          <TextField
+            fullWidth
+            label="Largeur (cm)"
+            name="width"
+            type="number"
+            value={selectedProduct.width || ''}
+            onChange={handleFieldChange}
+            margin="normal"
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={4}>
+          <TextField
+            fullWidth
+            label="Épaisseur (cm)"
+            name="thickness"
+            type="number"
+            value={selectedProduct.thickness || ''}
+            onChange={handleFieldChange}
+            margin="normal"
+          />
+        </Grid>
+
+        <Grid item xs={12}>
+          <TextField
+            fullWidth
+            label="Description"
+            name="description"
+            value={selectedProduct.description || ''}
+            onChange={handleFieldChange}
+            margin="normal"
+            multiline
+            rows={5}
+            sx={{  width: 400, borderRadius: 1 }}
+          />
+        </Grid>
+      </Grid>
+    )}
+  </DialogContent>
+
+  <DialogActions sx={{ px: 3, py: 2 }}>
+    <Button
+      startIcon={<CancelIcon />}
+      onClick={closeDialog}
+      color="error"
+      variant="outlined"
+    >
+      Annuler
+    </Button>
+    <Button
+      startIcon={<SaveIcon />}
+      onClick={saveChanges}
+      sx={{ backgroundColor: '#38598b', color: '#fff' }}
+      variant="contained"
+    >
+      Enregistrer les modifications
+    </Button>
+  </DialogActions>
+</Dialog>
+
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={deleteConfirm} onClose={() => setDeleteConfirm(false)}>
-        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogTitle>Confirmer la suppression</DialogTitle>
         <DialogContent>
           <Typography>
-            Are you sure you want to delete "{productToDelete?.productName}"?
+            Êtes-vous sûr de vouloir supprimer "{productToDelete?.productName}"?
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDeleteConfirm(false)} color="primary">
-            Cancel
+          <Button onClick={() => setDeleteConfirm(false)} sx={{color: '#38598b'}} variant="outlined">
+            Annuler
           </Button>
-          <Button onClick={confirmDelete} color="error" variant="contained">
-            Delete
+          <Button onClick={confirmDelete} sx={{backgroundColor: '#d32f2f', color: '#fff'}} variant="contained">
+            Supprimer
           </Button>
         </DialogActions>
       </Dialog>

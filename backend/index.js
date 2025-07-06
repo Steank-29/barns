@@ -31,8 +31,10 @@ app.use(cors({
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 const productRoutes = require('./routes/productRoutes');
+const barriereRoutes = require('./routes/barriereRoutes');
 
-app.use('/api/products', productRoutes)
+app.use('/api/products', productRoutes);
+app.use('/api/barrieres', barriereRoutes);
 
 
 // Test Route

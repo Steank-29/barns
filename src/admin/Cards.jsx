@@ -4,8 +4,6 @@ import {
   TextField,
   Button,
   Typography,
-  Checkbox,
-  FormControlLabel,
   Grid,
   Paper,
   InputAdornment,
@@ -13,10 +11,17 @@ import {
   Card,
   CardContent,
   CardMedia,
-  TextareaAutosize
+  TextareaAutosize,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  IconButton
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import axios from 'axios';
+import toast, { Toaster } from 'react-hot-toast';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -49,6 +54,28 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   marginBottom: theme.spacing(2),
 }));
 
+const StyledFormControl = styled(FormControl)(({ theme }) => ({
+  '& .MuiOutlinedInput-root': {
+    borderRadius: '8px',
+    backgroundColor: '#FFFFFF',
+    '& fieldset': {
+      borderColor: '#38598b',
+    },
+    '&:hover fieldset': {
+      borderColor: '#38598b',
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: '#38598b',
+    },
+  },
+  '& .MuiInputLabel-root': {
+    color: '#38598b',
+    fontFamily: 'Savate',
+  },
+  width: '100%',
+  marginBottom: theme.spacing(2),
+}));
+
 const StyledTextarea = styled(TextareaAutosize)(({ theme }) => ({
   width: '100%',
   fontFamily: 'Savate',
@@ -66,16 +93,25 @@ const StyledTextarea = styled(TextareaAutosize)(({ theme }) => ({
   resize: 'vertical',
 }));
 
-const optionLabels = {
-  metre3: '3 mètres',
-  metre4: '4 mètres',
-  grille3ml: 'avec grille 3ml',
-  grille35: 'avec grille 3,5ml',
-  grille4: 'avec grille 4ml',
-  cygne3: 'avec cole de cygne 300',
-  cygne35: 'avec cole de cygne 350',
-  cygne4: 'avec cole de cygne 400',
-};
+const facadeTypes = [
+  { value: 'De Box 300 BOIS', label: 'De Box 300 BOIS' },
+  { value: 'De Box 400 BOIS', label: 'De Box 400 BOIS' },
+  { value: 'Avec Col De Cygne 300', label: 'Avec Col De Cygne 300' },
+  { value: 'Avec Col De Cygne 350', label: 'Avec Col De Cygne 350' },
+  { value: 'Avec Col De Cygne 400', label: 'Avec Col De Cygne 400' },
+  { value: 'Retour Avec Grille 300', label: 'Retour Avec Grille 300' },
+  { value: 'Retour Avec Grille 350', label: 'Retour Avec Grille 350' },
+  { value: 'Retour Avec Grille 400', label: 'Retour Avec Grille 400' },
+  { value: 'Open Porte Coulissante 300', label: 'Open Porte Coulissante 300' },
+  { value: 'Open Porte Coulissante 350', label: 'Open Porte Coulissante 350' },
+  { value: 'DEMOBOX 3M', label: 'DEMOBOX 3M' },
+  { value: 'Open Porte Battante', label: 'Open Porte Battante' },
+  { value: 'Open 4m Porte Battante', label: 'Open 4m Porte Battante' },
+  { value: 'LUNA 3.74M BOIS Exotique Avec Ouverture Totale', label: 'LUNA 3.74M BOIS Exotique Avec Ouverture Totale' },
+  { value: 'Retour Avec Grille 3ml ,hauteur : 2.20ml', label: 'Retour Avec Grille 3ml ,hauteur : 2.20ml' },
+  { value: 'Retour Avec Grille 3.5ml ,hauteur : 2.20ml', label: 'Retour Avec Grille 3.5ml ,hauteur : 2.20ml' },
+  { value: 'Retour Avec Grille 4ml ,hauteur : 2.20ml', label: 'Retour Avec Grille 4ml ,hauteur : 2.20ml' },
+];
 
 const Cards = () => {
   const [formData, setFormData] = useState({
@@ -87,26 +123,14 @@ const Cards = () => {
     width: '',
     thickness: '',
     description: '',
-    options: {
-      metre3: { selected: false, priceIncrease: 0 },
-      metre4: { selected: false, priceIncrease: 0 },
-      grille3ml: { selected: false, priceIncrease: 0 },
-      grille35: { selected: false, priceIncrease: 0 },
-      grille4: { selected: false, priceIncrease: 0 },
-      cygne3: { selected: false, priceIncrease: 0 },
-      cygne35: { selected: false, priceIncrease: 0 },
-      cygne4: { selected: false, priceIncrease: 0 },
-    }
+    type: '',
   });
 
   const [previewImage, setPreviewImage] = useState(null);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleImageChange = (e) => {
@@ -124,86 +148,60 @@ const Cards = () => {
     }
   };
 
-  const handleOptionChange = (optionName) => (e) => {
-    const { checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      options: {
-        ...prev.options,
-        [optionName]: {
-          ...prev.options[optionName],
-          selected: checked
-        }
-      }
-    }));
-  };
-
-  const handleOptionPriceChange = (optionName) => (e) => {
-    const { value } = e.target;
-    const parsedValue = parseFloat(value) || 0;
-    setFormData(prev => ({
-      ...prev,
-      options: {
-        ...prev.options,
-        [optionName]: {
-          ...prev.options[optionName],
-          priceIncrease: parsedValue
-        }
-      }
-    }));
-  };
-
-  const calculateTotalPrice = () => {
-    let total = parseFloat(formData.price) || 0;
-    Object.values(formData.options).forEach(option => {
-      if (option.selected) {
-        total += parseFloat(option.priceIncrease) || 0;
-      }
+  const handleReset = () => {
+    setFormData({
+      reference: '',
+      image: null,
+      productName: '',
+      price: 0,
+      height: '',
+      width: '',
+      thickness: '',
+      description: '',
+      type: '',
     });
-    return total.toFixed(2);
+    setPreviewImage(null);
   };
 
   const apiUrl = process.env.RENDER_API_URL || 'https://barns.onrender.com';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.productName.includes('Facade')) {
+      toast.error('Le nom du produit doit contenir le mot "Façade"');
+      return;
+    }
 
     try {
       const formPayload = new FormData();
       formPayload.append('reference', formData.reference);
-      formPayload.append('productName', formData.productName);
-      formPayload.append('price', calculateTotalPrice());
+      formPayload.append('productName', formattedProductName);
+      formPayload.append('price', formData.price);
       formPayload.append('height', formData.height);
       formPayload.append('width', formData.width);
       formPayload.append('thickness', formData.thickness);
       formPayload.append('description', formData.description);
+      formPayload.append('type', formData.type);
       formPayload.append('image', formData.image);
 
-      const selectedOptions = Object.entries(formData.options)
-        .filter(([_, opt]) => opt.selected)
-        .map(([key, opt]) => ({
-          name: key,
-          priceIncrease: opt.priceIncrease
-        }));
-      formPayload.append('options', JSON.stringify(selectedOptions));
-
       const response = await axios.post(`${apiUrl}/api/products`, formPayload, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+        headers: { 'Content-Type': 'multipart/form-data' }
       });
 
+      toast.success('Produit ajouté avec succès !');
       console.log(response.data);
-      alert('Produit ajouté avec succès !');
     } catch (error) {
+      toast.error("Erreur lors de la création du produit");
       console.error('Erreur lors de l\'envoi ', error);
-      alert('Erreur lors de la création du produit');
     }
   };
+
+  const formattedProductName = `${formData.productName || 'Nom du produit'} ${facadeTypes.find(t => t.value === formData.type)?.label || 'N/A'} `;
 
   return (
     <Box sx={{ display: 'flex', height: '100vh', p: 2 }}>
       {/* Left Side Form */}
+      <Toaster position="top-right" />
       <Box sx={{ width: '50%', overflowY: 'auto', pr: 2 }}>
         <Typography variant="h4" gutterBottom sx={{ 
           fontFamily: 'Savate', 
@@ -218,192 +216,173 @@ const Cards = () => {
 
         <StyledPaper elevation={3}>
           <form onSubmit={handleSubmit}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
-                <StyledTextField
-                  label="Référence"
-                  name="reference"
-                  value={formData.reference}
-                  onChange={handleInputChange}
-                  required
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <StyledTextField
-                  label="Nom du produit"
-                  name="productName"
-                  value={formData.productName}
-                  onChange={handleInputChange}
-                  required
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <StyledTextField
-                  type="file"
-                  label="Image du produit"
-                  InputLabelProps={{ shrink: true }}
-                  onChange={handleImageChange}
-                  inputProps={{ accept: "image/*" }}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={4}>
-                <StyledTextField
-                  label="Hauteur (cm)"
-                  name="height"
-                  type="number"
-                  value={formData.height}
-                  onChange={handleInputChange}
-                  InputProps={{
-                    endAdornment: <InputAdornment position="end">cm</InputAdornment>,
-                  }}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={4}>
-                <StyledTextField
-                  label="Largeur (cm)"
-                  name="width"
-                  type="number"
-                  value={formData.width}
-                  onChange={handleInputChange}
-                  InputProps={{
-                    endAdornment: <InputAdornment position="end">cm</InputAdornment>,
-                  }}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={4}>
-                <StyledTextField
-                  label="Épaisseur (mm)"
-                  name="thickness"
-                  type="number"
-                  value={formData.thickness}
-                  onChange={handleInputChange}
-                  InputProps={{
-                    endAdornment: <InputAdornment position="end">mm</InputAdornment>,
-                  }}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <StyledTextField
-                  label="Prix de base (€)"
-                  name="price"
-                  type="number"
-                  value={formData.price}
-                  onChange={handleInputChange}
-                  InputProps={{
-                    startAdornment: <InputAdornment position="start">€</InputAdornment>,
-                  }}
-                  required
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <StyledTextField
-                  label="Prix total"
-                  value={calculateTotalPrice()}
-                  InputProps={{
-                    startAdornment: <InputAdornment position="start">€</InputAdornment>,
-                    readOnly: true,
-                  }}
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <Typography variant="subtitle1" sx={{ 
-                  color: '#38598b', 
-                  fontFamily: 'Savate',
-                  mb: 1
-                }}>
-                  Description
-                </Typography>
-                <StyledTextarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  placeholder='Description du produit...'
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <Typography variant="h6" gutterBottom sx={{ 
-                  color: '#38598b', 
-                  fontFamily: 'Savate',
-                  mb: 2
-                }}>
-                  Options supplémentaires
-                </Typography>
-                <Grid container spacing={2}>
-                  {Object.entries(formData.options).map(([key, option]) => (
-                    <Grid container item spacing={1} key={key} alignItems="center">
-                      <Grid item xs={12} sm={6}>
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              checked={option.selected}
-                              onChange={handleOptionChange(key)}
-                              color="primary"
-                              sx={{
-                                color: '#38598b',
-                                '&.Mui-checked': {
-                                  color: '#38598b',
-                                },
-                              }}
-                            />
-                          }
-                          label={optionLabels[key]}
-                          sx={{ 
-                            color: '#38598b',
-                            fontFamily: 'Savate'
-                          }}
-                        />
-                      </Grid>
-                      {option.selected && (
-                        <Grid item xs={12} sm={6}>
-                          <StyledTextField
-                            label="Montant à ajouter (€)"
-                            type="number"
-                            value={option.priceIncrease}
-                            onChange={handleOptionPriceChange(key)}
-                            InputProps={{
-                              startAdornment: <InputAdornment position="start">€</InputAdornment>,
-                            }}
-                          />
-                        </Grid>
-                      )}
-                    </Grid>
-                  ))}
-                </Grid>
-              </Grid>
-
-              <Grid item xs={12} sx={{ mt: 3 }}>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  fullWidth
-                  sx={{ 
-                    fontFamily: 'Savate', 
-                    fontWeight: 'bold', 
-                    backgroundColor: '#38598b', 
-                    color: 'white', 
-                    '&:hover': { 
-                      backgroundColor: 'white', 
-                      color: '#38598b',
-                      border: '1px solid #38598b'
-                    },
-                    py: 1.5,
-                    fontSize: '1rem',
-                    borderRadius: '8px'
-                  }}
-                >
-                  Créer la fiche produit
-                </Button>
-              </Grid>
+          <Grid container spacing={2}>
+            {/* Row 1: Référence (full width) */}
+            <Grid item xs={12}>
+              <StyledTextField
+                label="Référence"
+                name="reference"
+                value={formData.reference}
+                onChange={handleInputChange}
+                required
+                sx={{ width: 250 }}
+              />
             </Grid>
+
+            {/* Row 2: Nom, Type, Taille */}
+            <Grid item xs={4}>
+              <StyledTextField
+                label="Nom de Façade"
+                name="productName"
+                value={formData.productName}
+                onChange={handleInputChange}
+                required
+                helperText="Doit contenir 'Façade'"
+                sx={{ width: 250 }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <StyledFormControl>
+                <InputLabel id="type-select-label">Type de façade</InputLabel>
+                <Select
+                  labelId="type-select-label"
+                  id="type-select"
+                  name="type"
+                  value={formData.type}
+                  onChange={handleInputChange}
+                  label="Type de façade"
+                  sx={{ width: 250 }}
+                  >
+                  {facadeTypes.map((type) => (
+                    <MenuItem key={type.value} value={type.value}>
+                      {type.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </StyledFormControl>
+            </Grid>
+
+            {/* Row 3: Image (full width) */}
+            <Grid item xs={12}>
+              <StyledTextField
+                type="file"
+                label="Image du produit"
+                InputLabelProps={{ shrink: true }}
+                onChange={handleImageChange}
+                inputProps={{ accept: "image/*" }}
+                sx={{ width: 250 }}
+              />
+            </Grid>
+
+            {/* Row 4: Height, Width, Thickness */}
+            <Grid item xs={4}>
+              <StyledTextField
+                label="Hauteur (cm)"
+                name="height"
+                type="number"
+                value={formData.height}
+                onChange={handleInputChange}
+                InputProps={{
+                  endAdornment: <InputAdornment position="end">cm</InputAdornment>,
+                }}
+                sx={{ width: 250 }}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <StyledTextField
+                label="Largeur (cm)"
+                name="width"
+                type="number"
+                value={formData.width}
+                onChange={handleInputChange}
+                InputProps={{
+                  endAdornment: <InputAdornment position="end">cm</InputAdornment>,
+                }}
+                sx={{ width: 250 }}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <StyledTextField
+                label="Épaisseur (mm)"
+                name="thickness"
+                type="number"
+                value={formData.thickness}
+                onChange={handleInputChange}
+                InputProps={{
+                  endAdornment: <InputAdornment position="end">mm</InputAdornment>,
+                }}
+                sx={{ width: 250 }}
+              />
+            </Grid>
+
+            {/* Row 5: Description (66%) + Prix (33%) */}
+
+              <Grid item xs={4}>
+              <StyledTextField
+                label="Prix (€)"
+                name="price"
+                type="number"
+                value={formData.price}
+                onChange={handleInputChange}
+                InputProps={{
+                  startAdornment: <InputAdornment position="start">€</InputAdornment>,
+                }}
+                required
+                sx={{ width: 250 }}
+              />
+            </Grid>
+
+            <Grid item xs={4}>
+              <StyledTextarea
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                placeholder='Description du Façade...'
+                sx={{ width: 250 }}
+              />
+            </Grid>
+
+
+            {/* Buttons */}
+            <Grid item xs={4} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                <IconButton 
+                onClick={handleReset}
+                sx={{ 
+                  backgroundColor: '#f5f5f5', 
+                  borderRadius: '8px',
+                  mr: 1,
+                  '&:hover': { backgroundColor: '#e0e0e0' },
+                  width: 50,
+
+                }}
+              >
+                <RestartAltIcon sx={{ color: '#38598b' }} />
+              </IconButton>
+
+                <Button
+                type="submit"
+                variant="contained"
+                sx={{
+                  fontFamily: 'Savate',
+                  fontWeight: 'bold',
+                  backgroundColor: '#38598b',
+                  color: 'white',
+                  '&:hover': {
+                    backgroundColor: 'white',
+                    color: '#38598b',
+                    border: '1px solid #38598b'
+                  },
+                  py: 1,
+                  px: 2,
+                  fontSize: '0.8rem',
+                  borderRadius: '8px',
+                  width: 160
+                }}
+              >
+                Créer le facade
+              </Button>
+            </Grid>
+          </Grid>
           </form>
         </StyledPaper>
       </Box>
@@ -442,14 +421,14 @@ const Cards = () => {
               color: '#38598b',
               mb: 1
             }}>
-              {formData.productName || 'Nom du produit'} — <span style={{ color: '#2e7d32' }}>€{calculateTotalPrice()}</span>
+              {formattedProductName}
             </Typography>
             <Typography sx={{ 
               color: '#38598b',
               fontFamily: 'Savate',
               mb: 2
             }}>
-              Réf: {formData.reference || 'N/A'}
+              Réf: {formData.reference || 'N/A'} | Prix: <span style={{ color: '#2e7d32' }}>€{formData.price || '0.00'}</span>
             </Typography>
             <Typography variant="body2" sx={{ 
               color: '#38598b',
@@ -461,58 +440,53 @@ const Cards = () => {
 
             <Divider sx={{ my: 2, borderColor: '#38598b' }} />
 
-            <Typography variant="subtitle2" sx={{ 
-              color: '#38598b',
-              fontFamily: 'Savate',
-              mb: 1
-            }}>
-              Hauteur : {formData.height || 'N/A'} cm
-            </Typography>
-            <Typography variant="subtitle2" sx={{ 
-              color: '#38598b',
-              fontFamily: 'Savate',
-              mb: 1
-            }}>
-              Largeur : {formData.width || 'N/A'} cm
-            </Typography>
-            <Typography variant="subtitle2" sx={{ 
-              color: '#38598b',
-              fontFamily: 'Savate',
-              mb: 3
-            }}>
-              Épaisseur : {formData.thickness || 'N/A'} mm
-            </Typography>
-
-            {Object.entries(formData.options).some(([_, opt]) => opt.selected && parseFloat(opt.priceIncrease) > 0) && (
-              <>
-                <Divider sx={{ my: 2, borderColor: '#38598b' }} />
-                <Typography variant="subtitle1" sx={{ 
+            <Grid container spacing={2}>
+              <Grid item xs={4}>
+                <Typography variant="subtitle2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
-                  mb: 1
+                  fontWeight: 'bold'
                 }}>
-                  Options sélectionnées:
+                  Hauteur:
                 </Typography>
-                <Box>
-                  {Object.entries(formData.options).map(([key, opt]) =>
-                    opt.selected && parseFloat(opt.priceIncrease) > 0 ? (
-                      <FormControlLabel
-                        key={key}
-                        control={<Checkbox checked disabled sx={{ color: '#38598b' }} />}
-                        label={`${optionLabels[key]} (+${opt.priceIncrease} €)`}
-                        sx={{ 
-                          color: '#38598b',
-                          fontFamily: 'Savate',
-                          display: 'block',
-                          ml: 0.5,
-                          mb: 0.5
-                        }}
-                      />
-                    ) : null
-                  )}
-                </Box>
-              </>
-            )}
+                <Typography variant="subtitle2" sx={{ 
+                  color: '#38598b',
+                  fontFamily: 'Savate',
+                }}>
+                  {formData.height || 'N/A'} cm
+                </Typography>
+              </Grid>
+              <Grid item xs={4}>
+                <Typography variant="subtitle2" sx={{ 
+                  color: '#38598b',
+                  fontFamily: 'Savate',
+                  fontWeight: 'bold'
+                }}>
+                  Largeur:
+                </Typography>
+                <Typography variant="subtitle2" sx={{ 
+                  color: '#38598b',
+                  fontFamily: 'Savate',
+                }}>
+                  {formData.width || 'N/A'} cm
+                </Typography>
+              </Grid>
+              <Grid item xs={4}>
+                <Typography variant="subtitle2" sx={{ 
+                  color: '#38598b',
+                  fontFamily: 'Savate',
+                  fontWeight: 'bold'
+                }}>
+                  Épaisseur:
+                </Typography>
+                <Typography variant="subtitle2" sx={{ 
+                  color: '#38598b',
+                  fontFamily: 'Savate',
+                }}>
+                  {formData.thickness || 'N/A'} mm
+                </Typography>
+              </Grid>
+            </Grid>
           </CardContent>
         </Card>
       </Box>
