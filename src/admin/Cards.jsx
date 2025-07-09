@@ -163,7 +163,7 @@ const Cards = () => {
     setPreviewImage(null);
   };
 
-  const apiUrl = process.env.RENDER_API_URL || 'https://barns.onrender.com';
+  // const apiUrl = process.env.RENDER_API_URL || 'https://barns.onrender.com';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -184,7 +184,7 @@ const Cards = () => {
       formPayload.append('type', formData.type);
       formPayload.append('image', formData.image);
 
-      const response = await axios.post(`${apiUrl}/api/products`, formPayload, {
+      const response = await axios.post(`http://localhost:5000/api/facade`, formPayload, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
@@ -266,6 +266,7 @@ const Cards = () => {
             <Grid item xs={12}>
               <StyledTextField
                 type="file"
+                name="image"
                 label="Image du produit"
                 InputLabelProps={{ shrink: true }}
                 onChange={handleImageChange}

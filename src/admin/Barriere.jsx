@@ -87,6 +87,14 @@ const Barriere = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+  if (file.size > 5 * 1024 * 1024) { // 5MB
+    toast.error('Image size must be less than 5MB');
+    return;
+  }
+  if (!file.type.startsWith('image/')) {
+    toast.error('Please upload an image file');
+    return;
+  }
     if (file) {
       setFormData(prev => ({
         ...prev,
@@ -100,7 +108,7 @@ const Barriere = () => {
     }
   };
 
-  const apiUrl = process.env.RENDER_API_URL || 'https://barns.onrender.com';
+  // const apiUrl = process.env.RENDER_API_URL || 'https://barns.onrender.com';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -114,14 +122,10 @@ const Barriere = () => {
       formPayload.append('price', formData.price)
       formPayload.append('width', formData.width);
       formPayload.append('description', formData.description);
-      if (formData.image) {
-        formPayload.append('image', formData.image);
-      }
+      formPayload.append('image', formData.image);
 
-      const response = await axios.post(`${apiUrl}/api/barrieres`, formPayload, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+      const response = await axios.post(`http://localhost:5000/api/barriere`, formPayload, {
+        headers: { 'Content-Type': 'multipart/form-data' }
       });
 
       console.log(response.data);
@@ -207,11 +211,12 @@ const Barriere = () => {
               <Grid item xs={6}>
                 <StyledTextField
                   type="file"
+                  name='image'
                   label="Image de la barrière"
-                  InputLabelProps={{ shrink: true }}
-                  onChange={handleImageChange}
-                  inputProps={{ accept: "image/*" }}
-                  sx={{ width: 250 }}
+                InputLabelProps={{ shrink: true }}
+                onChange={handleImageChange}
+                inputProps={{ accept: "image/*" }}
+                sx={{ width: 250 }}
                 />
               </Grid>
 

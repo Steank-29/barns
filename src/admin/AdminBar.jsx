@@ -37,6 +37,7 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import SettingIcon from '@mui/icons-material/Settings';
 import ReportIcon from '@mui/icons-material/Report';
 import SecurityIcon from '@mui/icons-material/Security';
 import NotificationsIcon from '@mui/icons-material/Notifications';
@@ -123,27 +124,39 @@ const sidebarTabs = [
       { text: 'Gestion des Façades', icon: <ConstructionIcon />, path: '/admin-cards-edit' },
       { text: 'Création d\'une façade', icon: <DesignServicesIcon />, path: '/admin-cards' }
     ],
+    path: '/admin-cards'
   },
-  { text: 'Barrière', icon: <InventoryIcon />, path: '/admin-barriere' },
-  { text: 'Orders', icon: <ReceiptIcon />, path: '/orders' },
-  { text: 'Calendar', icon: <CalendarTodayIcon />, path: '/calendar' },
-  { text: 'Reports', icon: <ReportIcon />, path: '/reports' },
-  { text: 'Analytics', icon: <AnalyticsIcon />, path: '/analytics' },
-  { text: 'Settings', icon: <SettingsIcon />, path: '/settings' },
-  { text: 'Security', icon: <SecurityIcon />, path: '/security' },
-  { text: 'Notifications', icon: <NotificationsIcon />, path: '/notifications' },
-  { text: 'Messages', icon: <ChatIcon />, path: '/messages' },
-  { text: 'Favorites', icon: <StarBorderIcon />, path: '/favorites' },
-  { text: 'Uploads', icon: <CloudUploadIcon />, path: '/uploads' },
-  { text: 'Support', icon: <HelpOutlineIcon />, path: '/support' },
-  { text: 'Documentation', icon: <HelpOutlineIcon />, path: '/documentation' },
+  { 
+    text: 'Barrière', 
+    icon: <InventoryIcon />, 
+    style: { fontWeight: 'bold', fontFamily: 'Savate' },
+    nested: [
+      { text: 'Gestion des Barrières', icon: <ConstructionIcon />, path: '/admin-barriere-edit' },
+      { text: 'Création d\'une Barrière', icon: <DesignServicesIcon />, path: '/admin-barriere' }
+    ],
+    path: '/admin-barriere'
+  },
+  { text: 'Deux Box', icon: <ReceiptIcon />, path: '/admin-twobox' },
+  { text: 'Trois Box', icon: <CalendarTodayIcon />, path: '/admin-threebox' },
+  { text: 'Cinq Box', icon: <ReportIcon />, path: '/admin-fivebox' },
+  { text: 'Six Box', icon: <AnalyticsIcon />, path: '/admin-sixbox' },
+  { text: 'Malle de Concours', icon: <SettingsIcon />, path: '/admin-malle' },
+  { text: 'Porte de la Sellerie', icon: <SecurityIcon />, path: '/admin-porte' },
+  { text: 'Fenêtre Extérieure', icon: <NotificationsIcon />, path: '/admin-fenetre' },
+  { text: 'Mangeoire Pivotante', icon: <ChatIcon />, path: '/admin-mangeoire' },
+  { text: 'Barn Démontable', icon: <StarBorderIcon />, path: '/admin-Barn Démontable' },
+  { text: 'Paramètres', icon: <HelpOutlineIcon />, path: '/admin-Paramètres' },
+  { text: 'Support', icon: <SettingIcon />, path: '/admin-support' },
 ];
 
 const AdminBar = ({ children }) => {
   const theme = useTheme();
   const [open, setOpen] = useState(true);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [openFacade, setOpenFacade] = useState(false);
+  const [openMenus, setOpenMenus] = useState({
+    facade: false,
+    barriere: false
+  });
   const profileMenuOpen = Boolean(anchorEl);
 
   const handleDrawerOpen = () => {
@@ -162,8 +175,11 @@ const AdminBar = ({ children }) => {
     setAnchorEl(null);
   };
 
-  const handleFacadeClick = () => {
-    setOpenFacade(!openFacade);
+  const handleMenuClick = (menuKey) => {
+    setOpenMenus(prev => ({
+      ...prev,
+      [menuKey]: !prev[menuKey]
+    }));
   };
 
   return (
@@ -303,7 +319,7 @@ const AdminBar = ({ children }) => {
       }}>
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            {theme.direction === 'rtl' ? <ChevronRightIcon sx={{ color: 'white' }} /> : <ChevronLeftIcon sx={{ color: 'white' }} />}
           </IconButton>
         </DrawerHeader>
         <Divider />
@@ -314,7 +330,7 @@ const AdminBar = ({ children }) => {
                 <>
                   <ListItem disablePadding sx={{ display: 'block' }}>
                     <ListItemButton
-                      onClick={handleFacadeClick}
+                      onClick={() => handleMenuClick(tab.text === 'Façade' ? 'facade' : 'barriere')}
                       sx={{
                         minHeight: 48,
                         justifyContent: open ? 'initial' : 'center',
@@ -333,16 +349,15 @@ const AdminBar = ({ children }) => {
                           justifyContent: 'center',
                           color: 'white',
                         }}
-                        onClick={handleFacadeClick}
                       >
                         {tab.icon}
                       </ListItemIcon>
                       <ListItemText primary={tab.text} sx={{ opacity: open ? 1 : 0 }} />
-                      {open && (openFacade ? <ExpandLess /> : <ExpandMore />)}
+                      {open && (openMenus[tab.text === 'Façade' ? 'facade' : 'barriere'] ? <ExpandLess /> : <ExpandMore />)}
                     </ListItemButton>
                   </ListItem>
                   
-                  <Collapse in={openFacade && open} timeout="auto" unmountOnExit>
+                  <Collapse in={openMenus[tab.text === 'Façade' ? 'facade' : 'barriere'] && open} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding>
                       {tab.nested.map((nestedTab) => (
                         <ListItem 
@@ -374,8 +389,6 @@ const AdminBar = ({ children }) => {
                                 justifyContent: 'center',
                                 color: 'white',
                               }}
-                              component={Link}
-                              to={nestedTab.path}
                             >
                               {nestedTab.icon}
                             </ListItemIcon>
@@ -413,8 +426,6 @@ const AdminBar = ({ children }) => {
                         justifyContent: 'center',
                         color: 'white',
                       }}
-                      component={Link}
-                      to={tab.path}
                     >
                       {tab.icon}
                     </ListItemIcon>

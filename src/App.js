@@ -13,6 +13,8 @@ import EditCards from './admin/EditCards';
 import AdminBar from './admin/AdminBar';
 import AdminDash from './admin/AdminDash';
 import Barriere from './admin/Barriere';
+import ThreeBox from './admin/ThreeBox';
+import EditBarriere from './admin/EditBarriere';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -96,12 +98,32 @@ function App() {
         </>
       )
     },
-         {
+    {
       path: '/admin-barriere',
       element: (
         <>
           <AdminBar>
             <Barriere />
+            </AdminBar>
+        </>
+      )
+    },
+    {
+      path: '/admin-barriere-edit',
+      element: (
+        <>
+          <AdminBar>
+            <EditBarriere />
+            </AdminBar>
+        </>
+      )
+    },
+    {
+      path: '/admin-threebox',
+      element: (
+        <>
+          <AdminBar>
+            <ThreeBox />
             </AdminBar>
         </>
       )

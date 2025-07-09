@@ -48,8 +48,6 @@ const EditCards = () => {
     severity: 'success'
   });
 
-    const apiUrl = process.env.RENDER_API_URL || 'https://barns.onrender.com';
-
   // Handle image load states
   const handleImageLoad = (productId) => {
     setImageLoadStates(prev => ({
@@ -76,9 +74,8 @@ const EditCards = () => {
   const getValidImageUrl = (imageUrl) => {
     if (!imageUrl) return null;
     
-    // If it's a relative path, prepend the base URL
     if (imageUrl.startsWith('/') || !imageUrl.startsWith('http')) {
-      return `${apiUrl}${imageUrl.startsWith('/') ? imageUrl : '/' + imageUrl}`;
+      return `http://localhost:5000${imageUrl.startsWith('/') ? imageUrl : '/' + imageUrl}`;
     }
     
     return imageUrl;
@@ -88,7 +85,7 @@ const EditCards = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/products/getallfacades`);
+        const response = await fetch('http://localhost:5000/api/facade/getallfacades');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -144,7 +141,7 @@ const EditCards = () => {
   // Confirm delete
   const confirmDelete = async () => {
     try {
-      const response = await fetch(`${apiUrl}/api/products/deletefacade/${productToDelete.reference}`, {
+      const response = await fetch(`http://localhost:5000/api/facade/deletefacade/${productToDelete.reference}`, {
         method: 'DELETE'
       });
 
@@ -164,7 +161,7 @@ const EditCards = () => {
       console.error('Error deleting product:', error);
       setSnackbar({
         open: true,
-        message: 'Failed to delete product',
+        message: 'Error deleting product',
         severity: 'error'
       });
     } finally {
@@ -178,14 +175,15 @@ const EditCards = () => {
     const { name, value } = e.target;
     setSelectedProduct(prev => ({
       ...prev,
-      [name]: name === 'price' ? parseFloat(value) : value
+      [name]: name === 'price' || name === 'width' || name === 'height' || name === 'thickness' ? 
+        parseFloat(value) : value
     }));
   };
 
   // Save updated product
   const saveChanges = async () => {
     try {
-      const response = await fetch(`${apiUrl}/api/products/updatefacade/${selectedProduct.reference}`, {
+      const response = await fetch(`http://localhost:5000/api/facade/updatefacade/${selectedProduct.reference}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -211,7 +209,7 @@ const EditCards = () => {
       console.error('Error updating product:', error);
       setSnackbar({
         open: true,
-        message: 'Failed to update product',
+        message: 'Error updating product',
         severity: 'error'
       });
     }
@@ -242,7 +240,7 @@ const EditCards = () => {
           alignItems: 'center',
           justifyContent: 'center',
           backgroundColor: 'rgba(0,0,0,0.1)',
-          color: 'rgba(242, 237, 215, 0.5)'
+          color: 'rgba(0,0,0,0.5)'
         }}>
           <ImageNotSupportedIcon sx={{ fontSize: 48 }} />
         </Box>
@@ -251,25 +249,24 @@ const EditCards = () => {
 
     return (
       <>
-          <CardMedia
-            component="img"
-            image={imageUrl}
-            alt={product.productName}
-            onLoad={() => handleImageLoad(product._id)}
-            onError={() => handleImageError(product._id)}
-            onLoadStart={() => handleImageLoadStart(product._id)}
-            sx={{
-              height: '100%',
-              width: '100%',
-              objectFit: 'cover',
-              transition: 'transform 0.5s',
-              '&:hover': {
-                transform: 'scale(1.05)'
-              },
-              opacity: loadState === 'loading' ? 0.5 : 1
-            }}
-          />
-        
+        <CardMedia
+          component="img"
+          image={imageUrl}
+          alt={product.productName}
+          onLoad={() => handleImageLoad(product._id)}
+          onError={() => handleImageError(product._id)}
+          onLoadStart={() => handleImageLoadStart(product._id)}
+          sx={{
+            height: '100%',
+            width: '100%',
+            objectFit: 'cover',
+            transition: 'transform 0.5s',
+            '&:hover': {
+              transform: 'scale(1.05)'
+            },
+            opacity: loadState === 'loading' ? 0.5 : 1
+          }}
+        />
       </>
     );
   };
@@ -282,7 +279,7 @@ const EditCards = () => {
         alignItems: 'center', 
         height: '50vh' 
       }}>
-        <CircularProgress size={60} sx={{ color: '#38598b' }} />
+        <CircularProgress size={60} sx={{ color: '#2c3e50' }} />
       </Box>
     );
   }
@@ -290,10 +287,12 @@ const EditCards = () => {
   return (
     <div style={{ padding: '20px' }}>
       <Typography variant="h4" gutterBottom sx={{ 
-        textAlign: 'center', textTransform: 'uppercase', 
-        color: '#38598b',
+        textAlign: 'center', 
+        color: '#2c3e50',
+        fontWeight: 'bold',
+        mb: 4
       }}>
-        Gestion des Façades
+        Manage Facade Products
       </Typography>
 
       {/* Search Bar */}
@@ -301,7 +300,7 @@ const EditCards = () => {
         <TextField
           fullWidth
           variant="outlined"
-          placeholder="Rechercher parmi les façades par nom ou référence..."
+          placeholder="Search products by name or reference..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           InputProps={{
@@ -345,11 +344,11 @@ const EditCards = () => {
                     transform: 'translateY(-5px)',
                     boxShadow: 6
                   },
-                  backgroundColor: '#38598b',
+                  backgroundColor: '#2c3e50',
                   color: 'white',
                   borderRadius: 2
                 }}>
-                  {/* Image du produit */}
+                  {/* Product Image */}
                   <Box sx={{ 
                     position: 'relative',
                     overflow: 'hidden',
@@ -359,7 +358,7 @@ const EditCards = () => {
                     {renderProductImage(product)}
                   </Box>
 
-                  {/* Informations du produit */}
+                  {/* Product Information */}
                   <CardContent sx={{ 
                     flexGrow: 1,
                     display: 'flex',
@@ -372,7 +371,7 @@ const EditCards = () => {
                       {product.productName}
                     </Typography>
 
-                    {/* Référence et Prix sur la même ligne */}
+                    {/* Reference and Price */}
                     <Box sx={{ 
                       display: 'flex',
                       alignItems: 'center',
@@ -381,10 +380,10 @@ const EditCards = () => {
                       flexWrap: 'wrap'
                     }}>
                       <Chip 
-                        label={`Réf: ${product.reference}`} 
+                        label={`Ref: ${product.reference}`} 
                         size="small" 
                         sx={{ 
-                          backgroundColor: 'rgba(242, 237, 215, 0.2)',
+                          backgroundColor: 'rgba(255,255,255,0.2)',
                           color: 'white'
                         }}
                       />
@@ -393,7 +392,7 @@ const EditCards = () => {
                         size="medium"
                         sx={{
                           backgroundColor: 'white',
-                          color: '#38598b',
+                          color: '#2c3e50',
                           fontWeight: 'bold',
                           fontSize: '0.9rem',
                           height: 32
@@ -411,19 +410,19 @@ const EditCards = () => {
                         textOverflow: 'ellipsis',
                         flexGrow: 1,
                         mb: 2,
-                        color: 'rgba(242, 237, 215, 0.8)'
+                        color: 'rgba(255,255,255,0.8)'
                       }}
                     >
                       {product.description}
                     </Typography>
 
-                    {/* Boutons d'action */}
+                    {/* Action Buttons */}
                     <Box sx={{ 
                       display: 'flex', 
                       justifyContent: 'space-between',
                       mt: 'auto'
                     }}>
-                      <Tooltip title="Voir détails">
+                      <Tooltip title="View details">
                         <IconButton 
                           onClick={() => handleView(product)}
                           sx={{ color: 'white' }}
@@ -431,7 +430,7 @@ const EditCards = () => {
                           <ViewIcon />
                         </IconButton>
                       </Tooltip>
-                      <Tooltip title="Modifier">
+                      <Tooltip title="Edit">
                         <IconButton 
                           onClick={() => handleEdit(product)}
                           sx={{ color: 'white' }}
@@ -439,7 +438,7 @@ const EditCards = () => {
                           <EditIcon />
                         </IconButton>
                       </Tooltip>
-                      <Tooltip title="Supprimer">
+                      <Tooltip title="Delete">
                         <IconButton 
                           onClick={() => handleDeleteClick(product)}
                           sx={{ color: 'white' }}
@@ -458,15 +457,15 @@ const EditCards = () => {
                 textAlign: 'center',
                 p: 4,
                 border: '1px dashed',
-                borderColor: '#38598b',
+                borderColor: '#2c3e50',
                 borderRadius: 2,
-                backgroundColor: 'rgba(117, 81, 57, 0.1)'
+                backgroundColor: 'rgba(44, 62, 80, 0.1)'
               }}>
-                <Typography variant="h6" sx={{ color: '#38598b' }}>
-                  {searchTerm ? 'Aucun produit ne correspond à votre recherche' : 'Aucun produit disponible'}
+                <Typography variant="h6" sx={{ color: '#2c3e50' }}>
+                  {searchTerm ? 'No products match your search' : 'No products available'}
                 </Typography>
-                <Typography variant="body2" sx={{ mt: 1, color: '#38598b' }}>
-                  {searchTerm ? 'Essayez un autre terme de recherche' : 'Ajoutez des produits pour commencer'}
+                <Typography variant="body2" sx={{ mt: 1, color: '#2c3e50' }}>
+                  {searchTerm ? 'Try a different search term' : 'Add products to get started'}
                 </Typography>
               </Box>
             </Grid>
@@ -475,252 +474,239 @@ const EditCards = () => {
       </Box>
 
       {/* View Product Dialog */}
-<Dialog open={viewMode} onClose={closeDialog} maxWidth="md" fullWidth>
-  <DialogTitle sx={{ px: 4, py: 2, backgroundColor: '#38598b', color: '#fff' }}>
-    <Box display="flex" justifyContent="space-between" alignItems="center">
-      <Typography variant="h6" fontWeight={600} color="#fff" sx={{ fontFamily: 'Savate', textTransform: 'uppercase' }}>
-        Fiche technique des façades
-      </Typography>
-      <IconButton onClick={closeDialog} sx={{ color: '#fff' }}>
-        <CloseIcon />
-      </IconButton>
-    </Box>
-  </DialogTitle>
+      <Dialog open={viewMode} onClose={closeDialog} maxWidth="md" fullWidth>
+        <DialogTitle sx={{ px: 4, py: 2, backgroundColor: '#2c3e50', color: '#fff' }}>
+          <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Typography variant="h6" fontWeight={600} color="#fff">
+              Product Details
+            </Typography>
+            <IconButton onClick={closeDialog} sx={{ color: '#fff' }}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+        </DialogTitle>
 
-<DialogContent dividers sx={{ px: 4, py: 3 }}>
-  {selectedProduct && (
-    <Grid container spacing={4}>
-      <Grid item xs={24}>
-        <Box sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          flexDirection: 'column'
-        }}>
-          {getValidImageUrl(selectedProduct.imageUrl) ? (
-            <CardMedia
-              component="img"
-              height="300"
-              image={getValidImageUrl(selectedProduct.imageUrl)}
-              alt={selectedProduct.productName}
-              style={{
-                objectFit: 'contain',
-                borderRadius: 8,
-                maxWidth: '100%',
-                maxHeight: '300px',
-              }}
-              onError={(e) => {
-                e.target.style.display = 'none';
-                e.target.nextSibling.style.display = 'flex';
-              }}
-            />
-          ) : null}
-        </Box>
+        <DialogContent dividers sx={{ px: 4, py: 3 }}>
+          {selectedProduct && (
+            <Grid container spacing={4}>
+              <Grid item xs={12} md={6}>
+                <Box sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  height: '100%'
+                }}>
+                  {getValidImageUrl(selectedProduct.imageUrl) ? (
+                    <CardMedia
+                      component="img"
+                      image={getValidImageUrl(selectedProduct.imageUrl)}
+                      alt={selectedProduct.productName}
+                      style={{
+                        maxHeight: '300px',
+                        width: 'auto',
+                        objectFit: 'contain',
+                        borderRadius: '8px'
+                      }}
+                    />
+                  ) : (
+                    <Box sx={{
+                      height: '300px',
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: '#f5f5f5',
+                      borderRadius: '8px'
+                    }}>
+                      <ImageNotSupportedIcon sx={{ fontSize: 48, color: 'rgba(0,0,0,0.5)' }} />
+                    </Box>
+                  )}
+                </Box>
+              </Grid>
 
-        <Box
-          sx={{
-            height: 300,
-            display: 'none',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: '#f5f5f5',
-            border: '2px dashed #ccc',
-            borderRadius: 2,
-            textAlign: 'center',
-            mt: 2,
-          }}
-        >
-          <Typography variant="body2" color="text.secondary">
-            No image available
-          </Typography>
-        </Box>
-      </Grid>
+              <Grid item xs={12} md={6}>
+                <Typography variant="h5" gutterBottom>
+                  {selectedProduct.productName}
+                </Typography>
 
-      <Grid item xs={12}>
-        <Typography
-          variant="h5"
-          fontWeight={600}
-          align="center"
-          sx={{ fontFamily: 'Savate', textTransform: 'uppercase' }}
-          gutterBottom
-        >
-          {selectedProduct.productName}
-        </Typography>
+                <Box sx={{ mb: 3 }}>
+                  <Typography variant="body1" gutterBottom>
+                    <strong>Reference:</strong> {selectedProduct.reference}
+                  </Typography>
+                  <Typography variant="body1" gutterBottom>
+                    <strong>Price:</strong> {selectedProduct.price?.toFixed(2) || '0.00'}€
+                  </Typography>
+                  <Typography variant="body1" gutterBottom>
+                    <strong>Dimensions:</strong> {selectedProduct.width || 'N/A'}cm (W) × {selectedProduct.height || 'N/A'}cm (H) × {selectedProduct.thickness || 'N/A'}cm (T)
+                  </Typography>
+                  <Typography variant="body1" gutterBottom>
+                    <strong>Type:</strong> {selectedProduct.type || 'N/A'}
+                  </Typography>
+                </Box>
 
-        <Typography
-          variant="body1"
-          sx={{ mt: 1, mb: 2, fontFamily: 'Savate', textTransform: 'uppercase' }}
-          align="center"
-        >
-          {selectedProduct.description || 'No description available'}
-        </Typography>
-
-        <Typography
-          variant="body2"
-          align="center"
-          sx={{ fontFamily: 'Savate', textTransform: 'uppercase' }}
-          gutterBottom
-        >
-          📐 Dimensions: {selectedProduct.height || 'N/A'}cm (H) × {selectedProduct.width || 'N/A'}cm (W) × {selectedProduct.thickness || 'N/A'}cm (D)
-        </Typography>
-
-        <Typography
-          variant="h6"
-          align="center"
-          fontWeight="bold"
-          color="primary"
-          sx={{ mt: 3, fontFamily: 'Savate', textTransform: 'uppercase' }}
-        >
-          💶 Price: {selectedProduct.price?.toFixed(2) || '0.00'}€
-        </Typography>
-      </Grid>
-    </Grid>
-  )}
-</DialogContent>
-
-</Dialog>
-
-
+                <Typography variant="body1">
+                  <strong>Description:</strong>
+                </Typography>
+                <Typography variant="body1" sx={{ mt: 1 }}>
+                  {selectedProduct.description || 'No description available'}
+                </Typography>
+              </Grid>
+            </Grid>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Edit Product Dialog */}
-<Dialog open={editMode} onClose={closeDialog} maxWidth="sm" fullWidth>
-  <DialogTitle sx={{ backgroundColor: '#38598b', color: '#fff', px: 3, py: 2 }}>
-    <Box display="flex" justifyContent="space-between" alignItems="center">
-      <Typography variant="h6" fontWeight={600}>
-        ✏️ Modifier le façade
-      </Typography>
-      <IconButton onClick={closeDialog} sx={{ color: '#fff' }}>
-        <CloseIcon />
-      </IconButton>
-    </Box>
-  </DialogTitle>
+      <Dialog open={editMode} onClose={closeDialog} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ backgroundColor: '#2c3e50', color: '#fff', px: 3, py: 2 }}>
+          <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Typography variant="h6" fontWeight={600}>
+              Edit Product
+            </Typography>
+            <IconButton onClick={closeDialog} sx={{ color: '#fff' }}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+        </DialogTitle>
 
-  <DialogContent dividers sx={{ px: 3, py: 3 }}>
-    {selectedProduct && (
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <TextField
-            fullWidth
-            label="Nom du produit"
-            name="productName"
-            value={selectedProduct.productName || ''}
-            onChange={handleFieldChange}
-            margin="normal"
-          />
-        </Grid>
+        <DialogContent dividers sx={{ px: 3, py: 3 }}>
+          {selectedProduct && (
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Product Name"
+                  name="productName"
+                  value={selectedProduct.productName || ''}
+                  onChange={handleFieldChange}
+                  margin="normal"
+                />
+              </Grid>
 
-        <Grid item xs={12} sm={6}>
-          <TextField
-            fullWidth
-            label="Référence"
-            name="reference"
-            value={selectedProduct.reference || ''}
-            onChange={handleFieldChange}
-            margin="normal"
-            disabled
-          />
-        </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Reference"
+                  name="reference"
+                  value={selectedProduct.reference || ''}
+                  onChange={handleFieldChange}
+                  margin="normal"
+                  disabled
+                />
+              </Grid>
 
-        <Grid item xs={12} sm={6}>
-          <TextField
-            fullWidth
-            label="Prix (€)"
-            name="price"
-            type="number"
-            value={selectedProduct.price || ''}
-            onChange={handleFieldChange}
-            margin="normal"
-          />
-        </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Type"
+                  name="type"
+                  value={selectedProduct.type || ''}
+                  onChange={handleFieldChange}
+                  margin="normal"
+                />
+              </Grid>
 
-        <Grid item xs={12} sm={4}>
-          <TextField
-            fullWidth
-            label="Hauteur (cm)"
-            name="height"
-            type="number"
-            value={selectedProduct.height || ''}
-            onChange={handleFieldChange}
-            margin="normal"
-          />
-        </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Price (€)"
+                  name="price"
+                  type="number"
+                  value={selectedProduct.price || ''}
+                  onChange={handleFieldChange}
+                  margin="normal"
+                  InputProps={{
+                    inputProps: { step: "0.01" }
+                  }}
+                />
+              </Grid>
 
-        <Grid item xs={12} sm={4}>
-          <TextField
-            fullWidth
-            label="Largeur (cm)"
-            name="width"
-            type="number"
-            value={selectedProduct.width || ''}
-            onChange={handleFieldChange}
-            margin="normal"
-          />
-        </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Width (cm)"
+                  name="width"
+                  type="number"
+                  value={selectedProduct.width || ''}
+                  onChange={handleFieldChange}
+                  margin="normal"
+                />
+              </Grid>
 
-        <Grid item xs={12} sm={4}>
-          <TextField
-            fullWidth
-            label="Épaisseur (cm)"
-            name="thickness"
-            type="number"
-            value={selectedProduct.thickness || ''}
-            onChange={handleFieldChange}
-            margin="normal"
-          />
-        </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Height (cm)"
+                  name="height"
+                  type="number"
+                  value={selectedProduct.height || ''}
+                  onChange={handleFieldChange}
+                  margin="normal"
+                />
+              </Grid>
 
-        <Grid item xs={12}>
-          <TextField
-            fullWidth
-            label="Description"
-            name="description"
-            value={selectedProduct.description || ''}
-            onChange={handleFieldChange}
-            margin="normal"
-            multiline
-            rows={5}
-            sx={{  width: 400, borderRadius: 1 }}
-          />
-        </Grid>
-      </Grid>
-    )}
-  </DialogContent>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Thickness (cm)"
+                  name="thickness"
+                  type="number"
+                  value={selectedProduct.thickness || ''}
+                  onChange={handleFieldChange}
+                  margin="normal"
+                />
+              </Grid>
 
-  <DialogActions sx={{ px: 3, py: 2 }}>
-    <Button
-      startIcon={<CancelIcon />}
-      onClick={closeDialog}
-      color="error"
-      variant="outlined"
-    >
-      Annuler
-    </Button>
-    <Button
-      startIcon={<SaveIcon />}
-      onClick={saveChanges}
-      sx={{ backgroundColor: '#38598b', color: '#fff' }}
-      variant="contained"
-    >
-      Enregistrer les modifications
-    </Button>
-  </DialogActions>
-</Dialog>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Description"
+                  name="description"
+                  value={selectedProduct.description || ''}
+                  onChange={handleFieldChange}
+                  margin="normal"
+                  multiline
+                  rows={4}
+                />
+              </Grid>
+            </Grid>
+          )}
+        </DialogContent>
 
+        <DialogActions sx={{ px: 3, py: 2 }}>
+          <Button
+            startIcon={<CancelIcon />}
+            onClick={closeDialog}
+            color="error"
+            variant="outlined"
+          >
+            Cancel
+          </Button>
+          <Button
+            startIcon={<SaveIcon />}
+            onClick={saveChanges}
+            sx={{ backgroundColor: '#2c3e50', color: '#fff' }}
+            variant="contained"
+          >
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={deleteConfirm} onClose={() => setDeleteConfirm(false)}>
-        <DialogTitle>Confirmer la suppression</DialogTitle>
+        <DialogTitle>Confirm Deletion</DialogTitle>
         <DialogContent>
           <Typography>
-            Êtes-vous sûr de vouloir supprimer "{productToDelete?.productName}"?
+            Are you sure you want to delete "{productToDelete?.productName}"?
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDeleteConfirm(false)} sx={{color: '#38598b'}} variant="outlined">
-            Annuler
+          <Button onClick={() => setDeleteConfirm(false)} sx={{color: '#2c3e50'}} variant="outlined">
+            Cancel
           </Button>
           <Button onClick={confirmDelete} sx={{backgroundColor: '#d32f2f', color: '#fff'}} variant="contained">
-            Supprimer
+            Delete
           </Button>
         </DialogActions>
       </Dialog>
