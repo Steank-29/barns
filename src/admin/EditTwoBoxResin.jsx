@@ -33,19 +33,19 @@ import {
   ImageNotSupported as ImageNotSupportedIcon
 } from '@mui/icons-material';
 
-const EditBarriere = () => {
+const EditTwoBoxResin = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'));
   
-  const [barrieres, setBarrieres] = useState([]);
-  const [filteredBarrieres, setFilteredBarrieres] = useState([]);
+  const [twoBoxResins, setTwoBoxResins] = useState([]);
+  const [filteredTwoBoxResins, setFilteredTwoBoxResins] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedBarriere, setSelectedBarriere] = useState(null);
+  const [selectedTwoBoxResin, setSelectedTwoBoxResin] = useState(null);
   const [viewMode, setViewMode] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
-  const [barriereToDelete, setBarriereToDelete] = useState(null);
+  const [twoBoxResinToDelete, setTwoBoxResinToDelete] = useState(null);
   const [loading, setLoading] = useState(true);
   const [imageLoadStates, setImageLoadStates] = useState({});
   const [snackbar, setSnackbar] = useState({
@@ -55,24 +55,24 @@ const EditBarriere = () => {
   });
 
   // Handle image load states
-  const handleImageLoad = (barriereId) => {
+  const handleImageLoad = (twoBoxResinId) => {
     setImageLoadStates(prev => ({
       ...prev,
-      [barriereId]: 'loaded'
+      [twoBoxResinId]: 'loaded'
     }));
   };
 
-  const handleImageError = (barriereId) => {
+  const handleImageError = (twoBoxResinId) => {
     setImageLoadStates(prev => ({
       ...prev,
-      [barriereId]: 'error'
+      [twoBoxResinId]: 'error'
     }));
   };
 
-  const handleImageLoadStart = (barriereId) => {
+  const handleImageLoadStart = (twoBoxResinId) => {
     setImageLoadStates(prev => ({
       ...prev,
-      [barriereId]: 'loading'
+      [twoBoxResinId]: 'loading'
     }));
   };
 
@@ -87,134 +87,134 @@ const EditBarriere = () => {
     return imageUrl;
   };
 
-  // Fetch all barrieres
+  // Fetch all twoBoxResins
   useEffect(() => {
-    const fetchBarrieres = async () => {
+    const fetchTwoBoxResins = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/barriere/getallbarrieres');
+        const response = await fetch('http://localhost:5000/api/twoboxresin/getalltwoboxresins');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        setBarrieres(data);
-        setFilteredBarrieres(data);
+        setTwoBoxResins(data);
+        setFilteredTwoBoxResins(data);
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching barrieres:', error);
+        console.error('Error fetching twoBoxResins:', error);
         setSnackbar({
           open: true,
-          message: 'Failed to load barrieres: ' + error.message,
+          message: 'Failed to load twoBoxResins: ' + error.message,
           severity: 'error'
         });
         setLoading(false);
       }
     };
 
-    fetchBarrieres();
+    fetchTwoBoxResins();
   }, []);
 
   // Search functionality
   useEffect(() => {
     if (searchTerm.trim() === '') {
-      setFilteredBarrieres(barrieres);
+      setFilteredTwoBoxResins(twoBoxResins);
     } else {
-      const filtered = barrieres.filter(barriere => 
-        barriere.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (barriere.reference && barriere.reference.toLowerCase().includes(searchTerm.toLowerCase()))
+      const filtered = twoBoxResins.filter(twoBoxResin => 
+        twoBoxResin.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (twoBoxResin.reference && twoBoxResin.reference.toLowerCase().includes(searchTerm.toLowerCase()))
       );
-      setFilteredBarrieres(filtered);
+      setFilteredTwoBoxResins(filtered);
     }
-  }, [searchTerm, barrieres]);
+  }, [searchTerm, twoBoxResins]);
 
-  // Handle view barriere details
-  const handleView = (barriere) => {
-    setSelectedBarriere(barriere);
+  // Handle view twoBoxResin details
+  const handleView = (twoBoxResin) => {
+    setSelectedTwoBoxResin(twoBoxResin);
     setViewMode(true);
   };
 
-  // Handle edit barriere
-  const handleEdit = (barriere) => {
-    setSelectedBarriere({ ...barriere });
+  // Handle edit twoBoxResin
+  const handleEdit = (twoBoxResin) => {
+    setSelectedTwoBoxResin({ ...twoBoxResin });
     setEditMode(true);
   };
 
   // Handle delete confirmation
-  const handleDeleteClick = (barriere) => {
-    setBarriereToDelete(barriere);
+  const handleDeleteClick = (twoBoxResin) => {
+    setTwoBoxResinToDelete(twoBoxResin);
     setDeleteConfirm(true);
   };
 
   // Confirm delete
   const confirmDelete = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/barriere/deletebarriere/${barriereToDelete.reference}`, {
+      const response = await fetch(`http://localhost:5000/api/twoboxresin/deletetwoboxresin/${twoBoxResinToDelete.reference}`, {
         method: 'DELETE'
       });
 
       if (response.ok) {
-        const updatedBarrieres = barrieres.filter(b => b._id !== barriereToDelete._id);
-        setBarrieres(updatedBarrieres);
-        setFilteredBarrieres(updatedBarrieres);
+        const updatedTwoBoxResins = twoBoxResins.filter(b => b._id !== twoBoxResinToDelete._id);
+        setTwoBoxResins(updatedTwoBoxResins);
+        setFilteredTwoBoxResins(updatedTwoBoxResins);
         setSnackbar({
           open: true,
-          message: 'Barrière supprimée avec succès',
+          message: 'TwoBoxResin supprimée avec succès',
           severity: 'success'
         });
       } else {
-        throw new Error('Failed to delete barrière');
+        throw new Error('Failed to delete twoBoxResin');
       }
     } catch (error) {
-      console.error('Error deleting barrière:', error);
+      console.error('Error deleting twoBoxResin:', error);
       setSnackbar({
         open: true,
-        message: 'Erreur lors de la suppression de la barrière',
+        message: 'Erreur lors de la suppression de la twoBoxResin',
         severity: 'error'
       });
     } finally {
       setDeleteConfirm(false);
-      setBarriereToDelete(null);
+      setTwoBoxResinToDelete(null);
     }
   };
 
   // Handle form field changes
   const handleFieldChange = (e) => {
     const { name, value } = e.target;
-    setSelectedBarriere(prev => ({
+    setSelectedTwoBoxResin(prev => ({
       ...prev,
-      [name]: name === 'price' || name === 'width' ? parseFloat(value) : value
+      [name]: name === 'price' ? parseFloat(value) : value
     }));
   };
 
-  // Save updated barriere
+  // Save updated twoBoxResin
   const saveChanges = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/barriere/updatebarriere/${selectedBarriere.reference}`, {
+      const response = await fetch(`http://localhost:5000/api/twoboxresin/updatetwoboxresin/${selectedTwoBoxResin.reference}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(selectedBarriere)
+        body: JSON.stringify(selectedTwoBoxResin)
       });
 
       if (response.ok) {
-        const updatedBarriere = await response.json();
-        const updatedBarrieres = barrieres.map(b => b._id === updatedBarriere._id ? updatedBarriere : b);
-        setBarrieres(updatedBarrieres);
-        setFilteredBarrieres(updatedBarrieres);
+        const updatedTwoBoxResin = await response.json();
+        const updatedTwoBoxResins = twoBoxResins.map(b => b._id === updatedTwoBoxResin._id ? updatedTwoBoxResin : b);
+        setTwoBoxResins(updatedTwoBoxResins);
+        setFilteredTwoBoxResins(updatedTwoBoxResins);
         setSnackbar({
           open: true,
-          message: 'Barrière mise à jour avec succès',
+          message: 'TwoBoxResin mise à jour avec succès',
           severity: 'success'
         });
         setEditMode(false);
       } else {
-        throw new Error('Failed to update barrière');
+        throw new Error('Failed to update twoBoxResin');
       }
     } catch (error) {
-      console.error('Error updating barrière:', error);
+      console.error('Error updating twoBoxResin:', error);
       setSnackbar({
         open: true,
-        message: 'Erreur lors de la mise à jour de la barrière',
+        message: 'Erreur lors de la mise à jour de la twoBoxResin',
         severity: 'error'
       });
     }
@@ -224,7 +224,7 @@ const EditBarriere = () => {
   const closeDialog = () => {
     setViewMode(false);
     setEditMode(false);
-    setSelectedBarriere(null);
+    setSelectedTwoBoxResin(null);
   };
 
   // Close snackbar
@@ -233,9 +233,9 @@ const EditBarriere = () => {
   };
 
   // Render image with loading states
-  const renderBarriereImage = (barriere) => {
-    const imageUrl = getValidImageUrl(barriere.imageURL);
-    const loadState = imageLoadStates[barriere._id];
+  const renderTwoBoxResinImage = (twoBoxResin) => {
+    const imageUrl = getValidImageUrl(twoBoxResin.imageURL);
+    const loadState = imageLoadStates[twoBoxResin._id];
 
     if (!imageUrl) {
       return (
@@ -257,10 +257,10 @@ const EditBarriere = () => {
         <CardMedia
           component="img"
           image={imageUrl}
-          alt={barriere.name}
-          onLoad={() => handleImageLoad(barriere._id)}
-          onError={() => handleImageError(barriere._id)}
-          onLoadStart={() => handleImageLoadStart(barriere._id)}
+          alt={twoBoxResin.name}
+          onLoad={() => handleImageLoad(twoBoxResin._id)}
+          onError={() => handleImageError(twoBoxResin._id)}
+          onLoadStart={() => handleImageLoadStart(twoBoxResin._id)}
           sx={{
             height: '100%',
             width: '100%',
@@ -298,7 +298,7 @@ const EditBarriere = () => {
         mb: isMobile ? 2 : 4,
         mt: isMobile ? 1 : 0
       }}>
-        Gestion des Barrières
+        Gestion des TwoBoxResin
       </Typography>
 
       {/* Search Bar */}
@@ -306,7 +306,7 @@ const EditBarriere = () => {
         <TextField
           fullWidth
           variant="outlined"
-          placeholder="Rechercher parmi les barrières par nom ou référence..."
+          placeholder="Rechercher parmi les twoBoxResins par nom ou référence..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           InputProps={{
@@ -324,7 +324,7 @@ const EditBarriere = () => {
         />
       </Box>
 
-      {/* Barrieres Grid */}
+      {/* TwoBoxResins Grid */}
       <Box sx={{ 
         display: 'flex', 
         justifyContent: 'center',
@@ -334,9 +334,9 @@ const EditBarriere = () => {
           maxWidth: 'lg',
           justifyContent: 'center'
         }}>
-          {filteredBarrieres.length > 0 ? (
-            filteredBarrieres.map((barriere) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={barriere._id} sx={{
+          {filteredTwoBoxResins.length > 0 ? (
+            filteredTwoBoxResins.map((twoBoxResin) => (
+              <Grid item xs={12} sm={6} md={4} lg={3} key={twoBoxResin._id} sx={{
                 display: 'flex',
                 justifyContent: 'center'
               }}>
@@ -355,17 +355,17 @@ const EditBarriere = () => {
                   color: 'white',
                   borderRadius: 2
                 }}>
-                  {/* Barriere Image */}
+                  {/* TwoBoxResin Image */}
                   <Box sx={{ 
                     position: 'relative',
                     overflow: 'hidden',
                     height: isMobile ? 120 : 180,
                     backgroundColor: 'rgba(0,0,0,0.1)'
                   }}>
-                    {renderBarriereImage(barriere)}
+                    {renderTwoBoxResinImage(twoBoxResin)}
                   </Box>
 
-                  {/* Barriere Information */}
+                  {/* TwoBoxResin Information */}
                   <CardContent sx={{ 
                     flexGrow: 1,
                     display: 'flex',
@@ -377,7 +377,7 @@ const EditBarriere = () => {
                       color: 'white',
                       fontSize: isMobile ? '0.9rem' : '1.1rem'
                     }}>
-                      {barriere.name}
+                      {twoBoxResin.name}
                     </Typography>
 
                     {/* Reference and Price */}
@@ -389,7 +389,7 @@ const EditBarriere = () => {
                       flexWrap: 'wrap'
                     }}>
                       <Chip 
-                        label={`Réf: ${barriere.reference}`} 
+                        label={`Réf: ${twoBoxResin.reference}`} 
                         size="small" 
                         sx={{ 
                           backgroundColor: 'rgba(255,255,255,0.2)',
@@ -398,7 +398,7 @@ const EditBarriere = () => {
                         }}
                       />
                       <Chip 
-                        label={`${barriere.price?.toFixed(2) || '0.00'}€`} 
+                        label={`${twoBoxResin.price?.toFixed(2) || '0.00'}€`} 
                         size={isMobile ? 'small' : 'medium'}
                         sx={{
                           backgroundColor: 'white',
@@ -424,7 +424,7 @@ const EditBarriere = () => {
                         fontSize: isMobile ? '0.8rem' : '0.9rem'
                       }}
                     >
-                      {barriere.description}
+                      {twoBoxResin.description}
                     </Typography>
 
                     {/* Action Buttons */}
@@ -435,7 +435,7 @@ const EditBarriere = () => {
                     }}>
                       <Tooltip title="Voir détails">
                         <IconButton 
-                          onClick={() => handleView(barriere)}
+                          onClick={() => handleView(twoBoxResin)}
                           sx={{ color: 'white' }}
                           size={isMobile ? 'small' : 'medium'}
                         >
@@ -444,7 +444,7 @@ const EditBarriere = () => {
                       </Tooltip>
                       <Tooltip title="Modifier">
                         <IconButton 
-                          onClick={() => handleEdit(barriere)}
+                          onClick={() => handleEdit(twoBoxResin)}
                           sx={{ color: 'white' }}
                           size={isMobile ? 'small' : 'medium'}
                         >
@@ -453,7 +453,7 @@ const EditBarriere = () => {
                       </Tooltip>
                       <Tooltip title="Supprimer">
                         <IconButton 
-                          onClick={() => handleDeleteClick(barriere)}
+                          onClick={() => handleDeleteClick(twoBoxResin)}
                           sx={{ color: 'white' }}
                           size={isMobile ? 'small' : 'medium'}
                         >
@@ -476,14 +476,14 @@ const EditBarriere = () => {
                 backgroundColor: 'rgba(56, 89, 139, 0.1)'
               }}>
                 <Typography variant={isMobile ? 'subtitle1' : 'h6'} sx={{ color: '#38598b' }}>
-                  {searchTerm ? 'Aucune barrière ne correspond à votre recherche' : 'Aucune barrière disponible'}
+                  {searchTerm ? 'Aucune twoBoxResin ne correspond à votre recherche' : 'Aucune twoBoxResin disponible'}
                 </Typography>
                 <Typography variant="body2" sx={{ 
                   mt: 1, 
                   color: '#38598b',
                   fontSize: isMobile ? '0.8rem' : '0.9rem'
                 }}>
-                  {searchTerm ? 'Essayez un autre terme de recherche' : 'Ajoutez des barrières pour commencer'}
+                  {searchTerm ? 'Essayez un autre terme de recherche' : 'Ajoutez des twoBoxResins pour commencer'}
                 </Typography>
               </Box>
             </Grid>
@@ -491,7 +491,7 @@ const EditBarriere = () => {
         </Grid>
       </Box>
 
-      {/* View Barriere Dialog */}
+      {/* View TwoBoxResin Dialog */}
       <Dialog 
         open={viewMode} 
         onClose={closeDialog} 
@@ -514,7 +514,7 @@ const EditBarriere = () => {
         }}>
           <Box display="flex" justifyContent="space-between" alignItems="center" px={isMobile ? 2 : 4} py={isMobile ? 1.5 : 2}>
             <Typography variant={isMobile ? 'h6' : 'h5'} fontWeight={700} color="#fff">
-              {selectedBarriere?.name || 'Détails de la Barrière'}
+              {selectedTwoBoxResin?.name || 'Détails de la TwoBoxResin'}
             </Typography>
             <IconButton 
               onClick={closeDialog} 
@@ -532,7 +532,7 @@ const EditBarriere = () => {
         </DialogTitle>
 
         <DialogContent dividers sx={{ p: 0 }}>
-          {selectedBarriere && (
+          {selectedTwoBoxResin && (
             <Box>
               {/* Full-width image section with shadow */}
               <Box sx={{
@@ -543,11 +543,11 @@ const EditBarriere = () => {
                 backgroundColor: '#f8fafc',
                 boxShadow: 'inset 0 -10px 20px -10px rgba(0,0,0,0.1)'
               }}>
-                {getValidImageUrl(selectedBarriere.imageURL) ? (
+                {getValidImageUrl(selectedTwoBoxResin.imageURL) ? (
                   <CardMedia
                     component="img"
-                    image={getValidImageUrl(selectedBarriere.imageURL)}
-                    alt={selectedBarriere.name}
+                    image={getValidImageUrl(selectedTwoBoxResin.imageURL)}
+                    alt={selectedTwoBoxResin.name}
                     sx={{
                       width: '100%',
                       height: '100%',
@@ -576,13 +576,13 @@ const EditBarriere = () => {
                 )}
               </Box>
 
-              {/* Barriere details section with modern card layout */}
+              {/* TwoBoxResin details section with modern card layout */}
               <Box sx={{ 
                 p: isMobile ? 2 : isTablet ? 3 : 4,
                 backgroundColor: '#fff'
               }}>
                 <Grid container spacing={isMobile ? 2 : 4}>
-                  {/* Barriere Description Section */}
+                  {/* TwoBoxResin Description Section */}
                   <Grid item xs={12} md={6}>
                     <Box sx={{
                       p: isMobile ? 1.5 : 3,
@@ -597,7 +597,7 @@ const EditBarriere = () => {
                         pb: 1,
                         mb: 2
                       }}>
-                        Description de la Barrière
+                        Description de la TwoBoxResin
                       </Typography>
                       <Typography variant="body1" sx={{ 
                         lineHeight: 1.7,
@@ -605,7 +605,7 @@ const EditBarriere = () => {
                         whiteSpace: 'pre-line',
                         fontSize: isMobile ? '0.9rem' : '1rem'
                       }}>
-                        {selectedBarriere.description || 'Aucune description disponible pour cette barrière.'}
+                        {selectedTwoBoxResin.description || 'Aucune description disponible pour cette twoBoxResin.'}
                       </Typography>
 
                       <Typography variant={isMobile ? 'subtitle1' : 'h6'} gutterBottom sx={{ 
@@ -629,7 +629,7 @@ const EditBarriere = () => {
                             Référence:
                           </Typography>
                           <Typography variant="body1" sx={{ fontSize: isMobile ? '0.9rem' : '1rem' }}>
-                            {selectedBarriere.reference}
+                            {selectedTwoBoxResin.reference}
                           </Typography>
                         </Box>
                         
@@ -647,7 +647,7 @@ const EditBarriere = () => {
                             color: '#2c5282',
                             fontSize: isMobile ? '0.9rem' : '1rem'
                           }}>
-                            {selectedBarriere.price?.toFixed(2) || '0.00'}€
+                            {selectedTwoBoxResin.price?.toFixed(2) || '0.00'}€
                           </Typography>
                         </Box>
                         
@@ -658,10 +658,10 @@ const EditBarriere = () => {
                             color: '#4a5568',
                             fontSize: isMobile ? '0.9rem' : '1rem'
                           }}>
-                            Largeur:
+                            Type:
                           </Typography>
                           <Typography variant="body1" sx={{ fontSize: isMobile ? '0.9rem' : '1rem' }}>
-                            {selectedBarriere.width || 'N/A'} cm
+                            {selectedTwoBoxResin.type || 'N/A'}
                           </Typography>
                         </Box>
                         
@@ -672,47 +672,163 @@ const EditBarriere = () => {
                             color: '#4a5568',
                             fontSize: isMobile ? '0.9rem' : '1rem'
                           }}>
-                            Nom:
+                            Conception:
                           </Typography>
                           <Typography variant="body1" sx={{ fontSize: isMobile ? '0.9rem' : '1rem' }}>
-                            {selectedBarriere.name || 'N/A'}
+                            {selectedTwoBoxResin.conception || 'N/A'}
                           </Typography>
                         </Box>
                       </Box>
-                                            <Box sx={{ '& > *': { mb: 1.5 } }}>
-                                            <Typography variant={isMobile ? 'subtitle1' : 'h6'} gutterBottom sx={{ 
-                                              fontWeight: 600,
-                                              color: '#2d3748',
-                                              borderBottom: '2px solid #e2e8f0',
-                                              pb: 1,
-                                              mb: 2,
-                                              mt: isMobile ? 1.5 : 3
-                                            }}>
-                                              Information 
-                                            </Typography>
-                                                                    <Box display="flex" sx={{ mt: 2 }}>
-                                                <Typography variant="body1" sx={{ 
-                                                  minWidth: isMobile ? '80px' : '120px', 
-                                                  fontWeight: 500, 
-                                                  color: '#4a5568',
-                                                  fontSize: isMobile ? '0.9rem' : '1rem'
-                                                }}>
-                                                  Information:
-                                                </Typography>
-                                                <Typography variant="body1" sx={{ fontSize: isMobile ? '0.9rem' : '1rem' }}>
-                                                  {new Date().toLocaleString('fr-FR', { 
-                                                    weekday: 'long', 
-                                                    year: 'numeric', 
-                                                    month: 'long', 
-                                                    day: 'numeric',
-                                                    hour: '2-digit',
-                                                    minute: '2-digit'
-                                                  })} - Développé par <strong>Jelassi Sami</strong> - <strong>Golden Box Horse</strong>
-                                                </Typography>
-                                              </Box>
-                                            </Box>
                     </Box>
-                    
+                  </Grid>
+
+                  {/* Additional Specifications Section */}
+                  <Grid item xs={12} md={6}>
+                    <Box sx={{
+                      p: isMobile ? 1.5 : 3,
+                      borderRadius: '12px',
+                      backgroundColor: '#f8fafc',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+                      height: '100%'
+                    }}>
+                      <Typography variant={isMobile ? 'subtitle1' : 'h6'} gutterBottom sx={{ 
+                        fontWeight: 600,
+                        color: '#2d3748',
+                        borderBottom: '2px solid #e2e8f0',
+                        pb: 1,
+                        mb: 2
+                      }}>
+                        Détails Techniques
+                      </Typography>
+                      
+                      <Box sx={{ '& > *': { mb: 1.5 } }}>
+                        <Box display="flex">
+                          <Typography variant="body1" sx={{ 
+                            minWidth: isMobile ? '80px' : '120px', 
+                            fontWeight: 500, 
+                            color: '#4a5568',
+                            fontSize: isMobile ? '0.9rem' : '1rem'
+                          }}>
+                            Épaisseur:
+                          </Typography>
+                          <Typography variant="body1" sx={{ fontSize: isMobile ? '0.9rem' : '1rem' }}>
+                            {selectedTwoBoxResin.epaisseur || 'N/A'}
+                          </Typography>
+                        </Box>
+                        
+                        <Box display="flex">
+                          <Typography variant="body1" sx={{ 
+                            minWidth: isMobile ? '80px' : '120px', 
+                            fontWeight: 500, 
+                            color: '#4a5568',
+                            fontSize: isMobile ? '0.9rem' : '1rem'
+                          }}>
+                            Hauteur Basse:
+                          </Typography>
+                          <Typography variant="body1" sx={{ fontSize: isMobile ? '0.9rem' : '1rem' }}>
+                            {selectedTwoBoxResin.hauteurPartieBasse || 'N/A'}
+                          </Typography>
+                        </Box>
+                        
+                        <Box display="flex">
+                          <Typography variant="body1" sx={{ 
+                            minWidth: isMobile ? '80px' : '120px', 
+                            fontWeight: 500, 
+                            color: '#4a5568',
+                            fontSize: isMobile ? '0.9rem' : '1rem'
+                          }}>
+                            Hauteur Haute:
+                          </Typography>
+                          <Typography variant="body1" sx={{ fontSize: isMobile ? '0.9rem' : '1rem' }}>
+                            {selectedTwoBoxResin.hauteurPartieHaute || 'N/A'}
+                          </Typography>
+                        </Box>
+                        
+                        <Box display="flex">
+                          <Typography variant="body1" sx={{ 
+                            minWidth: isMobile ? '80px' : '120px', 
+                            fontWeight: 500, 
+                            color: '#4a5568',
+                            fontSize: isMobile ? '0.9rem' : '1rem'
+                          }}>
+                            Avancée:
+                          </Typography>
+                          <Typography variant="body1" sx={{ fontSize: isMobile ? '0.9rem' : '1rem' }}>
+                            {selectedTwoBoxResin.avancee || 'N/A'}
+                          </Typography>
+                        </Box>
+
+                        <Box display="flex">
+                          <Typography variant="body1" sx={{ 
+                            minWidth: isMobile ? '80px' : '120px', 
+                            fontWeight: 500, 
+                            color: '#4a5568',
+                            fontSize: isMobile ? '0.9rem' : '1rem'
+                          }}>
+                            Poteaux:
+                          </Typography>
+                          <Typography variant="body1" sx={{ fontSize: isMobile ? '0.9rem' : '1rem' }}>
+                            {selectedTwoBoxResin.poteaux || 'N/A'}
+                          </Typography>
+                        </Box>
+
+                        <Box display="flex">
+                          <Typography variant="body1" sx={{ 
+                            minWidth: isMobile ? '80px' : '120px', 
+                            fontWeight: 500, 
+                            color: '#4a5568',
+                            fontSize: isMobile ? '0.9rem' : '1rem'
+                          }}>
+                            Tôle:
+                          </Typography>
+                          <Typography variant="body1" sx={{ fontSize: isMobile ? '0.9rem' : '1rem' }}>
+                            {selectedTwoBoxResin.tole || 'N/A'}
+                          </Typography>
+                        </Box>
+
+                        <Box display="flex">
+                          <Typography variant="body1" sx={{ 
+                            minWidth: isMobile ? '80px' : '120px', 
+                            fontWeight: 500, 
+                            color: '#4a5568',
+                            fontSize: isMobile ? '0.9rem' : '1rem'
+                          }}>
+                            Option:
+                          </Typography>
+                          <Typography variant="body1" sx={{ fontSize: isMobile ? '0.9rem' : '1rem' }}>
+                            {selectedTwoBoxResin.option || 'N/A'}
+                          </Typography>
+                        </Box>
+
+                        <Box display="flex">
+                          <Typography variant="body1" sx={{ 
+                            minWidth: isMobile ? '80px' : '120px', 
+                            fontWeight: 500, 
+                            color: '#4a5568',
+                            fontSize: isMobile ? '0.9rem' : '1rem'
+                          }}>
+                            Couleur:
+                          </Typography>
+                          <Typography variant="body1" sx={{ fontSize: isMobile ? '0.9rem' : '1rem' }}>
+                            {selectedTwoBoxResin.couleur || 'N/A'}
+                          </Typography>
+                        </Box>
+
+                        <Box display="flex">
+                          <Typography variant="body1" sx={{ 
+                            minWidth: isMobile ? '80px' : '120px', 
+                            fontWeight: 500, 
+                            color: '#4a5568',
+                            fontSize: isMobile ? '0.9rem' : '1rem'
+                          }}>
+                            Ouverture:
+                          </Typography>
+                          <Typography variant="body1" sx={{ fontSize: isMobile ? '0.9rem' : '1rem' }}>
+                            {selectedTwoBoxResin.ouverture || 'N/A'}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </Box>
                   </Grid>
                 </Grid>
               </Box>
@@ -721,7 +837,7 @@ const EditBarriere = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Edit Barriere Dialog */}
+      {/* Edit TwoBoxResin Dialog */}
       <Dialog 
         open={editMode} 
         onClose={closeDialog} 
@@ -752,7 +868,7 @@ const EditBarriere = () => {
             <Box display="flex" alignItems="center">
               <EditIcon sx={{ mr: 1.5, fontSize: isMobile ? '1.2rem' : '1.5rem' }} />
               <Typography variant={isMobile ? 'h6' : 'h6'} fontWeight={600} sx={{ letterSpacing: '0.5px' }}>
-                Modifier la Barrière
+                Modifier la TwoBoxResin
               </Typography>
             </Box>
             <IconButton 
@@ -777,14 +893,14 @@ const EditBarriere = () => {
           py: isMobile ? 2 : 3,
           backgroundColor: '#f9fafc'
         }}>
-          {selectedBarriere && (
+          {selectedTwoBoxResin && (
             <Grid container spacing={isMobile ? 1 : 3}>
               <Grid item xs={12}>
                 <TextField
                   fullWidth
                   label="Nom"
                   name="name"
-                  value={selectedBarriere.name || ''}
+                  value={selectedTwoBoxResin.name || ''}
                   onChange={handleFieldChange}
                   variant="outlined"
                   size={isMobile ? 'small' : 'medium'}
@@ -805,7 +921,7 @@ const EditBarriere = () => {
                   fullWidth
                   label="Référence"
                   name="reference"
-                  value={selectedBarriere.reference || ''}
+                  value={selectedTwoBoxResin.reference || ''}
                   variant="outlined"
                   size={isMobile ? 'small' : 'medium'}
                   disabled
@@ -827,7 +943,7 @@ const EditBarriere = () => {
                   label="Prix (€)"
                   name="price"
                   type="number"
-                  value={selectedBarriere.price || ''}
+                  value={selectedTwoBoxResin.price || ''}
                   onChange={handleFieldChange}
                   variant="outlined"
                   size={isMobile ? 'small' : 'medium'}
@@ -847,13 +963,12 @@ const EditBarriere = () => {
                 />
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
-                  label="Largeur (cm)"
-                  name="width"
-                  type="number"
-                  value={selectedBarriere.width || ''}
+                  label="Type"
+                  name="type"
+                  value={selectedTwoBoxResin.type || ''}
                   onChange={handleFieldChange}
                   variant="outlined"
                   size={isMobile ? 'small' : 'medium'}
@@ -863,9 +978,215 @@ const EditBarriere = () => {
                       backgroundColor: '#fff'
                     }
                   }}
-                  InputProps={{
-                    endAdornment: <InputAdornment position="end">cm</InputAdornment>,
-                    inputProps: { min: "0" }
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Conception"
+                  name="conception"
+                  value={selectedTwoBoxResin.conception || ''}
+                  onChange={handleFieldChange}
+                  variant="outlined"
+                  size={isMobile ? 'small' : 'medium'}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: '8px',
+                      backgroundColor: '#fff'
+                    }
+                  }}
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Épaisseur"
+                  name="epaisseur"
+                  value={selectedTwoBoxResin.epaisseur || ''}
+                  onChange={handleFieldChange}
+                  variant="outlined"
+                  size={isMobile ? 'small' : 'medium'}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: '8px',
+                      backgroundColor: '#fff'
+                    }
+                  }}
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Hauteur Partie Basse"
+                  name="hauteurPartieBasse"
+                  value={selectedTwoBoxResin.hauteurPartieBasse || ''}
+                  onChange={handleFieldChange}
+                  variant="outlined"
+                  size={isMobile ? 'small' : 'medium'}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: '8px',
+                      backgroundColor: '#fff'
+                    }
+                  }}
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Hauteur Partie Haute"
+                  name="hauteurPartieHaute"
+                  value={selectedTwoBoxResin.hauteurPartieHaute || ''}
+                  onChange={handleFieldChange}
+                  variant="outlined"
+                  size={isMobile ? 'small' : 'medium'}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: '8px',
+                      backgroundColor: '#fff'
+                    }
+                  }}
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Avancée"
+                  name="avancee"
+                  value={selectedTwoBoxResin.avancee || ''}
+                  onChange={handleFieldChange}
+                  variant="outlined"
+                  size={isMobile ? 'small' : 'medium'}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: '8px',
+                      backgroundColor: '#fff'
+                    }
+                  }}
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Poteaux"
+                  name="poteaux"
+                  value={selectedTwoBoxResin.poteaux || ''}
+                  onChange={handleFieldChange}
+                  variant="outlined"
+                  size={isMobile ? 'small' : 'medium'}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: '8px',
+                      backgroundColor: '#fff'
+                    }
+                  }}
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Tôle"
+                  name="tole"
+                  value={selectedTwoBoxResin.tole || ''}
+                  onChange={handleFieldChange}
+                  variant="outlined"
+                  size={isMobile ? 'small' : 'medium'}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: '8px',
+                      backgroundColor: '#fff'
+                    }
+                  }}
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Option"
+                  name="option"
+                  value={selectedTwoBoxResin.option || ''}
+                  onChange={handleFieldChange}
+                  variant="outlined"
+                  size={isMobile ? 'small' : 'medium'}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: '8px',
+                      backgroundColor: '#fff'
+                    }
+                  }}
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Couleur"
+                  name="couleur"
+                  value={selectedTwoBoxResin.couleur || ''}
+                  onChange={handleFieldChange}
+                  variant="outlined"
+                  size={isMobile ? 'small' : 'medium'}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: '8px',
+                      backgroundColor: '#fff'
+                    }
+                  }}
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Ouverture"
+                  name="ouverture"
+                  value={selectedTwoBoxResin.ouverture || ''}
+                  onChange={handleFieldChange}
+                  variant="outlined"
+                  size={isMobile ? 'small' : 'medium'}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: '8px',
+                      backgroundColor: '#fff'
+                    }
                   }}
                   InputLabelProps={{
                     shrink: true
@@ -878,12 +1199,33 @@ const EditBarriere = () => {
                   fullWidth
                   label="Description"
                   name="description"
-                  value={selectedBarriere.description || ''}
+                  value={selectedTwoBoxResin.description || ''}
                   onChange={handleFieldChange}
                   variant="outlined"
                   size={isMobile ? 'small' : 'medium'}
                   multiline
-                  rows={isMobile ? 3 : 4}
+                  rows={4}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: '8px',
+                      backgroundColor: '#fff'
+                    }
+                  }}
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="URL de l'image"
+                  name="imageURL"
+                  value={selectedTwoBoxResin.imageURL || ''}
+                  onChange={handleFieldChange}
+                  variant="outlined"
+                  size={isMobile ? 'small' : 'medium'}
                   sx={{
                     '& .MuiOutlinedInput-root': {
                       borderRadius: '8px',
@@ -899,51 +1241,46 @@ const EditBarriere = () => {
           )}
         </DialogContent>
 
-        {/* Enhanced Dialog Actions with better button styling */}
+        {/* Dialog Actions with improved styling */}
         <DialogActions sx={{ 
-          px: isMobile ? 1 : 3, 
-          py: isMobile ? 1.5 : 2,
-          backgroundColor: '#f5f7fa',
-          borderTop: '1px solid #e1e5eb'
+          px: isMobile ? 2 : 3, 
+          py: 2,
+          backgroundColor: '#f9fafc',
+          borderTop: '1px solid #e2e8f0'
         }}>
           <Button
-            startIcon={<CancelIcon fontSize={isMobile ? 'small' : 'medium'} />}
             onClick={closeDialog}
-            color="error"
             variant="outlined"
+            color="error"
+            startIcon={<CancelIcon />}
             sx={{
-              px: isMobile ? 1 : 2,
-              py: isMobile ? 0.5 : 0.7,
               borderRadius: '8px',
               textTransform: 'none',
               fontWeight: 600,
-              letterSpacing: '0.5px',
-              borderWidth: '2px',
+              px: 3,
+              py: 1,
               '&:hover': {
-                borderWidth: '2px'
-              },
-              fontSize: isMobile ? '0.8rem' : '0.9rem'
+                backgroundColor: 'rgba(220, 38, 38, 0.04)'
+              }
             }}
           >
             Annuler
           </Button>
           <Button
-            startIcon={<SaveIcon fontSize={isMobile ? 'small' : 'medium'} />}
             onClick={saveChanges}
             variant="contained"
+            color="primary"
+            startIcon={<SaveIcon />}
             sx={{
-              px: isMobile ? 2 : 3,
-              py: isMobile ? 0.7 : 1,
               borderRadius: '8px',
               textTransform: 'none',
               fontWeight: 600,
-              letterSpacing: '0.5px',
-              background: 'linear-gradient(135deg, #38598b 0%, #2a4365 100%)',
+              px: 3,
+              py: 1,
+              backgroundColor: '#38598b',
               '&:hover': {
-                background: 'linear-gradient(135deg, #2a4365 0%, #1e365d 100%)',
-                boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
-              },
-              fontSize: isMobile ? '0.8rem' : '0.9rem'
+                backgroundColor: '#2c5282'
+              }
             }}
           >
             Enregistrer
@@ -952,39 +1289,78 @@ const EditBarriere = () => {
       </Dialog>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog 
-        open={deleteConfirm} 
+      <Dialog
+        open={deleteConfirm}
         onClose={() => setDeleteConfirm(false)}
-        fullScreen={isMobile}
+        maxWidth="xs"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: '12px',
+            overflow: 'hidden',
+            boxShadow: '0 10px 25px rgba(0,0,0,0.1)'
+          }
+        }}
       >
-        <DialogTitle sx={{ fontSize: isMobile ? '1.1rem' : '1.25rem' }}>
-          Confirmer la suppression
+        <DialogTitle sx={{ 
+          backgroundColor: '#fef2f2',
+          color: '#b91c1c',
+          fontWeight: 600,
+          borderBottom: '1px solid #fee2e2',
+          py: 2,
+          px: 3
+        }}>
+          <Box display="flex" alignItems="center">
+            <DeleteIcon sx={{ mr: 1.5, color: '#dc2626' }} />
+            Confirmer la suppression
+          </Box>
         </DialogTitle>
-        <DialogContent>
-          <Typography sx={{ fontSize: isMobile ? '0.9rem' : '1rem' }}>
-            Êtes-vous sûr de vouloir supprimer "{barriereToDelete?.name}"?
+        <DialogContent sx={{ py: 3, px: 3 }}>
+          <Typography variant="body1" sx={{ color: '#4b5563' }}>
+            Êtes-vous sûr de vouloir supprimer la twoBoxResin "{twoBoxResinToDelete?.name}" ?
+          </Typography>
+          <Typography variant="body2" sx={{ mt: 1, color: '#6b7280', fontSize: '0.875rem' }}>
+            Cette action est irréversible et supprimera définitivement la twoBoxResin.
           </Typography>
         </DialogContent>
-        <DialogActions>
-          <Button 
-            onClick={() => setDeleteConfirm(false)} 
+        <DialogActions sx={{ 
+          px: 3, 
+          py: 2,
+          backgroundColor: '#f9fafc',
+          borderTop: '1px solid #e2e8f0'
+        }}>
+          <Button
+            onClick={() => setDeleteConfirm(false)}
+            variant="outlined"
             sx={{
-              color: '#38598b', 
-              variant: "outlined",
-              fontSize: isMobile ? '0.8rem' : '0.9rem'
+              borderRadius: '8px',
+              textTransform: 'none',
+              fontWeight: 600,
+              px: 3,
+              py: 1,
+              color: '#4b5563',
+              borderColor: '#d1d5db',
+              '&:hover': {
+                backgroundColor: '#f3f4f6',
+                borderColor: '#9ca3af'
+              }
             }}
           >
             Annuler
           </Button>
-          <Button 
-            onClick={confirmDelete} 
+          <Button
+            onClick={confirmDelete}
+            variant="contained"
+            color="error"
             sx={{
-              backgroundColor: '#d32f2f', 
-              color: '#fff', 
-              variant: "contained",
-              fontSize: isMobile ? '0.8rem' : '0.9rem',
+              borderRadius: '8px',
+              textTransform: 'none',
+              fontWeight: 600,
+              px: 3,
+              py: 1,
+              backgroundColor: '#dc2626',
               '&:hover': {
-                backgroundColor: '#b71c1c'
+                backgroundColor: '#b91c1c'
               }
             }}
           >
@@ -998,14 +1374,17 @@ const EditBarriere = () => {
         open={snackbar.open}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: isMobile ? 'bottom' : 'top', horizontal: 'right' }}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert 
-          onClose={handleCloseSnackbar} 
+        <Alert
+          onClose={handleCloseSnackbar}
           severity={snackbar.severity}
-          sx={{
+          variant="filled"
+          sx={{ 
             width: '100%',
-            fontSize: isMobile ? '0.8rem' : '0.9rem'
+            borderRadius: '8px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+            alignItems: 'center'
           }}
         >
           {snackbar.message}
@@ -1015,4 +1394,4 @@ const EditBarriere = () => {
   );
 };
 
-export default EditBarriere;
+export default EditTwoBoxResin;

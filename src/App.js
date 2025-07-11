@@ -15,6 +15,11 @@ import AdminDash from './admin/AdminDash';
 import Barriere from './admin/Barriere';
 import ThreeBox from './admin/ThreeBox';
 import EditBarriere from './admin/EditBarriere';
+import EditThreeBox from './admin/EditThreeBox';
+import TwoBox from './admin/TwoBox';
+import EditTwoBox from './admin/EditTwoBox';
+import TwoBoxResin from './admin/TwoBoxResin';
+import EditTwoBoxResin from './admin/EditTwoBoxResin';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -124,6 +129,66 @@ function App() {
         <>
           <AdminBar>
             <ThreeBox />
+            </AdminBar>
+        </>
+      )
+    },
+    {
+      path: '/admin-threebox-edit',
+      element: (
+        <>
+          <AdminBar>
+            <EditThreeBox  />
+            </AdminBar>
+        </>
+      )
+    },
+    {
+      path: '/admin-twobox',
+      element: (
+        <>
+          <AdminBar>
+            <TwoBox />
+            </AdminBar>
+        </>
+      )
+    },
+        {
+      path: '/admin-twobox',
+      element: (
+        <>
+          <AdminBar>
+            <TwoBox />
+            </AdminBar>
+        </>
+      )
+    },
+    {
+      path: '/admin-twobox-edit',
+      element: (
+        <>
+          <AdminBar>
+            <EditTwoBox />
+            </AdminBar>
+        </>
+      )
+    },
+        {
+      path: '/admin-twoboxresin',
+      element: (
+        <>
+          <AdminBar>
+            <TwoBoxResin />
+            </AdminBar>
+        </>
+      )
+    },
+    {
+      path: '/admin-twoboxresin-edit',
+      element: (
+        <>
+          <AdminBar>
+            <EditTwoBoxResin />
             </AdminBar>
         </>
       )

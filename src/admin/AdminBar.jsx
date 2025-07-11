@@ -25,27 +25,24 @@ import MailIcon from '@mui/icons-material/Mail';
 import Collapse from '@mui/material/Collapse';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import DesignServicesIcon from '@mui/icons-material/DesignServices';
-import ConstructionIcon from '@mui/icons-material/Construction';
 
-// Icons for sidebar tabs
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import FenceIcon from '@mui/icons-material/Fence';
+
 import SettingsIcon from '@mui/icons-material/Settings';
-import AnalyticsIcon from '@mui/icons-material/Analytics';
-import InventoryIcon from '@mui/icons-material/Inventory';
-import ReceiptIcon from '@mui/icons-material/Receipt';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import SettingIcon from '@mui/icons-material/Settings';
-import ReportIcon from '@mui/icons-material/Report';
-import SecurityIcon from '@mui/icons-material/Security';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import ChatIcon from '@mui/icons-material/Chat';
-import StarBorderIcon from '@mui/icons-material/StarBorder';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import Logout from '@mui/icons-material/Logout';
 import adminlogo from '../assets/admin.png';
+
+import fence from '../assets/fence.png';
+import stable from '../assets/stable.png';
+import stables from '../assets/stables.png';
+import gate from '../assets/gate.png';
+import window from '../assets/window.png';
+import dashboard from '../assets/dashboard.png';
+import cabinet from '../assets/cabinet-drawer.png';
+import barn from '../assets/barn.png';
+import manger from '../assets/manger.png';
+import help from '../assets/help.png';
+import settings from '../assets/settings.png';
 
 const drawerWidth = 250;
 
@@ -115,48 +112,310 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 // Sidebar tabs data with paths
 const sidebarTabs = [
-  { text: 'Dashboard', icon: <DashboardIcon />, path: '/admin-dashboard', style: { fontWeight: 'bold', fontFamily: 'Savate' } },
   { 
-    text: 'Façade', 
-    icon: <FenceIcon />, 
+    id: 'dashboard',
+    text:<Typography sx={{ fontFamily: 'Savate' }}> Dashboard </Typography>,
+    icon: (
+    <Box component="img" src={dashboard} alt="Barn Icon" sx={{ 
+      width: 20, 
+      height: 20,
+      filter: 'brightness(1) invert(1)' 
+    }} />
+  ), 
+    path: '/admin-dashboard', 
     style: { fontWeight: 'bold', fontFamily: 'Savate' },
-    nested: [
-      { text: 'Gestion des Façades', icon: <ConstructionIcon />, path: '/admin-cards-edit' },
-      { text: 'Création d\'une façade', icon: <DesignServicesIcon />, path: '/admin-cards' }
-    ],
-    path: '/admin-cards'
   },
   { 
-    text: 'Barrière', 
-    icon: <InventoryIcon />, 
+    id: 'facade',
+    text: (
+          <Typography sx={{ fontFamily: 'Savate' }}> Façade </Typography>
+    ), 
+    icon: (
+    <Box component="img" src={stable} alt="Barn Icon" sx={{ 
+      width: 20, 
+      height: 20,
+      filter: 'brightness(1) invert(1)' 
+    }} />
+  ), 
     style: { fontWeight: 'bold', fontFamily: 'Savate' },
     nested: [
-      { text: 'Gestion des Barrières', icon: <ConstructionIcon />, path: '/admin-barriere-edit' },
-      { text: 'Création d\'une Barrière', icon: <DesignServicesIcon />, path: '/admin-barriere' }
-    ],
-    path: '/admin-barriere'
+      { text: (
+          <Typography sx={{ fontFamily: 'Savate' }}> Gestion des Façades </Typography>
+      ),  path: '/admin-cards-edit' },
+      { text: (
+          <Typography sx={{ fontFamily: 'Savate' }}> Création d'une façade </Typography>
+      ),  path: '/admin-cards' }
+    ]
   },
-  { text: 'Deux Box', icon: <ReceiptIcon />, path: '/admin-twobox' },
-  { text: 'Trois Box', icon: <CalendarTodayIcon />, path: '/admin-threebox' },
-  { text: 'Cinq Box', icon: <ReportIcon />, path: '/admin-fivebox' },
-  { text: 'Six Box', icon: <AnalyticsIcon />, path: '/admin-sixbox' },
-  { text: 'Malle de Concours', icon: <SettingsIcon />, path: '/admin-malle' },
-  { text: 'Porte de la Sellerie', icon: <SecurityIcon />, path: '/admin-porte' },
-  { text: 'Fenêtre Extérieure', icon: <NotificationsIcon />, path: '/admin-fenetre' },
-  { text: 'Mangeoire Pivotante', icon: <ChatIcon />, path: '/admin-mangeoire' },
-  { text: 'Barn Démontable', icon: <StarBorderIcon />, path: '/admin-Barn Démontable' },
-  { text: 'Paramètres', icon: <HelpOutlineIcon />, path: '/admin-Paramètres' },
-  { text: 'Support', icon: <SettingIcon />, path: '/admin-support' },
+  { 
+    id: 'barriere',
+    text:(
+          <Typography sx={{ fontFamily: 'Savate' }}> Barrière </Typography>
+    ), 
+    icon:  (
+    <Box component="img" src={fence} alt="Barn Icon" sx={{ 
+      width: 20, 
+      height: 20,
+      filter: 'brightness(1) invert(1)' 
+    }} />
+  ),
+    style: { fontWeight: 'bold', fontFamily: 'Savate' },
+    nested: [
+      { text: (
+          <Typography sx={{ fontFamily: 'Savate' }}> Gestion des Barrières </Typography>
+      ),  path: '/admin-barriere-edit' },
+      { text: (
+          <Typography sx={{ fontFamily: 'Savate' }}> Création d'une Barrière </Typography>
+      ),  path: '/admin-barriere' }
+    ]
+  },
+  { 
+    id: 'deuxbox',
+    text:(
+          <Typography sx={{ fontFamily: 'Savate' }}> 2 Box </Typography>
+    ), 
+    icon:  (
+    <Box component="img" src={stables} alt="Barn Icon" sx={{ 
+      width: 20, 
+      height: 20,
+      filter: 'brightness(1) invert(1)' 
+    }} />
+  ), 
+    nested: [
+      { text:(
+          <Typography sx={{ fontFamily: 'Savate' }}> Gestion des 2 Box Rouge </Typography>
+      ), path: '/admin-twobox-edit' },
+      { text: (
+          <Typography sx={{ fontFamily: 'Savate' }}> Création d'un 2 Box Rouge </Typography>
+      ), path: '/admin-twobox' },
+      { text:(
+          <Typography sx={{ fontFamily: 'Savate' }}> Gestion des 2 Box Résin </Typography>
+      ), path: '/admin-twoboxresin-edit' },
+      { text: (
+          <Typography sx={{ fontFamily: 'Savate' }}> Création d'un 2 Box Résin </Typography>
+      ), path: '/admin-twoboxresin' }
+    ]
+  },
+  { 
+    id: 'troisbox',
+    text: (
+      <Typography sx={{ fontFamily: 'Savate' }}>
+        3 Box
+      </Typography>
+    ), 
+    icon:  (
+    <Box component="img" src={stables} alt="Barn Icon" sx={{ 
+      width: 20, 
+      height: 20,
+      filter: 'brightness(1) invert(1)' 
+    }} />
+  ),
+    nested: [
+      { 
+        text: (
+          <Typography sx={{ fontFamily: 'Savate' }}>
+            Gestion des 3 Box
+          </Typography>
+        ), 
+        
+        path: '/admin-threebox-edit' 
+      },
+      { 
+        text: (
+          <Typography sx={{ fontFamily: 'Savate' }}>
+            Création d'un 3 Box
+          </Typography>
+        ), 
+        
+        path: '/admin-threebox' 
+      }
+    ]
+  },
+  { 
+    id: 'cinqbox',
+    text: (
+      <Typography sx={{ fontFamily: 'Savate' }}>
+        5 Box
+      </Typography>
+    ), 
+    icon:  (
+    <Box component="img" src={stables} alt="Barn Icon" sx={{ 
+      width: 20, 
+      height: 20,
+      filter: 'brightness(1) invert(1)' 
+    }} />
+  ),
+    nested: [
+      { text: (
+          <Typography sx={{ fontFamily: 'Savate' }}>
+            Gestion des 5 Box
+          </Typography>
+      ), path: '/admin-fivebox-edit' },
+      { text: (
+          <Typography sx={{ fontFamily: 'Savate' }}>
+            Création d'un 5 Box
+          </Typography>
+      ), path: '/admin-fivebox' }
+    ]
+  },
+  { 
+    id: 'sixbox',
+    text: (
+      <Typography sx={{ fontFamily: 'Savate' }}>
+        6 Box
+      </Typography>
+    ), 
+    icon:  (
+    <Box component="img" src={stables} alt="Barn Icon" sx={{ 
+      width: 20, 
+      height: 20,
+      filter: 'brightness(1) invert(1)' 
+    }} />
+  ), 
+    nested: [
+      { text: (
+          <Typography sx={{ fontFamily: 'Savate' }}>
+            Gestion des 6 Box
+          </Typography>
+      ), path: '/admin-sixbox-edit' },
+      { text: (
+          <Typography sx={{ fontFamily: 'Savate' }}>
+            Création d'un 6 Box
+          </Typography>
+      ), path: '/admin-sixbox' }
+    ]
+  },
+  { 
+    id: 'malle',
+    text: (
+          <Typography sx={{ fontFamily: 'Savate' }}>Malle de Concours</Typography>
+    ), 
+    icon: (
+    <Box component="img" src={cabinet} alt="Barn Icon" sx={{ 
+      width: 20, 
+      height: 20,
+      filter: 'brightness(1) invert(1)' 
+    }} />
+  ),  
+    nested: [
+      { text: (
+          <Typography sx={{ fontFamily: 'Savate' }}>Gestion des Malles</Typography>
+      ), path: '/admin-malle-edit' },
+      { text: (
+          <Typography sx={{ fontFamily: 'Savate' }}>Création d'une Malle</Typography>
+      ), path: '/admin-malle' }
+    ]
+  },
+  { 
+    id: 'porte',
+    text:(
+          <Typography sx={{ fontFamily: 'Savate' }}>Porte de la Sellerie</Typography>
+    ), 
+     icon:  (
+    <Box component="img" src={gate} alt="Barn Icon" sx={{ 
+      width: 20, 
+      height: 20,
+      filter: 'brightness(1) invert(1)' 
+    }} />
+  ), 
+    nested: [
+      { text: (
+          <Typography sx={{ fontFamily: 'Savate' }}>Gestion des Portes</Typography>
+      ), path: '/admin-porte-edit' },
+      { text: (
+          <Typography sx={{ fontFamily: 'Savate' }}>Création d'une Porte</Typography>
+      ), path: '/admin-porte' }
+    ]
+  },
+  { 
+    id: 'fenetre',
+    text: (
+          <Typography sx={{ fontFamily: 'Savate' }}>Fenêtre Extérieure</Typography>
+    ), 
+     icon:  (
+    <Box component="img" src={window} alt="Barn Icon" sx={{ 
+      width: 20, 
+      height: 20,
+      filter: 'brightness(1) invert(1)' 
+    }} />
+  ), 
+    nested: [
+      { text: (
+          <Typography sx={{ fontFamily: 'Savate' }}>Gestion des Fenêtres</Typography>
+      ), path: '/admin-fenetre-edit' },
+      { text: (
+          <Typography sx={{ fontFamily: 'Savate' }}>Création d'une Fenêtre</Typography>
+      ), path: '/admin-fenetre' }
+    ]
+  },
+  { 
+    id: 'mangeoire',
+    text: (
+          <Typography sx={{ fontFamily: 'Savate' }}>Mangeoire Pivotante</Typography>
+    ), 
+    icon:  (
+    <Box component="img" src={manger} alt="Barn Icon" sx={{ 
+      width: 20, 
+      height: 20,
+      filter: 'brightness(1) invert(1)' 
+    }} />
+  ),  
+    nested: [
+      { text: (
+          <Typography sx={{ fontFamily: 'Savate' }}>Gestion des Mangeoires</Typography>
+      ), path: '/admin-mangeoire-edit' },
+      { text: (
+          <Typography sx={{ fontFamily: 'Savate' }}>Création d'une Mangeoire</Typography>
+      ), path: '/admin-mangeoire' }
+    ]
+  },
+  { 
+    id: 'barn',
+    text: (
+          <Typography sx={{ fontFamily: 'Savate' }}>Barn Démontable</Typography>
+    ), 
+    icon: (
+    <Box component="img" src={barn} alt="Barn Icon" sx={{ 
+      width: 20, 
+      height: 20,
+      filter: 'brightness(1) invert(1)' 
+    }} />
+  ),   
+    nested: [
+      { text: (
+          <Typography sx={{ fontFamily: 'Savate' }}>Gestion des Barns</Typography>
+      ), path: '/admin-barn-edit' },
+      { text: (
+          <Typography sx={{ fontFamily: 'Savate' }}>Création d'un Barn</Typography>
+      ), path: '/admin-barn' }
+    ]
+  },
+  // Non-nested items
+  { id: 'parametres', text: (
+      <Typography sx={{ fontFamily: 'Savate' }}>Paramètres</Typography>
+  ), icon: (
+    <Box component="img" src={settings} alt="Barn Icon" sx={{ 
+      width: 20, 
+      height: 20,
+      filter: 'brightness(1) invert(1)' 
+    }} />
+  ), path: '/admin-parametres' },
+  { id: 'support', text: (
+      <Typography sx={{ fontFamily: 'Savate' }}>Support</Typography>
+  ), icon: (
+    <Box component="img" src={help} alt="Barn Icon" sx={{ 
+      width: 20, 
+      height: 20,
+      filter: 'brightness(1) invert(1)' 
+    }} />
+  ),  path: '/admin-support' },
 ];
 
 const AdminBar = ({ children }) => {
   const theme = useTheme();
   const [open, setOpen] = useState(true);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [openMenus, setOpenMenus] = useState({
-    facade: false,
-    barriere: false
-  });
+  const [openMenus, setOpenMenus] = useState({});
   const profileMenuOpen = Boolean(anchorEl);
 
   const handleDrawerOpen = () => {
@@ -175,141 +434,168 @@ const AdminBar = ({ children }) => {
     setAnchorEl(null);
   };
 
-  const handleMenuClick = (menuKey) => {
+  const handleMenuClick = (menuId) => {
     setOpenMenus(prev => ({
       ...prev,
-      [menuKey]: !prev[menuKey]
+      [menuId]: !prev[menuId]
     }));
   };
 
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open} sx={{ backgroundColor: '#38598b', color: 'white' }}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{
-              marginRight: 5,
-              ...(open && { display: 'none' }),
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
-          
-          <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
-            <Avatar 
-              src={adminlogo} 
-              alt="Logo" 
-              sx={{ mr: 2, bgcolor: 'white' }}
-            />
-            <Typography 
-              variant="h5" 
-              noWrap 
-              component="div"
-              sx={{ 
-                fontFamily: 'Savate', 
-                textTransform: 'uppercase',
-                fontWeight: 'bold',
-                color: 'white',
-              }}
-            >
-              Bonjour Super Administrateur de Golden Box Horse
-            </Typography>
-          </Box>
-          
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <IconButton size="large" color="inherit">
-              <Badge badgeContent={4} color="error">
-                <MailIcon />
-              </Badge>
-            </IconButton>
-            
-            <IconButton
-              onClick={handleProfileMenuOpen}
-              size="small"
-              sx={{ ml: 2 }}
-              aria-controls={profileMenuOpen ? 'account-menu' : undefined}
-              aria-haspopup="true"
-              aria-expanded={profileMenuOpen ? 'true' : undefined}
-            >
-              <Avatar sx={{ width: 32, height: 32 }}>A</Avatar>
-            </IconButton>
-          </Box>
-        </Toolbar>
-      </AppBar>
-      
-      <Menu
-        anchorEl={anchorEl}
-        id="account-menu"
-        open={profileMenuOpen}
-        onClose={handleProfileMenuClose}
-        onClick={handleProfileMenuClose}
-        PaperProps={{
-          elevation: 0,
-          sx: {
-            overflow: 'visible',
-            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-            mt: 1.5,
-            '& .MuiAvatar-root': {
-              width: 32,
-              height: 32,
-              ml: -0.5,
-              mr: 1,
-            },
-            '&:before': {
-              content: '""',
-              display: 'block',
-              position: 'absolute',
-              top: 0,
-              right: 14,
-              width: 10,
-              height: 10,
-              bgcolor: 'background.paper',
-              transform: 'translateY(-50%) rotate(45deg)',
-              zIndex: 0,
-            },
-          },
+<AppBar position="fixed" open={open} sx={{ backgroundColor: '#38598b', color: 'white' }}>
+  <Toolbar>
+    {/* Always show menu icon on mobile, conditionally on larger screens */}
+    <IconButton
+      color="inherit"
+      aria-label="open drawer"
+      onClick={handleDrawerOpen}
+      edge="start"
+      sx={{
+        marginRight: { xs: 2, sm: 3, md: 5 },
+        display: { xs: 'block', sm: open ? 'none' : 'block' },
+      }}
+    >
+      <MenuIcon />
+    </IconButton>
+    
+    <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
+      <Avatar 
+        src={adminlogo} 
+        alt="Logo" 
+        sx={{ 
+          mr: { xs: 1, sm: 2 },
+          width: { xs: 32, sm: 40 },
+          height: { xs: 32, sm: 40 },
+          bgcolor: 'white' 
         }}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      />
+      <Typography 
+        variant="h6" 
+        noWrap 
+        component="div"
+        sx={{ 
+          fontFamily: 'Savate', 
+          textTransform: 'uppercase',
+          fontWeight: 'bold',
+          color: 'white',
+          fontSize: {
+            xs: '0.7rem',  // smaller on mobile
+            sm: '0.875rem',      // medium on tablet
+            md: '1.4rem'    // larger on desktop
+          }
+        }}
       >
-        <MenuItem onClick={handleProfileMenuClose}>
-          <Avatar /> Profile
-        </MenuItem>
-        <MenuItem onClick={handleProfileMenuClose}>
-          <Avatar /> My account
-        </MenuItem>
-        <Divider />
-        <MenuItem onClick={handleProfileMenuClose}>
-          <ListItemIcon>
-            <SettingsIcon fontSize="small" />
-          </ListItemIcon>
-          Settings
-        </MenuItem>
-        <MenuItem onClick={handleProfileMenuClose}>
-          <ListItemIcon>
-            <HelpOutlineIcon fontSize="small" />
-          </ListItemIcon>
-          Help
-        </MenuItem>
-        <MenuItem onClick={handleProfileMenuClose}>
-          <ListItemIcon>
-            <MailIcon fontSize="small" />
-          </ListItemIcon>
-          Contact Support
-        </MenuItem>
-        <Divider />
-        <MenuItem onClick={handleProfileMenuClose}>
-          <ListItemIcon>
-            <Logout fontSize="small" />
-          </ListItemIcon>
-          Logout
-        </MenuItem>
-      </Menu>
+        Espace administrateur GBH
+      </Typography>
+    </Box>
+    
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      {/* Show mail icon on all screens */}
+      <IconButton 
+        size="large" 
+        color="inherit"
+        sx={{ 
+          display: { xs: 'flex', sm: 'flex' },
+          p: { xs: 0.5, sm: 1 }
+        }}
+      >
+        <Badge badgeContent={4} color="error">
+          <MailIcon fontSize="small" />
+        </Badge>
+      </IconButton>
+      
+      {/* Profile avatar - adjust size for mobile */}
+      <IconButton
+        onClick={handleProfileMenuOpen}
+        size="small"
+        sx={{ 
+          ml: { xs: 1, sm: 2 },
+          p: { xs: 0.5, sm: 1 }
+        }}
+        aria-controls={profileMenuOpen ? 'account-menu' : undefined}
+        aria-haspopup="true"
+        aria-expanded={profileMenuOpen ? 'true' : undefined}
+      >
+        <Avatar sx={{ 
+          width: { xs: 28, sm: 32 },
+          height: { xs: 28, sm: 32 }
+        }}>A</Avatar>
+      </IconButton>
+    </Box>
+  </Toolbar>
+</AppBar>
+
+<Menu
+  anchorEl={anchorEl}
+  id="account-menu"
+  open={profileMenuOpen}
+  onClose={handleProfileMenuClose}
+  onClick={handleProfileMenuClose}
+  PaperProps={{
+    elevation: 0,
+    sx: {
+      overflow: 'visible',
+      filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+      mt: 1.5,
+      minWidth: 200,
+      '& .MuiAvatar-root': {
+        width: 32,
+        height: 32,
+        ml: -0.5,
+        mr: 1,
+      },
+      '&:before': {
+        content: '""',
+        display: 'block',
+        position: 'absolute',
+        top: 0,
+        right: 14,
+        width: 10,
+        height: 10,
+        bgcolor: 'background.paper',
+        transform: 'translateY(-50%) rotate(45deg)',
+        zIndex: 0,
+      },
+    },
+  }}
+  transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+  anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+>
+  <MenuItem onClick={handleProfileMenuClose}>
+    <Avatar /> Profile
+  </MenuItem>
+  <MenuItem onClick={handleProfileMenuClose}>
+    <Avatar /> My account
+  </MenuItem>
+  <Divider />
+  <MenuItem onClick={handleProfileMenuClose}>
+    <ListItemIcon>
+      <SettingsIcon fontSize="small" />
+    </ListItemIcon>
+    <Typography variant="inherit">Settings</Typography>
+  </MenuItem>
+  <MenuItem onClick={handleProfileMenuClose}>
+    <ListItemIcon>
+      <HelpOutlineIcon fontSize="small" />
+    </ListItemIcon>
+    <Typography variant="inherit">Help</Typography>
+  </MenuItem>
+  <MenuItem onClick={handleProfileMenuClose}>
+    <ListItemIcon>
+      <MailIcon fontSize="small" />
+    </ListItemIcon>
+    <Typography variant="inherit">Contact Support</Typography>
+  </MenuItem>
+  <Divider />
+  <MenuItem onClick={handleProfileMenuClose}>
+    <ListItemIcon>
+      <Logout fontSize="small" />
+    </ListItemIcon>
+    <Typography variant="inherit">Logout</Typography>
+  </MenuItem>
+</Menu>
 
       <Drawer variant="permanent" open={open} sx={{
         '& .MuiDrawer-paper': {
@@ -325,19 +611,19 @@ const AdminBar = ({ children }) => {
         <Divider />
         <List>
           {sidebarTabs.map((tab) => (
-            <React.Fragment key={tab.text}>
+            <React.Fragment key={tab.id}>
               {tab.nested ? (
                 <>
                   <ListItem disablePadding sx={{ display: 'block' }}>
                     <ListItemButton
-                      onClick={() => handleMenuClick(tab.text === 'Façade' ? 'facade' : 'barriere')}
+                      onClick={() => handleMenuClick(tab.id)}
                       sx={{
                         minHeight: 48,
                         justifyContent: open ? 'initial' : 'center',
                         px: 2.5,
                         color: 'white',
                         '&:hover': {
-                          backgroundColor: 'rgba(117, 81, 57, 0.12)',
+                          backgroundColor: 'rgba(255, 255, 255, 0.12)',
                         },
                         ...tab.style,
                       }}
@@ -353,22 +639,22 @@ const AdminBar = ({ children }) => {
                         {tab.icon}
                       </ListItemIcon>
                       <ListItemText primary={tab.text} sx={{ opacity: open ? 1 : 0 }} />
-                      {open && (openMenus[tab.text === 'Façade' ? 'facade' : 'barriere'] ? <ExpandLess /> : <ExpandMore />)}
+                      {open && (openMenus[tab.id] ? <ExpandLess /> : <ExpandMore />)}
                     </ListItemButton>
                   </ListItem>
                   
-                  <Collapse in={openMenus[tab.text === 'Façade' ? 'facade' : 'barriere'] && open} timeout="auto" unmountOnExit>
+                  <Collapse in={openMenus[tab.id] && open} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding>
-                      {tab.nested.map((nestedTab) => (
+                      {tab.nested.map((nestedTab, index) => (
                         <ListItem 
-                          key={nestedTab.text} 
+                          key={`${tab.id}-${index}`} 
                           disablePadding 
                           sx={{ 
                             display: 'block', 
                             textDecoration: 'none', 
                             color: 'inherit',
                             '&:hover': {
-                              backgroundColor: 'rgba(117, 81, 57, 0.08)',
+                              backgroundColor: 'rgba(255, 255, 255, 0.08)',
                             },
                           }}
                           component={Link}
@@ -405,7 +691,7 @@ const AdminBar = ({ children }) => {
                   sx={{ 
                     display: 'block',
                     '&:hover': {
-                      backgroundColor: 'rgba(117, 81, 57, 0.08)',
+                      backgroundColor: 'rgba(255, 255, 255, 0.08)',
                     },
                   }}
                   component={Link}
@@ -438,7 +724,18 @@ const AdminBar = ({ children }) => {
         </List>
       </Drawer>
       
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Box 
+        component="main" 
+        sx={{ 
+          flexGrow: 1, 
+          p: 3,
+          width: '100%',
+          overflowX: 'auto',
+          [theme.breakpoints.down('sm')]: {
+            p: 1,
+          }
+        }}
+      >
         <DrawerHeader />
         {children}
       </Box>

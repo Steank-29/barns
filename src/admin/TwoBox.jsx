@@ -94,7 +94,7 @@ const StyledTextarea = styled(TextareaAutosize)(({ theme }) => ({
 }));
 
 const conceptionOptions = [
-  { value: ' Bois rouge, Classe III Naturel', label: ' Bois rouge, Classe III Naturel' },
+  { value: ' Bois Français 100% Douglas, Classe III Naturel', label: ' Bois Français 100% Douglas, Classe III Naturel' },
 ];
 
 const poteauxOptions = [
@@ -120,13 +120,13 @@ const ouvertureOptions = [
 ];
 
 const boxOptions = [
-  { value: '3 Box EN LIGNE BOIS ROUGE(3*3)', label: '3 Box EN LIGNE BOIS ROUGE(3*3)' },
-  { value: '3 Box EN LIGNE BOIS ROUGE(3*4)', label: '3 Box EN LIGNE BOIS ROUGE(3*4)' },
-  { value: '3 Box EN LIGNE BOIS ROUGE(3*3.5)', label: '3 Box EN LIGNE BOIS ROUGE(3*3.5)' },
-  { value: '3 Box EN LIGNE BOIS ROUGE(4*4)', label: '3 Box EN LIGNE BOIS ROUGE(4*4)' }
+  { value: '2 Box EN LIGNE BOIS ROUGE(3*3)', label: '2 Box EN LIGNE BOIS ROUGE(3*3)' },
+  { value: '2 Box EN LIGNE BOIS ROUGE(3*4)', label: '2 Box EN LIGNE BOIS ROUGE(3*4)' },
+  { value: '2 Box EN LIGNE BOIS ROUGE(3*3.5)', label: '2 Box EN LIGNE BOIS ROUGE(3*3.5)' },
+  { value: '2 Box EN LIGNE BOIS ROUGE(4*4)', label: '2 Box EN LIGNE BOIS ROUGE(4*4)' },
 ];
 
-const ThreeBox = () => {
+const TwoBox = () => {
   const [formData, setFormData] = useState({
     reference: '',
     name: '',
@@ -209,11 +209,11 @@ const ThreeBox = () => {
         }
       });
 
-      const response = await axios.post(`http://localhost:5000/api/threebox`, formPayload, {
+      const response = await axios.post(`http://localhost:5000/api/twobox`, formPayload, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
-      toast.success('Produit 3 Box ajouté avec succès !');
+      toast.success('Produit 2 Box ajouté avec succès !');
       console.log(response.data);
     } catch (error) {
       toast.error("Erreur lors de la création du produit");
@@ -236,7 +236,7 @@ const ThreeBox = () => {
           textTransform: 'uppercase',
           mb: 4
         }}>
-          Création d'une fiche produit 3 BOX
+          Création d'une fiche produit 2 BOX
         </Typography>
 
         <StyledPaper elevation={3}>
@@ -492,7 +492,7 @@ const ThreeBox = () => {
                   name="description"
                   value={formData.description}
                   onChange={handleInputChange}
-                  placeholder='Description du produit 3 Box...'
+                  placeholder='Description du produit 2 Box...'
                   sx={{ width: 460 }}
                 />
               </Grid>
@@ -532,7 +532,7 @@ const ThreeBox = () => {
                     width: 160
                   }}
                 >
-                  Créer les 3 Box
+                  Créer les 2 Box
                 </Button>
               </Grid>
             </Grid>
@@ -752,4 +752,4 @@ const ThreeBox = () => {
   );
 };
 
-export default ThreeBox;
+export default TwoBox;

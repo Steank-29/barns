@@ -94,7 +94,7 @@ const StyledTextarea = styled(TextareaAutosize)(({ theme }) => ({
 }));
 
 const conceptionOptions = [
-  { value: ' Bois rouge, Classe III Naturel', label: ' Bois rouge, Classe III Naturel' },
+  { value: ' Résine 32 mm en plastique recyclé imitation bois', label: ' Résine 32 mm en plastique recyclé imitation bois' },
 ];
 
 const poteauxOptions = [
@@ -102,9 +102,7 @@ const poteauxOptions = [
 ];
 
 const toleOptions = [
-  { value: ' bac acier anti-condensation (standard)', label: ' bac acier anti-condensation  (standard)' },
-  { value: 'bac acier anti-condensation (standard) avec option 10 mm', label: 'bac acier anti-condensation (standard) avec option 10 mm' },
-  { value: 'bac acier anti-condensation (standard) avec option 40 mm', label: 'bac acier anti-condensation (standard) avec option 40 mm' },
+  { value: ' bac acier anti condensation (63 centièmes)  (standard), possibilité OPTION ISOLE:  40 mm', label: ' bac acier anti condensation (63 centièmes)  (standard), possibilité OPTION ISOLE:  40 mm' },
 ];
 
 const couleurOptions = [
@@ -114,19 +112,17 @@ const couleurOptions = [
 ];
 
 const ouvertureOptions = [
-  { value: 'porte battante deux volets avec huisserie galvanisée et entourage en 50 mm', 
-    label: 'porte battante deux volets avec huisserie galvanisée et entourage en 50 mm' 
-},
+  { value: ' Porte double battants 1.20 x 2.20 (verrous inclus)', label: 'Porte double battants 1.20 x 2.20 (verrous inclus)' },
 ];
 
 const boxOptions = [
-  { value: '3 Box EN LIGNE BOIS ROUGE(3*3)', label: '3 Box EN LIGNE BOIS ROUGE(3*3)' },
-  { value: '3 Box EN LIGNE BOIS ROUGE(3*4)', label: '3 Box EN LIGNE BOIS ROUGE(3*4)' },
-  { value: '3 Box EN LIGNE BOIS ROUGE(3*3.5)', label: '3 Box EN LIGNE BOIS ROUGE(3*3.5)' },
-  { value: '3 Box EN LIGNE BOIS ROUGE(4*4)', label: '3 Box EN LIGNE BOIS ROUGE(4*4)' }
+  { value: '2 Box EN LIGNE EN RESINE(3*3)', label: '2 Box EN LIGNE EN RESINE(3*3)' },
+  { value: '2 Box EN LIGNE EN RESINE(3*4)', label: '2 Box EN LIGNE EN RESINE(3*4)' },
+  { value: '2 Box EN LIGNE EN RESINE(3*3.5)', label: '2 Box EN LIGNE EN RESINE(3*3.5)' },
+  { value: '2 Box EN LIGNE EN RESINE(4*4)', label: '2 Box EN LIGNE EN RESINE(4*4)' },
 ];
 
-const ThreeBox = () => {
+const TwoBoxResin = () => {
   const [formData, setFormData] = useState({
     reference: '',
     name: '',
@@ -144,6 +140,10 @@ const ThreeBox = () => {
     couleur: '',
     ouverture: '',
     description: '',
+    longueur: '',
+    profondeur: '',
+    pannes: '',
+    ossatureM: '',
   });
 
   const [previewImage, setPreviewImage] = useState(null);
@@ -186,6 +186,10 @@ const ThreeBox = () => {
       couleur: '',
       ouverture: '',
       description: '',
+      longueur: '',
+      profondeur: '',
+      pannes: '',
+      ossatureM: '',
     });
     setPreviewImage(null);
   };
@@ -209,11 +213,11 @@ const ThreeBox = () => {
         }
       });
 
-      const response = await axios.post(`http://localhost:5000/api/threebox`, formPayload, {
+      const response = await axios.post(`http://localhost:5000/api/twoboxresin`, formPayload, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
-      toast.success('Produit 3 Box ajouté avec succès !');
+      toast.success('Produit 2 Box ajouté avec succès !');
       console.log(response.data);
     } catch (error) {
       toast.error("Erreur lors de la création du produit");
@@ -236,7 +240,7 @@ const ThreeBox = () => {
           textTransform: 'uppercase',
           mb: 4
         }}>
-          Création d'une fiche produit 3 BOX
+          Création d'une fiche produit 2 BOX
         </Typography>
 
         <StyledPaper elevation={3}>
@@ -395,6 +399,61 @@ const ThreeBox = () => {
                   sx={{ width: 220 }}
                 />
               </Grid>
+            <Grid item xs={6}>
+                <StyledTextField
+                  label="Longueur (m)"
+                  name="longueur"
+                  type="number"
+                  value={formData.longueur}
+                  onChange={handleInputChange}
+                  InputProps={{
+                    endAdornment: <InputAdornment position="end">m</InputAdornment>,
+                  }}
+                  sx={{ width: 220 }}
+                />
+              </Grid>
+            <Grid item xs={6}>
+                <StyledTextField
+                  label="Pannes"
+                  name="pannes"
+                  type="text"
+                  value={formData.pannes}
+                  onChange={handleInputChange}
+                  InputProps={{
+                    endAdornment: <InputAdornment position="end">m</InputAdornment>,
+                  }}
+                  sx={{ width: 220 }}
+                />
+              </Grid>
+              
+            <Grid item xs={6}>
+                <StyledTextField
+                  label="Profondeur (m)"
+                  name="profondeur"
+                  type="number"
+                  value={formData.profondeur}
+                  onChange={handleInputChange}
+                  InputProps={{
+                    endAdornment: <InputAdornment position="end">m</InputAdornment>,
+                  }}
+                  sx={{ width: 220 }}
+                />
+              </Grid>
+
+               <Grid item xs={6}>
+                <StyledTextField
+                  label="Ossature Metallique (mm)"
+                  name="ossatureM"
+                  type="number"
+                  value={formData.ossatureM}
+                  onChange={handleInputChange}
+                  InputProps={{
+                    endAdornment: <InputAdornment position="end">mm</InputAdornment>,
+                  }}
+                  sx={{ width: 220 }}
+                />
+              </Grid>
+
               <Grid item xs={6}>
                 <StyledTextField
                   label="Option"
@@ -492,7 +551,7 @@ const ThreeBox = () => {
                   name="description"
                   value={formData.description}
                   onChange={handleInputChange}
-                  placeholder='Description du produit 3 Box...'
+                  placeholder='Description du produit 2 Box...'
                   sx={{ width: 460 }}
                 />
               </Grid>
@@ -532,7 +591,7 @@ const ThreeBox = () => {
                     width: 160
                   }}
                 >
-                  Créer les 3 Box
+                  Créer les 2 Box
                 </Button>
               </Grid>
             </Grid>
@@ -639,6 +698,66 @@ const ThreeBox = () => {
                   {formData.hauteurPartieBasse || 'N/A'} m
                 </Typography>
               </Grid>
+              <Grid item xs={6}>
+  <Typography variant="subtitle2" sx={{ 
+    color: '#38598b',
+    fontFamily: 'Savate',
+    fontWeight: 'bold'
+  }}>
+    Longueur:
+  </Typography>
+  <Typography variant="body2" sx={{ 
+    color: '#38598b',
+    fontFamily: 'Savate',
+  }}>
+    {formData.longueur || 'N/A'} m
+  </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                <Typography variant="subtitle2" sx={{ 
+                    color: '#38598b',
+                    fontFamily: 'Savate',
+                    fontWeight: 'bold'
+                }}>
+                    Profondeur:
+                </Typography>
+                <Typography variant="body2" sx={{ 
+                    color: '#38598b',
+                    fontFamily: 'Savate',
+                }}>
+                    {formData.profondeur || 'N/A'} m
+                </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                <Typography variant="subtitle2" sx={{ 
+                    color: '#38598b',
+                    fontFamily: 'Savate',
+                    fontWeight: 'bold'
+                }}>
+                    Pannes:
+                </Typography>
+                <Typography variant="body2" sx={{ 
+                    color: '#38598b',
+                    fontFamily: 'Savate',
+                }}>
+                    {formData.pannes || 'N/A'} m
+                </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                <Typography variant="subtitle2" sx={{ 
+                    color: '#38598b',
+                    fontFamily: 'Savate',
+                    fontWeight: 'bold'
+                }}>
+                    Ossature:
+                </Typography>
+                <Typography variant="body2" sx={{ 
+                    color: '#38598b',
+                    fontFamily: 'Savate',
+                }}>
+                    {formData.ossature || 'N/A'} mm
+                </Typography>
+                </Grid>
               <Grid item xs={6}>
                 <Typography variant="subtitle2" sx={{ 
                   color: '#38598b',
@@ -752,4 +871,4 @@ const ThreeBox = () => {
   );
 };
 
-export default ThreeBox;
+export default TwoBoxResin;

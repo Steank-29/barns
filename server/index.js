@@ -9,12 +9,17 @@ const path = require('path');
 
 const barriereRoutes = require('./routes/Barriere');
 const facadeRoutes = require('./routes/Facade');
-
+const threeBoxRoutes = require('./routes/ThreeBox');
+const twoBoxRoutes = require('./routes/TwoBox');
+const twoBoxResinRoutes = require('./routes/TwoBoxResin');
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/api/barriere', barriereRoutes);
 app.use('/api/facade', facadeRoutes);
+app.use('/api/twobox', twoBoxRoutes);
+app.use('/api/threebox', threeBoxRoutes);
+app.use('/api/twoboxresin', twoBoxResinRoutes);
 
 const allowedOrigins = [
   'http://localhost:3000',
