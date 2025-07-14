@@ -27,7 +27,7 @@ const Signin = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    try {
+    /* try {
       const response = await axios.post('http://localhost:5000/api/auth/login', {
         email,
         password,
@@ -43,6 +43,7 @@ const Signin = () => {
       alert(message);
       console.error('Login error:', error);
     }
+      */
   };
 
   return (
@@ -133,6 +134,7 @@ const Signin = () => {
                       fontWeight: 'bold',
                       fontSize: '0.95rem'
                     }}
+                    href='/admin-dashboard'
                   >
                     Se connecter
                   </Button>
