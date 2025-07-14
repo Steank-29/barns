@@ -298,7 +298,7 @@ const EditBarriere = () => {
         mb: isMobile ? 2 : 4,
         mt: isMobile ? 1 : 0
       }}>
-        Gestion des Barrières
+       Centre de Contrôle des Barrières
       </Typography>
 
       {/* Search Bar */}

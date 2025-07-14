@@ -299,7 +299,7 @@ const EditCards = () => {
         mb: isMobile ? 2 : 4,
         mt: isMobile ? 1 : 0
       }}>
-        Manage Facade Products
+        Module de Gestion des Façades
       </Typography>
 
       {/* Search Bar */}
