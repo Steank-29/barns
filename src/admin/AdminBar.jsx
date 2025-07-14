@@ -189,10 +189,10 @@ const sidebarTabs = [
           <Typography sx={{ fontFamily: 'Savate' }}> Création d'un 2 Box Rouge </Typography>
       ), path: '/admin-twobox' },
       { text:(
-          <Typography sx={{ fontFamily: 'Savate' }}> Gestion des 2 Box Résin </Typography>
+          <Typography sx={{ fontFamily: 'Savate' }}> Gestion des 2 Box Résine </Typography>
       ), path: '/admin-twoboxresin-edit' },
       { text: (
-          <Typography sx={{ fontFamily: 'Savate' }}> Création d'un 2 Box Résin </Typography>
+          <Typography sx={{ fontFamily: 'Savate' }}> Création d'un 2 Box Résine </Typography>
       ), path: '/admin-twoboxresin' }
     ]
   },
@@ -446,7 +446,6 @@ const AdminBar = ({ children }) => {
       <CssBaseline />
 <AppBar position="fixed" open={open} sx={{ backgroundColor: '#38598b', color: 'white' }}>
   <Toolbar>
-    {/* Always show menu icon on mobile, conditionally on larger screens */}
     <IconButton
       color="inherit"
       aria-label="open drawer"
@@ -481,9 +480,9 @@ const AdminBar = ({ children }) => {
           fontWeight: 'bold',
           color: 'white',
           fontSize: {
-            xs: '0.7rem',  // smaller on mobile
-            sm: '0.875rem',      // medium on tablet
-            md: '1.4rem'    // larger on desktop
+            xs: '0.7rem', 
+            sm: '0.875rem',      
+            md: '1.4rem'    
           }
         }}
       >
@@ -506,7 +505,6 @@ const AdminBar = ({ children }) => {
         </Badge>
       </IconButton>
       
-      {/* Profile avatar - adjust size for mobile */}
       <IconButton
         onClick={handleProfileMenuOpen}
         size="small"

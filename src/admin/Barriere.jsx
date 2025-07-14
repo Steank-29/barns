@@ -87,7 +87,7 @@ const Barriere = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-  if (file.size > 5 * 1024 * 1024) { // 5MB
+  if (file.size > 5 * 1024 * 1024) { 
     toast.error('Image size must be less than 5MB');
     return;
   }
@@ -108,7 +108,6 @@ const Barriere = () => {
     }
   };
 
-  // const apiUrl = process.env.RENDER_API_URL || 'https://barns.onrender.com';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -134,7 +133,6 @@ const Barriere = () => {
         duration: 4000,
       });
       
-      // Reset form after successful submission
       setFormData({
         reference: '',
         name: '',
@@ -166,7 +164,6 @@ const Barriere = () => {
         }}
       />
       
-      {/* Left Side Form */}
       <Box sx={{ width: '50%', overflowY: 'auto', pr: 2 }}>
         <Typography variant="h4" gutterBottom sx={{ 
           fontFamily: 'Savate', 
@@ -182,7 +179,6 @@ const Barriere = () => {
         <StyledPaper elevation={3}>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={1}>
-              {/* Row 1 */}
               <Grid item xs={6}>
                 <StyledTextField
                   label="Référence"
@@ -207,7 +203,6 @@ const Barriere = () => {
                 
               </Grid>
 
-              {/* Row 2 - Full width */}
               <Grid item xs={6}>
                 <StyledTextField
                   type="file"
@@ -234,8 +229,6 @@ const Barriere = () => {
                 />
               </Grid>
 
-
-              {/* Row 5 - Full width */}
               <Grid item xs={6}>
                 <StyledTextarea
                   name="description"
@@ -246,7 +239,6 @@ const Barriere = () => {
                 />
               </Grid>
 
-              {/* Row 4 - Full width */}
               <Grid item xs={6}>
                 <StyledTextField
                   label="Prix (€)"

@@ -3,6 +3,7 @@ import { AppBar, Box, Toolbar, Typography, Container, Avatar, Button, IconButton
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
+import PersonIcon from '@mui/icons-material/ExitToApp';
 import Logo from '../assets/goldenbh_logo.png';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -67,7 +68,7 @@ function Navbar() {
               <FontAwesomeIcon icon={faCircleInfo} fontSize="meduim" style={{color:'#38598b'}} /> &nbsp; Qui sommes-nous
             </Typography>
             <Typography sx={navLinkStyle}>
-              <FontAwesomeIcon icon={faHorse} fontSize="meduim" style={{color:'#38598b'}} />&nbsp; Chevaux
+              <FontAwesomeIcon icon={faHorse} fontSize="meduim" style={{color:'#38598b'}} />&nbsp; Barn Démontable
             </Typography>
             <Typography sx={navLinkStyle}>
               <FontAwesomeIcon icon={faWarehouse} fontSize="meduim" style={{color:'#38598b'}} /> &nbsp; Equipements
@@ -75,30 +76,25 @@ function Navbar() {
             <Typography sx={navLinkStyle}>
               <FontAwesomeIcon icon={faRecycle} fontSize="meduim" style={{color:'#38598b'}} /> &nbsp; Seconde main
             </Typography>
-            <Typography sx={navLinkStyle}>
-              <FontAwesomeIcon icon={faPersonChalkboard} fontSize="medium" style={{color:'#38598b'}} />&nbsp; Stages
-            </Typography>
           </Box>
 
-          {/* Connexion Button */}
-          <Button 
-            variant="outlined"
+          {/* Connexion IconButton */}
+          <IconButton
+            href="/signin"
             sx={{
-              color: 'white',
-              borderColor: 'transparent',
-              backgroundColor: '#38598b',
+              color: '#38598b',
+              backgroundColor: 'rgba(56, 89, 139, 0.1)',
               '&:hover': {
-                backgroundColor: 'rgba(255, 255, 255, 1)',
-                borderColor: '#38598b',
-                color: '#38598b'
+                backgroundColor: 'rgba(56, 89, 139, 0.2)',
               },
               display: { xs: 'none', md: 'flex' },
-              ml: 2
+              ml: 2,
+              p: 1.5
             }}
-            href='/signin'
+            size="large"
           >
-            Connexion
-          </Button>
+            <PersonIcon />
+          </IconButton>
 
           {/* Mobile Menu Button */}
           <IconButton
@@ -251,16 +247,13 @@ function Navbar() {
             <FontAwesomeIcon icon={faCircleInfo} fontSize="small" style={{color:'#38598b'}} /> &nbsp; Qui sommes-nous
           </Typography>
           <Typography sx={navLinkStyle}>
-            <FontAwesomeIcon icon={faHorse} fontSize="small" style={{color:'#38598b'}} />&nbsp; Chevaux
+            <FontAwesomeIcon icon={faHorse} fontSize="small" style={{color:'#38598b'}} />&nbsp; Barn Démontable
           </Typography>
           <Typography sx={navLinkStyle}>
             <FontAwesomeIcon icon={faWarehouse} fontSize="small" style={{color:'#38598b'}} />&nbsp; Equipements
           </Typography>
           <Typography sx={navLinkStyle}>
             <FontAwesomeIcon icon={faRecycle} fontSize="small" style={{color:'#38598b'}} />&nbsp; Seconde main
-          </Typography>
-          <Typography sx={navLinkStyle}>
-            <FontAwesomeIcon icon={faPersonChalkboard} fontSize="meduim" style={{color:'#38598b'}} />&nbsp; Stages
           </Typography>
 
           <Box sx={{ display: 'flex', gap: 2, mt: 2, width: '80%' }}>
@@ -303,21 +296,21 @@ function Navbar() {
             </form>
           </Box>
           
-          <Button 
-            variant="outlined"
+          <IconButton
+            href="/signin"
             sx={{
               color: '#38598b',
-              borderColor: '#38598b',
+              backgroundColor: 'rgba(56, 89, 139, 0.1)',
               mt: 2,
               '&:hover': {
-                backgroundColor: 'rgba(56, 89, 139, 0.1)',
-                borderColor: '#38598b'
-              }
+                backgroundColor: 'rgba(56, 89, 139, 0.2)',
+              },
+              p: 1.5
             }}
-            href='/signin'
+            size="large"
           >
-            Connexion
-          </Button>
+            <PersonIcon />
+          </IconButton>
         </Box>
       </Drawer>
     </AppBar>

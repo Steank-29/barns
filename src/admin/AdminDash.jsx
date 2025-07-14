@@ -21,7 +21,7 @@ const AdminDash = () => {
         variant="h4"
         align="center"
         sx={{
-          color: 'black',
+          color: '#38598b',
           fontFamily: 'Savate, sans-serif',
           mb: 6,
           textTransform: 'uppercase',

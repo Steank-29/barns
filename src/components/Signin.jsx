@@ -1,56 +1,48 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
-  Box, 
-  Button, 
-  Container, 
-  CssBaseline, 
-  TextField, 
-  Typography, 
-  Paper,
-  Grid,
-  Link,
-  Divider
+  Box, Button, Container, CssBaseline, TextField, Typography, 
+  Paper, Grid, Link, Divider 
 } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { login } from "../tools/auth";
+import axios from "axios";
 
 const theme = createTheme({
   palette: {
-    primary: {
-      main: '#38598b',
-      contrastText: '#ffffff'
-    },
-    secondary: {
-      main: '#ffffff',
-    },
-    background: {
-      default: '#38598b',
-    },
+    primary: { main: '#38598b', contrastText: '#ffffff' },
+    secondary: { main: '#ffffff' },
+    background: { default: '#38598b' },
   },
   typography: {
-    fontFamily: [
-      'Roboto',
-      '"Helvetica Neue"',
-      'Arial',
-      'sans-serif'
-    ].join(','),
-    h5: {
-      fontWeight: 400,
-      letterSpacing: '0.02em'
-    }
+    fontFamily: ['Roboto', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(','),
+    h5: { fontWeight: 400, letterSpacing: '0.02em' }
   },
-  shape: {
-    borderRadius: 8
-  }
+  shape: { borderRadius: 8 }
 });
 
 const Signin = () => {
-  const handleSubmit = (event) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/auth/login', {
+        email,
+        password,
+      });
+
+      const { token, user } = response.data;
+
+      login(token); // Save token with your own method (e.g. localStorage)
+      console.log("Connected user:", user); // Optional: see user info
+      window.location.href = '/admin-dashboard';
+    } catch (error) {
+      const message = error.response?.data?.message || 'Échec de la connexion.';
+      alert(message);
+      console.error('Login error:', error);
+    }
   };
 
   return (
@@ -58,18 +50,18 @@ const Signin = () => {
       <CssBaseline />
       <Box
         sx={{
-          minHeight: '30vh', // Reduced from 40vh
+          minHeight: '30vh',
           display: 'flex',
           alignItems: 'center',
           backgroundColor: '#38598b',
-          py: 1 // Reduced padding
+          py: 1
         }}
       >
         <Container maxWidth={false} sx={{ maxWidth: 600 }}>
           <Grid container justifyContent="center">
             <Grid item xs={12} sm={10} md={8} lg={6}>
               <Paper elevation={6} sx={{ 
-                p: { xs: 3, sm: 3, md: 4 }, // Reduced padding
+                p: { xs: 3, sm: 3, md: 4 },
                 borderRadius: theme.shape.borderRadius,
                 backgroundColor: 'rgba(255, 255, 255, 0.96)'
               }}>
@@ -78,16 +70,16 @@ const Signin = () => {
                   variant="h5" 
                   align="center" 
                   sx={{ 
-                    mb: 3, // Reduced margin
+                    mb: 3,
                     color: 'primary.main',
                     fontWeight: 800,
-                    fontSize: '1.8rem', // Slightly smaller
+                    fontSize: '1.8rem',
                     letterSpacing: '0.02em'
                   }}
                 >
                   Accès à votre compte
                 </Typography>
-                
+
                 <Box component="form" onSubmit={handleSubmit} noValidate>
                   <TextField
                     margin="normal"
@@ -103,8 +95,10 @@ const Signin = () => {
                       '& .MuiOutlinedInput-root': {
                         borderRadius: theme.shape.borderRadius
                       },
-                      my: 1.5 // Reduced margin
+                      my: 1.5
                     }}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                   <TextField
                     margin="normal"
@@ -120,29 +114,31 @@ const Signin = () => {
                       '& .MuiOutlinedInput-root': {
                         borderRadius: theme.shape.borderRadius
                       },
-                      my: 1.5 // Reduced margin
+                      my: 1.5
                     }}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)} 
                   />
-                  
+
                   <Button
                     type="submit"
                     fullWidth
                     variant="contained"
                     size="large"
                     sx={{ 
-                      mt: 2, // Reduced margin
-                      mb: 1, 
-                      py: 1, // Reduced padding
+                      mt: 2,
+                      mb: 1,
+                      py: 1,
                       borderRadius: theme.shape.borderRadius,
                       fontWeight: 'bold',
-                      fontSize: '0.95rem' // Slightly smaller
+                      fontSize: '0.95rem'
                     }}
                   >
                     Se connecter
                   </Button>
 
+                  {/* Placeholder Gmail button (non-functional) */}
                   <Button
-                    type="submit"
                     fullWidth
                     variant="contained"
                     size="large"
@@ -159,22 +155,23 @@ const Signin = () => {
                         backgroundColor: '#C1351A',
                       }
                     }}
+                    onClick={() => alert("Connexion avec Gmail non encore disponible.")}
                     startIcon={
                       <img 
                         src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Gmail_icon_%282020%29.svg" 
                         alt="Gmail" 
-                        width={18} // Smaller icon
-                        height={18} 
+                        width={18}
+                        height={18}
                         style={{ filter: 'brightness(0) invert(1)' }} 
                       />
                     }
                   >
                     Connexion avec Gmail
                   </Button>
-                  
-                  <Divider sx={{ my: 2 }} /> {/* Reduced margin */}
-                  
-                  <Grid container spacing={1} direction="column"> {/* Tighter spacing */}
+
+                  <Divider sx={{ my: 2 }} />
+
+                  <Grid container spacing={1} direction="column">
                     <Grid item>
                       <Link 
                         href="#" 
@@ -191,24 +188,6 @@ const Signin = () => {
                         }}
                       >
                         Mot de passe oublié ?
-                      </Link>
-                    </Grid>
-                    <Grid item>
-                      <Link 
-                        href="/signup" 
-                        variant="body2" 
-                        sx={{ 
-                          display: 'block',
-                          textAlign: 'center',
-                          color: 'text.secondary',
-                          textDecoration: 'none',
-                          '&:hover': {
-                            color: 'primary.main',
-                            textDecoration: 'underline'
-                          }
-                        }}
-                      >
-                        Créer un nouveau compte
                       </Link>
                     </Grid>
                   </Grid>

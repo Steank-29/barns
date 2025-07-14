@@ -32,20 +32,25 @@ import {
   Search as SearchIcon,
   ImageNotSupported as ImageNotSupportedIcon
 } from '@mui/icons-material';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 
-const EditTwoBoxResin = () => {
+const EditFiveBox = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'));
   
-  const [twoBoxResins, setTwoBoxResins] = useState([]);
-  const [filteredTwoBoxResins, setFilteredTwoBoxResins] = useState([]);
+  const [threeBoxes, setThreeBoxes] = useState([]);
+  const [filteredThreeBoxes, setFilteredThreeBoxes] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedTwoBoxResin, setSelectedTwoBoxResin] = useState(null);
+const [selectedThreeBox, setSelectedThreeBox] = useState({
+  
+  imageFile: null,
+  imagePreview: null
+});
   const [viewMode, setViewMode] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
-  const [twoBoxResinToDelete, setTwoBoxResinToDelete] = useState(null);
+  const [threeBoxToDelete, setThreeBoxToDelete] = useState(null);
   const [loading, setLoading] = useState(true);
   const [imageLoadStates, setImageLoadStates] = useState({});
   const [snackbar, setSnackbar] = useState({
@@ -55,24 +60,48 @@ const EditTwoBoxResin = () => {
   });
 
   // Handle image load states
-  const handleImageLoad = (twoBoxResinId) => {
+  const handleImageLoad = (threeBoxId) => {
     setImageLoadStates(prev => ({
       ...prev,
-      [twoBoxResinId]: 'loaded'
+      [threeBoxId]: 'loaded'
     }));
   };
 
-  const handleImageError = (twoBoxResinId) => {
+
+  const fieldStyles = {
+  '& .MuiOutlinedInput-root': {
+    borderRadius: 2,
+    backgroundColor: '#fff',
+  },
+};
+
+const buttonStyles = (variant) => ({
+  borderRadius: 2,
+  textTransform: 'none',
+  fontWeight: 600,
+  px: 3,
+  py: 1,
+  ...(variant === 'contained' && {
+    backgroundColor: '#38598b',
+    '&:hover': { backgroundColor: '#2c5282' },
+  }),
+  ...(variant === 'outlined' && {
+    '&:hover': { backgroundColor: 'rgba(220, 38, 38, 0.04)' },
+  }),
+});
+
+
+  const handleImageError = (threeBoxId) => {
     setImageLoadStates(prev => ({
       ...prev,
-      [twoBoxResinId]: 'error'
+      [threeBoxId]: 'error'
     }));
   };
 
-  const handleImageLoadStart = (twoBoxResinId) => {
+  const handleImageLoadStart = (threeBoxId) => {
     setImageLoadStates(prev => ({
       ...prev,
-      [twoBoxResinId]: 'loading'
+      [threeBoxId]: 'loading'
     }));
   };
 
@@ -87,144 +116,162 @@ const EditTwoBoxResin = () => {
     return imageUrl;
   };
 
-  // Fetch all twoBoxResins
+  // Fetch all threeBoxes
   useEffect(() => {
-    const fetchTwoBoxResins = async () => {
+    const fetchThreeBoxes = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/twoboxresin/getalltwoboxresins');
+        const response = await fetch('http://localhost:5000/api/fivebox/getallfiveboxes');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        setTwoBoxResins(data);
-        setFilteredTwoBoxResins(data);
+        setThreeBoxes(data);
+        setFilteredThreeBoxes(data);
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching twoBoxResins:', error);
+        console.error('Error fetching fiveBoxes:', error);
         setSnackbar({
           open: true,
-          message: 'Failed to load twoBoxResins: ' + error.message,
+          message: 'Failed to load fiveBoxes: ' + error.message,
           severity: 'error'
         });
         setLoading(false);
       }
     };
 
-    fetchTwoBoxResins();
+    fetchThreeBoxes();
   }, []);
 
   // Search functionality
   useEffect(() => {
     if (searchTerm.trim() === '') {
-      setFilteredTwoBoxResins(twoBoxResins);
+      setFilteredThreeBoxes(threeBoxes);
     } else {
-      const filtered = twoBoxResins.filter(twoBoxResin => 
-        twoBoxResin.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (twoBoxResin.reference && twoBoxResin.reference.toLowerCase().includes(searchTerm.toLowerCase()))
+      const filtered = threeBoxes.filter(threeBox => 
+        threeBox.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (threeBox.reference && threeBox.reference.toLowerCase().includes(searchTerm.toLowerCase()))
       );
-      setFilteredTwoBoxResins(filtered);
+      setFilteredThreeBoxes(filtered);
     }
-  }, [searchTerm, twoBoxResins]);
+  }, [searchTerm, threeBoxes]);
 
-  // Handle view twoBoxResin details
-  const handleView = (twoBoxResin) => {
-    setSelectedTwoBoxResin(twoBoxResin);
+  // Handle view threeBox details
+  const handleView = (threeBox) => {
+    setSelectedThreeBox(threeBox);
     setViewMode(true);
   };
 
-  // Handle edit twoBoxResin
-  const handleEdit = (twoBoxResin) => {
-    setSelectedTwoBoxResin({ ...twoBoxResin });
-    setEditMode(true);
-  };
+  // Handle edit threeBox
+const handleEdit = (threeBox) => {
+  setSelectedThreeBox({ 
+    ...threeBox,
+    imageFile: null,
+    imagePreview: null
+  });
+  setEditMode(true);
+};
 
   // Handle delete confirmation
-  const handleDeleteClick = (twoBoxResin) => {
-    setTwoBoxResinToDelete(twoBoxResin);
+  const handleDeleteClick = (threeBox) => {
+    setThreeBoxToDelete(threeBox);
     setDeleteConfirm(true);
   };
 
   // Confirm delete
   const confirmDelete = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/twoboxresin/deletetwoboxresin/${twoBoxResinToDelete.reference}`, {
+      const response = await fetch(`http://localhost:5000/api/fivebox/deletefivebox/${threeBoxToDelete.reference}`, {
         method: 'DELETE'
       });
 
       if (response.ok) {
-        const updatedTwoBoxResins = twoBoxResins.filter(b => b._id !== twoBoxResinToDelete._id);
-        setTwoBoxResins(updatedTwoBoxResins);
-        setFilteredTwoBoxResins(updatedTwoBoxResins);
+        const updatedThreeBoxes = threeBoxes.filter(b => b._id !== threeBoxToDelete._id);
+        setThreeBoxes(updatedThreeBoxes);
+        setFilteredThreeBoxes(updatedThreeBoxes);
         setSnackbar({
           open: true,
-          message: 'TwoBoxResin supprimée avec succès',
+          message: 'FiveBox supprimée avec succès',
           severity: 'success'
         });
       } else {
-        throw new Error('Failed to delete twoBoxResin');
+        throw new Error('Failed to delete FiveBox');
       }
     } catch (error) {
-      console.error('Error deleting twoBoxResin:', error);
+      console.error('Error deleting FiveBox:', error);
       setSnackbar({
         open: true,
-        message: 'Erreur lors de la suppression de la twoBoxResin',
+        message: 'Erreur lors de la suppression de la FiveBox',
         severity: 'error'
       });
     } finally {
       setDeleteConfirm(false);
-      setTwoBoxResinToDelete(null);
+      setThreeBoxToDelete(null);
     }
   };
 
   // Handle form field changes
   const handleFieldChange = (e) => {
     const { name, value } = e.target;
-    setSelectedTwoBoxResin(prev => ({
+    setSelectedThreeBox(prev => ({
       ...prev,
       [name]: name === 'price' ? parseFloat(value) : value
     }));
   };
 
-  // Save updated twoBoxResin
-  const saveChanges = async () => {
-    try {
-      const response = await fetch(`http://localhost:5000/api/twoboxresin/updatetwoboxresin/${selectedTwoBoxResin.reference}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(selectedTwoBoxResin)
-      });
 
-      if (response.ok) {
-        const updatedTwoBoxResin = await response.json();
-        const updatedTwoBoxResins = twoBoxResins.map(b => b._id === updatedTwoBoxResin._id ? updatedTwoBoxResin : b);
-        setTwoBoxResins(updatedTwoBoxResins);
-        setFilteredTwoBoxResins(updatedTwoBoxResins);
-        setSnackbar({
-          open: true,
-          message: 'TwoBoxResin mise à jour avec succès',
-          severity: 'success'
-        });
-        setEditMode(false);
-      } else {
-        throw new Error('Failed to update twoBoxResin');
+  // Save updated threeBox
+// Replace the existing saveChanges function with this:
+const saveChanges = async () => {
+  try {
+    const formData = new FormData();
+    
+    // Append all fields to formData
+    Object.keys(selectedThreeBox).forEach(key => {
+      if (key !== 'imageFile' && key !== 'imagePreview' && selectedThreeBox[key] !== null) {
+        formData.append(key, selectedThreeBox[key]);
       }
-    } catch (error) {
-      console.error('Error updating twoBoxResin:', error);
+    });
+    
+    // Append the image file if it exists
+    if (selectedThreeBox.imageFile) {
+      formData.append('image', selectedThreeBox.imageFile);
+    }
+    
+    const response = await fetch(`http://localhost:5000/api/fivebox/updatefivebox/${selectedThreeBox.reference}`, {
+      method: 'PUT',
+      body: formData,
+      // Don't set Content-Type header - the browser will set it automatically with the correct boundary
+    });
+
+    if (response.ok) {
+      const updatedThreeBox = await response.json();
+      const updatedThreeBoxes = threeBoxes.map(b => b._id === updatedThreeBox._id ? updatedThreeBox : b);
+      setThreeBoxes(updatedThreeBoxes);
+      setFilteredThreeBoxes(updatedThreeBoxes);
       setSnackbar({
         open: true,
-        message: 'Erreur lors de la mise à jour de la twoBoxResin',
-        severity: 'error'
+        message: 'FiveBox mise à jour avec succès',
+        severity: 'success'
       });
+      setEditMode(false);
+    } else {
+      throw new Error('Failed to update FiveBox');
     }
-  };
+  } catch (error) {
+    console.error('Error updating FiveBox:', error);
+    setSnackbar({
+      open: true,
+      message: 'Erreur lors de la mise à jour de la FiveBox',
+      severity: 'error'
+    });
+  }
+};
 
   // Close all dialogs
   const closeDialog = () => {
     setViewMode(false);
     setEditMode(false);
-    setSelectedTwoBoxResin(null);
+    setSelectedThreeBox(null);
   };
 
   // Close snackbar
@@ -233,9 +280,9 @@ const EditTwoBoxResin = () => {
   };
 
   // Render image with loading states
-  const renderTwoBoxResinImage = (twoBoxResin) => {
-    const imageUrl = getValidImageUrl(twoBoxResin.imageURL);
-    const loadState = imageLoadStates[twoBoxResin._id];
+  const renderThreeBoxImage = (threeBox) => {
+    const imageUrl = getValidImageUrl(threeBox.imageURL);
+    const loadState = imageLoadStates[threeBox._id];
 
     if (!imageUrl) {
       return (
@@ -257,10 +304,10 @@ const EditTwoBoxResin = () => {
         <CardMedia
           component="img"
           image={imageUrl}
-          alt={twoBoxResin.name}
-          onLoad={() => handleImageLoad(twoBoxResin._id)}
-          onError={() => handleImageError(twoBoxResin._id)}
-          onLoadStart={() => handleImageLoadStart(twoBoxResin._id)}
+          alt={threeBox.name}
+          onLoad={() => handleImageLoad(threeBox._id)}
+          onError={() => handleImageError(threeBox._id)}
+          onLoadStart={() => handleImageLoadStart(threeBox._id)}
           sx={{
             height: '100%',
             width: '100%',
@@ -298,7 +345,7 @@ const EditTwoBoxResin = () => {
         mb: isMobile ? 2 : 4,
         mt: isMobile ? 1 : 0
       }}>
-        Gestion des TwoBoxResin
+        FiveBox Management – Solutions Intelligentes de Gestion et de Suivi
       </Typography>
 
       {/* Search Bar */}
@@ -306,7 +353,7 @@ const EditTwoBoxResin = () => {
         <TextField
           fullWidth
           variant="outlined"
-          placeholder="Rechercher parmi les twoBoxResins par nom ou référence..."
+          placeholder="Rechercher parmi les threeBoxes par nom ou référence..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           InputProps={{
@@ -324,7 +371,7 @@ const EditTwoBoxResin = () => {
         />
       </Box>
 
-      {/* TwoBoxResins Grid */}
+      {/* ThreeBoxes Grid */}
       <Box sx={{ 
         display: 'flex', 
         justifyContent: 'center',
@@ -334,9 +381,9 @@ const EditTwoBoxResin = () => {
           maxWidth: 'lg',
           justifyContent: 'center'
         }}>
-          {filteredTwoBoxResins.length > 0 ? (
-            filteredTwoBoxResins.map((twoBoxResin) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={twoBoxResin._id} sx={{
+          {filteredThreeBoxes.length > 0 ? (
+            filteredThreeBoxes.map((threeBox) => (
+              <Grid item xs={12} sm={6} md={4} lg={3} key={threeBox._id} sx={{
                 display: 'flex',
                 justifyContent: 'center'
               }}>
@@ -355,17 +402,17 @@ const EditTwoBoxResin = () => {
                   color: 'white',
                   borderRadius: 2
                 }}>
-                  {/* TwoBoxResin Image */}
+                  {/* ThreeBox Image */}
                   <Box sx={{ 
                     position: 'relative',
                     overflow: 'hidden',
                     height: isMobile ? 120 : 180,
                     backgroundColor: 'rgba(0,0,0,0.1)'
                   }}>
-                    {renderTwoBoxResinImage(twoBoxResin)}
+                    {renderThreeBoxImage(threeBox)}
                   </Box>
 
-                  {/* TwoBoxResin Information */}
+                  {/* ThreeBox Information */}
                   <CardContent sx={{ 
                     flexGrow: 1,
                     display: 'flex',
@@ -377,7 +424,7 @@ const EditTwoBoxResin = () => {
                       color: 'white',
                       fontSize: isMobile ? '0.9rem' : '1.1rem'
                     }}>
-                      {twoBoxResin.name}
+                      {threeBox.name}
                     </Typography>
 
                     {/* Reference and Price */}
@@ -389,7 +436,7 @@ const EditTwoBoxResin = () => {
                       flexWrap: 'wrap'
                     }}>
                       <Chip 
-                        label={`Réf: ${twoBoxResin.reference}`} 
+                        label={`Réf: ${threeBox.reference}`} 
                         size="small" 
                         sx={{ 
                           backgroundColor: 'rgba(255,255,255,0.2)',
@@ -398,7 +445,7 @@ const EditTwoBoxResin = () => {
                         }}
                       />
                       <Chip 
-                        label={`${twoBoxResin.price?.toFixed(2) || '0.00'}€`} 
+                        label={`${threeBox.price?.toFixed(2) || '0.00'}€`} 
                         size={isMobile ? 'small' : 'medium'}
                         sx={{
                           backgroundColor: 'white',
@@ -424,7 +471,7 @@ const EditTwoBoxResin = () => {
                         fontSize: isMobile ? '0.8rem' : '0.9rem'
                       }}
                     >
-                      {twoBoxResin.description}
+                      {threeBox.description}
                     </Typography>
 
                     {/* Action Buttons */}
@@ -435,7 +482,7 @@ const EditTwoBoxResin = () => {
                     }}>
                       <Tooltip title="Voir détails">
                         <IconButton 
-                          onClick={() => handleView(twoBoxResin)}
+                          onClick={() => handleView(threeBox)}
                           sx={{ color: 'white' }}
                           size={isMobile ? 'small' : 'medium'}
                         >
@@ -444,7 +491,7 @@ const EditTwoBoxResin = () => {
                       </Tooltip>
                       <Tooltip title="Modifier">
                         <IconButton 
-                          onClick={() => handleEdit(twoBoxResin)}
+                          onClick={() => handleEdit(threeBox)}
                           sx={{ color: 'white' }}
                           size={isMobile ? 'small' : 'medium'}
                         >
@@ -453,7 +500,7 @@ const EditTwoBoxResin = () => {
                       </Tooltip>
                       <Tooltip title="Supprimer">
                         <IconButton 
-                          onClick={() => handleDeleteClick(twoBoxResin)}
+                          onClick={() => handleDeleteClick(threeBox)}
                           sx={{ color: 'white' }}
                           size={isMobile ? 'small' : 'medium'}
                         >
@@ -476,14 +523,14 @@ const EditTwoBoxResin = () => {
                 backgroundColor: 'rgba(56, 89, 139, 0.1)'
               }}>
                 <Typography variant={isMobile ? 'subtitle1' : 'h6'} sx={{ color: '#38598b' }}>
-                  {searchTerm ? 'Aucune twoBoxResin ne correspond à votre recherche' : 'Aucune twoBoxResin disponible'}
+                  {searchTerm ? 'Aucune threeBox ne correspond à votre recherche' : 'Aucune threeBox disponible'}
                 </Typography>
                 <Typography variant="body2" sx={{ 
                   mt: 1, 
                   color: '#38598b',
                   fontSize: isMobile ? '0.8rem' : '0.9rem'
                 }}>
-                  {searchTerm ? 'Essayez un autre terme de recherche' : 'Ajoutez des twoBoxResins pour commencer'}
+                  {searchTerm ? 'Essayez un autre terme de recherche' : 'Ajoutez des threeBoxes pour commencer'}
                 </Typography>
               </Box>
             </Grid>
@@ -491,7 +538,7 @@ const EditTwoBoxResin = () => {
         </Grid>
       </Box>
 
-      {/* View TwoBoxResin Dialog */}
+      {/* View ThreeBox Dialog */}
       <Dialog 
         open={viewMode} 
         onClose={closeDialog} 
@@ -514,7 +561,7 @@ const EditTwoBoxResin = () => {
         }}>
           <Box display="flex" justifyContent="space-between" alignItems="center" px={isMobile ? 2 : 4} py={isMobile ? 1.5 : 2}>
             <Typography variant={isMobile ? 'h6' : 'h5'} fontWeight={700} color="#fff">
-              {selectedTwoBoxResin?.name || 'Détails de la TwoBoxResin'}
+              {selectedThreeBox?.name || 'Détails de la ThreeBox'}
             </Typography>
             <IconButton 
               onClick={closeDialog} 
@@ -532,7 +579,7 @@ const EditTwoBoxResin = () => {
         </DialogTitle>
 
         <DialogContent dividers sx={{ p: 0 }}>
-          {selectedTwoBoxResin && (
+          {selectedThreeBox && (
             <Box>
               {/* Full-width image section with shadow */}
               <Box sx={{
@@ -543,11 +590,11 @@ const EditTwoBoxResin = () => {
                 backgroundColor: '#f8fafc',
                 boxShadow: 'inset 0 -10px 20px -10px rgba(0,0,0,0.1)'
               }}>
-                {getValidImageUrl(selectedTwoBoxResin.imageURL) ? (
+                {getValidImageUrl(selectedThreeBox.imageURL) ? (
                   <CardMedia
                     component="img"
-                    image={getValidImageUrl(selectedTwoBoxResin.imageURL)}
-                    alt={selectedTwoBoxResin.name}
+                    image={getValidImageUrl(selectedThreeBox.imageURL)}
+                    alt={selectedThreeBox.name}
                     sx={{
                       width: '100%',
                       height: '100%',
@@ -576,13 +623,13 @@ const EditTwoBoxResin = () => {
                 )}
               </Box>
 
-              {/* TwoBoxResin details section with modern card layout */}
+              {/* ThreeBox details section with modern card layout */}
               <Box sx={{ 
                 p: isMobile ? 2 : isTablet ? 3 : 4,
                 backgroundColor: '#fff'
               }}>
                 <Grid container spacing={isMobile ? 2 : 4}>
-                  {/* TwoBoxResin Description Section */}
+                  {/* ThreeBox Description Section */}
                   <Grid item xs={12} md={6}>
                     <Box sx={{
                       p: isMobile ? 1.5 : 3,
@@ -597,7 +644,7 @@ const EditTwoBoxResin = () => {
                         pb: 1,
                         mb: 2
                       }}>
-                        Description de la TwoBoxResin
+                        Description de la fiveBox
                       </Typography>
                       <Typography variant="body1" sx={{ 
                         lineHeight: 1.7,
@@ -605,7 +652,7 @@ const EditTwoBoxResin = () => {
                         whiteSpace: 'pre-line',
                         fontSize: isMobile ? '0.9rem' : '1rem'
                       }}>
-                        {selectedTwoBoxResin.description || 'Aucune description disponible pour cette twoBoxResin.'}
+                        {selectedThreeBox.description || 'Aucune description disponible pour cette fiveBox.'}
                       </Typography>
 
                       <Typography variant={isMobile ? 'subtitle1' : 'h6'} gutterBottom sx={{ 
@@ -629,7 +676,7 @@ const EditTwoBoxResin = () => {
                             Référence:
                           </Typography>
                           <Typography variant="body1" sx={{ fontSize: isMobile ? '0.9rem' : '1rem' }}>
-                            {selectedTwoBoxResin.reference}
+                            {selectedThreeBox.reference}
                           </Typography>
                         </Box>
                         
@@ -647,7 +694,7 @@ const EditTwoBoxResin = () => {
                             color: '#2c5282',
                             fontSize: isMobile ? '0.9rem' : '1rem'
                           }}>
-                            {selectedTwoBoxResin.price?.toFixed(2) || '0.00'}€
+                            {selectedThreeBox.price?.toFixed(2) || '0.00'}€
                           </Typography>
                         </Box>
                         
@@ -661,7 +708,7 @@ const EditTwoBoxResin = () => {
                             Type:
                           </Typography>
                           <Typography variant="body1" sx={{ fontSize: isMobile ? '0.9rem' : '1rem' }}>
-                            {selectedTwoBoxResin.type || 'N/A'}
+                            {selectedThreeBox.type || 'N/A'}
                           </Typography>
                         </Box>
                         
@@ -675,7 +722,7 @@ const EditTwoBoxResin = () => {
                             Conception:
                           </Typography>
                           <Typography variant="body1" sx={{ fontSize: isMobile ? '0.9rem' : '1rem' }}>
-                            {selectedTwoBoxResin.conception || 'N/A'}
+                            {selectedThreeBox.conception || 'N/A'}
                           </Typography>
                         </Box>
                       </Box>
@@ -712,7 +759,7 @@ const EditTwoBoxResin = () => {
                             Épaisseur:
                           </Typography>
                           <Typography variant="body1" sx={{ fontSize: isMobile ? '0.9rem' : '1rem' }}>
-                            {selectedTwoBoxResin.epaisseur || 'N/A'}
+                            {selectedThreeBox.epaisseur || 'N/A'}
                           </Typography>
                         </Box>
                         
@@ -726,7 +773,7 @@ const EditTwoBoxResin = () => {
                             Hauteur Basse:
                           </Typography>
                           <Typography variant="body1" sx={{ fontSize: isMobile ? '0.9rem' : '1rem' }}>
-                            {selectedTwoBoxResin.hauteurPartieBasse || 'N/A'}
+                            {selectedThreeBox.hauteurPartieBasse || 'N/A'}
                           </Typography>
                         </Box>
                         
@@ -740,7 +787,7 @@ const EditTwoBoxResin = () => {
                             Hauteur Haute:
                           </Typography>
                           <Typography variant="body1" sx={{ fontSize: isMobile ? '0.9rem' : '1rem' }}>
-                            {selectedTwoBoxResin.hauteurPartieHaute || 'N/A'}
+                            {selectedThreeBox.hauteurPartieHaute || 'N/A'}
                           </Typography>
                         </Box>
                         
@@ -754,7 +801,7 @@ const EditTwoBoxResin = () => {
                             Avancée:
                           </Typography>
                           <Typography variant="body1" sx={{ fontSize: isMobile ? '0.9rem' : '1rem' }}>
-                            {selectedTwoBoxResin.avancee || 'N/A'}
+                            {selectedThreeBox.avancee || 'N/A'}
                           </Typography>
                         </Box>
 
@@ -768,7 +815,7 @@ const EditTwoBoxResin = () => {
                             Poteaux:
                           </Typography>
                           <Typography variant="body1" sx={{ fontSize: isMobile ? '0.9rem' : '1rem' }}>
-                            {selectedTwoBoxResin.poteaux || 'N/A'}
+                            {selectedThreeBox.poteaux || 'N/A'}
                           </Typography>
                         </Box>
 
@@ -782,7 +829,7 @@ const EditTwoBoxResin = () => {
                             Tôle:
                           </Typography>
                           <Typography variant="body1" sx={{ fontSize: isMobile ? '0.9rem' : '1rem' }}>
-                            {selectedTwoBoxResin.tole || 'N/A'}
+                            {selectedThreeBox.tole || 'N/A'}
                           </Typography>
                         </Box>
 
@@ -796,7 +843,7 @@ const EditTwoBoxResin = () => {
                             Option:
                           </Typography>
                           <Typography variant="body1" sx={{ fontSize: isMobile ? '0.9rem' : '1rem' }}>
-                            {selectedTwoBoxResin.option || 'N/A'}
+                            {selectedThreeBox.option || 'N/A'}
                           </Typography>
                         </Box>
 
@@ -810,7 +857,7 @@ const EditTwoBoxResin = () => {
                             Couleur:
                           </Typography>
                           <Typography variant="body1" sx={{ fontSize: isMobile ? '0.9rem' : '1rem' }}>
-                            {selectedTwoBoxResin.couleur || 'N/A'}
+                            {selectedThreeBox.couleur || 'N/A'}
                           </Typography>
                         </Box>
 
@@ -824,7 +871,7 @@ const EditTwoBoxResin = () => {
                             Ouverture:
                           </Typography>
                           <Typography variant="body1" sx={{ fontSize: isMobile ? '0.9rem' : '1rem' }}>
-                            {selectedTwoBoxResin.ouverture || 'N/A'}
+                            {selectedThreeBox.ouverture || 'N/A'}
                           </Typography>
                         </Box>
                       </Box>
@@ -837,456 +884,370 @@ const EditTwoBoxResin = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Edit TwoBoxResin Dialog */}
-      <Dialog 
-        open={editMode} 
-        onClose={closeDialog} 
-        maxWidth="sm" 
-        fullWidth
-        fullScreen={isMobile}
-        TransitionProps={{
-          timeout: { enter: 300, exit: 200 },
-          easing: { enter: 'cubic-bezier(0.17, 0.67, 0.24, 1.09)', exit: 'ease-in' }
+      {/* Edit ThreeBox Dialog */}
+<Dialog
+  open={editMode}
+  onClose={closeDialog}
+  maxWidth="md"
+  fullWidth
+  fullScreen={isMobile}
+  TransitionProps={{
+    timeout: { enter: 300, exit: 200 },
+    easing: { 
+      enter: 'cubic-bezier(0.17, 0.67, 0.24, 1.09)', 
+      exit: 'ease-in' 
+    }
+  }}
+  PaperProps={{
+    sx: {
+      borderRadius: isMobile ? 0 : '12px',
+      boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
+      overflow: 'hidden',
+      background: '#f5f7fa',
+    },
+  }}
+>
+  {/* Header with gradient and subtle pattern */}
+  <DialogTitle
+    sx={{
+      background: `
+        linear-gradient(135deg, #38598b 0%, #3f7acc 100%),
+        repeating-linear-gradient(
+          45deg,
+          rgba(255,255,255,0.05) 0px,
+          rgba(255,255,255,0.05) 2px,
+          transparent 2px,
+          transparent 4px
+        )
+      `,
+      color: '#fff',
+      px: isMobile ? 2 : 3,
+      py: isMobile ? 1.5 : 2,
+      position: 'relative',
+      '&::after': {
+        content: '""',
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: '4px',
+        background: 'linear-gradient(90deg, #3f7acc, #5fdde5)',
+      }
+    }}
+  >
+    <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Box display="flex" alignItems="center">
+        <EditIcon sx={{ 
+          mr: 1.5, 
+          fontSize: isMobile ? 20 : 26,
+          filter: 'drop-shadow(0 1px 1px rgba(0,0,0,0.2))'
+        }} />
+        <Typography
+          variant={isMobile ? 'h6' : 'h6'}
+          fontWeight={600}
+          sx={{ 
+            letterSpacing: 0.5,
+            textShadow: '0 1px 2px rgba(0,0,0,0.2)'
+          }}
+        >
+          Modifier les 5 Box
+        </Typography>
+      </Box>
+      <IconButton
+        onClick={closeDialog}
+        sx={{
+          color: '#fff',
+          transition: 'all 0.2s',
+          '&:hover': {
+            backgroundColor: 'rgba(255,255,255,0.15)',
+            transform: 'rotate(90deg)'
+          },
         }}
-        PaperProps={{
-          sx: {
-            borderRadius: isMobile ? 0 : '12px',
-            boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.15)',
-            overflow: 'hidden'
+        size={isMobile ? 'small' : 'medium'}
+      >
+        <CloseIcon />
+      </IconButton>
+    </Box>
+  </DialogTitle>
+
+  {/* Content with consistent card-like fields */}
+  <DialogContent
+    dividers
+    sx={{
+      px: isMobile ? 3 : 4,
+      py: isMobile ? 3 : 4,
+      backgroundColor: '#f5f7fa',
+    }}
+  >
+    {selectedThreeBox && (
+      <Grid container spacing={isMobile ? 3 : 4}>
+        {/* Field Grid - All fields now have consistent height */}
+        {[
+          ['Nom', 'name'],
+          ['Référence', 'reference', true],
+          ['Prix (€)', 'price', false, 'number'],
+          ['Type', 'type'],
+          ['Conception', 'conception'],
+          ['Épaisseur', 'epaisseur'],
+          ['Hauteur Partie Basse', 'hauteurPartieBasse'],
+          ['Hauteur Partie Haute', 'hauteurPartieHaute'],
+          ['Avancée', 'avancee'],
+          ['Poteaux', 'poteaux'],
+          ['Tôle', 'tole'],
+          ['Option', 'option'],
+          ['Couleur', 'couleur'],
+          ['Ouverture', 'ouverture'],
+        ].map(([label, name, disabled = false, type = 'text'], idx) => (
+          <Grid item xs={12} sm={6} key={idx}>
+            <TextField
+              fullWidth
+              label={label}
+              name={name}
+              type={type}
+              value={selectedThreeBox[name] || ''}
+              onChange={handleFieldChange}
+              variant="filled"
+              size={isMobile ? 'small' : 'medium'}
+              disabled={disabled}
+              InputProps={{
+                disableUnderline: true,
+                ...(name === 'price' ? {
+                  startAdornment: (
+                    <InputAdornment position="start">€</InputAdornment>
+                  ),
+                  inputProps: { step: '0.01', min: '0' },
+                } : {}),
+                sx: {
+                  borderRadius: '8px',
+                  backgroundColor: '#fff',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
+                  '&:hover': {
+                    boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+                  },
+                  '&.Mui-focused': {
+                    boxShadow: '0 0 0 2px #3f7acc'
+                  }
+                }
+              }}
+              InputLabelProps={{ 
+                shrink: true,
+                sx: {
+                  fontWeight: 500,
+                  color: '#64748b',
+                  transform: 'translate(12px, 10px) scale(0.9)'
+                }
+              }}
+            />
+          </Grid>
+        ))}
+
+        {/* Image URL Field with Preview */}
+<Grid item xs={12}>
+  <Box sx={{ 
+    display: 'flex', 
+    flexDirection: isMobile ? 'column' : 'row', 
+    gap: 3,
+    alignItems: 'center'
+  }}>
+    {selectedThreeBox.imageURL && (
+      <Box sx={{
+        width: 220,
+        height: 180,
+        borderRadius: '8px',
+        overflow: 'hidden',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+        position: 'relative',
+        flexShrink: 0
+      }}>
+        <img 
+          src={getValidImageUrl(selectedThreeBox.imageURL)} 
+          alt="Box preview" 
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover'
+          }}
+        />
+        <IconButton
+          sx={{
+            position: 'absolute',
+            top: 4,
+            right: 4,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            color: 'white',
+            '&:hover': {
+              backgroundColor: 'rgba(0,0,0,0.7)'
+            }
+          }}
+          size="small"
+          onClick={() => window.open(getValidImageUrl(selectedThreeBox.imageURL), '_blank')}
+        >
+          <VisibilityOutlinedIcon fontSize="small" />
+        </IconButton>
+      </Box>
+    )}
+    <Box sx={{ width: '100%' }}>
+      <Button
+        variant="contained"
+        component="label"
+        fullWidth
+        sx={{
+          backgroundColor: '#3f7acc',
+          color: 'white',
+          textTransform: 'none',
+          py: 1.5,
+          mb: 2,
+          '&:hover': {
+            backgroundColor: '#38598b'
           }
         }}
       >
-        {/* Enhanced Dialog Header with gradient */}
-        <DialogTitle sx={{ 
-          background: 'linear-gradient(135deg, #38598b 0%,rgb(63, 122, 204) 100%)',
-          color: '#fff',
-          px: isMobile ? 2 : 3,
-          py: isMobile ? 1.5 : 2,
-          boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
-        }}>
-          <Box display="flex" justifyContent="space-between" alignItems="center">
-            <Box display="flex" alignItems="center">
-              <EditIcon sx={{ mr: 1.5, fontSize: isMobile ? '1.2rem' : '1.5rem' }} />
-              <Typography variant={isMobile ? 'h6' : 'h6'} fontWeight={600} sx={{ letterSpacing: '0.5px' }}>
-                Modifier la TwoBoxResine
-              </Typography>
-            </Box>
-            <IconButton 
-              onClick={closeDialog} 
-              sx={{ 
-                color: '#fff',
+        {selectedThreeBox.imageURL ? 'Changer l\'image' : 'Ajouter une image'}
+        <input
+          type="file"
+          hidden
+          name="image"
+          accept="image/*"
+          onChange={(e) => {
+            const file = e.target.files[0];
+            if (file) {
+              setSelectedThreeBox(prev => ({
+                ...prev,
+                imageFile: file,
+                imagePreview: URL.createObjectURL(file)
+              }));
+            }
+          }}
+        />
+      </Button>
+      {selectedThreeBox.imageURL && (
+        <Button
+          variant="outlined"
+          color="error"
+          fullWidth
+          sx={{
+            textTransform: 'none',
+            py: 1.5
+          }}
+          onClick={() => {
+            setSelectedThreeBox(prev => ({
+              ...prev,
+              imageURL: null,
+              imageFile: null,
+              imagePreview: null
+            }));
+          }}
+        >
+          Supprimer l'image
+        </Button>
+      )}
+    </Box>
+  </Box>
+</Grid>
+
+        {/* Description Field - Full Width with matching style */}
+        <Grid item xs={12}>
+          <TextField
+            fullWidth
+            label="Description"
+            name="description"
+            multiline
+            rows={isMobile ? 4 : 6}
+            value={selectedThreeBox.description || ''}
+            onChange={handleFieldChange}
+            variant="filled"
+            size={isMobile ? 'small' : 'medium'}
+            InputProps={{
+              disableUnderline: true,
+              sx: {
+                borderRadius: '8px',
+                backgroundColor: '#fff',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
+                padding: '16px',
                 '&:hover': {
-                  backgroundColor: 'rgba(255,255,255,0.1)'
+                  boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
                 },
-                transition: 'all 0.2s ease'
-              }}
-              size={isMobile ? 'small' : 'medium'}
-            >
-              <CloseIcon fontSize={isMobile ? 'small' : 'medium'} />
-            </IconButton>
-          </Box>
-        </DialogTitle>
-
-        {/* Dialog Content with improved spacing and styling */}
-        <DialogContent dividers sx={{ 
-          px: isMobile ? 1 : 3, 
-          py: isMobile ? 2 : 3,
-          backgroundColor: '#f9fafc'
-        }}>
-          {selectedTwoBoxResin && (
-            <Grid container spacing={isMobile ? 1 : 3}>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Nom"
-                  name="name"
-                  value={selectedTwoBoxResin.name || ''}
-                  onChange={handleFieldChange}
-                  variant="outlined"
-                  size={isMobile ? 'small' : 'medium'}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: '8px',
-                      backgroundColor: '#fff'
-                    }
-                  }}
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Référence"
-                  name="reference"
-                  value={selectedTwoBoxResin.reference || ''}
-                  variant="outlined"
-                  size={isMobile ? 'small' : 'medium'}
-                  disabled
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: '8px',
-                      backgroundColor: '#f0f4f8'
-                    }
-                  }}
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Prix (€)"
-                  name="price"
-                  type="number"
-                  value={selectedTwoBoxResin.price || ''}
-                  onChange={handleFieldChange}
-                  variant="outlined"
-                  size={isMobile ? 'small' : 'medium'}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: '8px',
-                      backgroundColor: '#fff'
-                    }
-                  }}
-                  InputProps={{
-                    startAdornment: <InputAdornment position="start">€</InputAdornment>,
-                    inputProps: { step: "0.01", min: "0" }
-                  }}
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Type"
-                  name="type"
-                  value={selectedTwoBoxResin.type || ''}
-                  onChange={handleFieldChange}
-                  variant="outlined"
-                  size={isMobile ? 'small' : 'medium'}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: '8px',
-                      backgroundColor: '#fff'
-                    }
-                  }}
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Conception"
-                  name="conception"
-                  value={selectedTwoBoxResin.conception || ''}
-                  onChange={handleFieldChange}
-                  variant="outlined"
-                  size={isMobile ? 'small' : 'medium'}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: '8px',
-                      backgroundColor: '#fff'
-                    }
-                  }}
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Épaisseur"
-                  name="epaisseur"
-                  value={selectedTwoBoxResin.epaisseur || ''}
-                  onChange={handleFieldChange}
-                  variant="outlined"
-                  size={isMobile ? 'small' : 'medium'}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: '8px',
-                      backgroundColor: '#fff'
-                    }
-                  }}
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Hauteur Partie Basse"
-                  name="hauteurPartieBasse"
-                  value={selectedTwoBoxResin.hauteurPartieBasse || ''}
-                  onChange={handleFieldChange}
-                  variant="outlined"
-                  size={isMobile ? 'small' : 'medium'}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: '8px',
-                      backgroundColor: '#fff'
-                    }
-                  }}
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Hauteur Partie Haute"
-                  name="hauteurPartieHaute"
-                  value={selectedTwoBoxResin.hauteurPartieHaute || ''}
-                  onChange={handleFieldChange}
-                  variant="outlined"
-                  size={isMobile ? 'small' : 'medium'}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: '8px',
-                      backgroundColor: '#fff'
-                    }
-                  }}
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Avancée"
-                  name="avancee"
-                  value={selectedTwoBoxResin.avancee || ''}
-                  onChange={handleFieldChange}
-                  variant="outlined"
-                  size={isMobile ? 'small' : 'medium'}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: '8px',
-                      backgroundColor: '#fff'
-                    }
-                  }}
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Poteaux"
-                  name="poteaux"
-                  value={selectedTwoBoxResin.poteaux || ''}
-                  onChange={handleFieldChange}
-                  variant="outlined"
-                  size={isMobile ? 'small' : 'medium'}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: '8px',
-                      backgroundColor: '#fff'
-                    }
-                  }}
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Tôle"
-                  name="tole"
-                  value={selectedTwoBoxResin.tole || ''}
-                  onChange={handleFieldChange}
-                  variant="outlined"
-                  size={isMobile ? 'small' : 'medium'}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: '8px',
-                      backgroundColor: '#fff'
-                    }
-                  }}
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Option"
-                  name="option"
-                  value={selectedTwoBoxResin.option || ''}
-                  onChange={handleFieldChange}
-                  variant="outlined"
-                  size={isMobile ? 'small' : 'medium'}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: '8px',
-                      backgroundColor: '#fff'
-                    }
-                  }}
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Couleur"
-                  name="couleur"
-                  value={selectedTwoBoxResin.couleur || ''}
-                  onChange={handleFieldChange}
-                  variant="outlined"
-                  size={isMobile ? 'small' : 'medium'}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: '8px',
-                      backgroundColor: '#fff'
-                    }
-                  }}
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Ouverture"
-                  name="ouverture"
-                  value={selectedTwoBoxResin.ouverture || ''}
-                  onChange={handleFieldChange}
-                  variant="outlined"
-                  size={isMobile ? 'small' : 'medium'}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: '8px',
-                      backgroundColor: '#fff'
-                    }
-                  }}
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Description"
-                  name="description"
-                  value={selectedTwoBoxResin.description || ''}
-                  onChange={handleFieldChange}
-                  variant="outlined"
-                  size={isMobile ? 'small' : 'medium'}
-                  multiline
-                  rows={4}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: '8px',
-                      backgroundColor: '#fff'
-                    }
-                  }}
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="URL de l'image"
-                  name="imageURL"
-                  value={selectedTwoBoxResin.imageURL || ''}
-                  onChange={handleFieldChange}
-                  variant="outlined"
-                  size={isMobile ? 'small' : 'medium'}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: '8px',
-                      backgroundColor: '#fff'
-                    }
-                  }}
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                />
-              </Grid>
-            </Grid>
-          )}
-        </DialogContent>
-
-        {/* Dialog Actions with improved styling */}
-        <DialogActions sx={{ 
-          px: isMobile ? 2 : 3, 
-          py: 2,
-          backgroundColor: '#f9fafc',
-          borderTop: '1px solid #e2e8f0'
-        }}>
-          <Button
-            onClick={closeDialog}
-            variant="outlined"
-            color="error"
-            startIcon={<CancelIcon />}
-            sx={{
-              borderRadius: '8px',
-              textTransform: 'none',
-              fontWeight: 600,
-              px: 3,
-              py: 1,
-              '&:hover': {
-                backgroundColor: 'rgba(220, 38, 38, 0.04)'
+                '&.Mui-focused': {
+                  boxShadow: '0 0 0 2px #3f7acc'
+                }
               }
             }}
-          >
-            Annuler
-          </Button>
-          <Button
-            onClick={saveChanges}
-            variant="contained"
-            color="primary"
-            startIcon={<SaveIcon />}
-            sx={{
-              borderRadius: '8px',
-              textTransform: 'none',
-              fontWeight: 600,
-              px: 3,
-              py: 1,
-              backgroundColor: '#38598b',
-              '&:hover': {
-                backgroundColor: '#2c5282'
+            InputLabelProps={{ 
+              shrink: true,
+              sx: {
+                fontWeight: 500,
+                color: '#64748b',
+                transform: 'translate(12px, 10px) scale(0.9)'
               }
             }}
-          >
-            Enregistrer
-          </Button>
-        </DialogActions>
-      </Dialog>
+          />
+        </Grid>
+      </Grid>
+    )}
+  </DialogContent>
+
+  {/* Actions with matching width and creative buttons */}
+  <DialogActions
+    sx={{
+      px: isMobile ? 2 : 3,
+      py: 2,
+      backgroundColor: '#f5f7fa',
+      borderTop: '1px solid #e2e8f0',
+      display: 'flex',
+      justifyContent: 'space-between',
+      gap: 2
+    }}
+  >
+    <Button
+      onClick={closeDialog}
+      variant="outlined"
+      color="error"
+      startIcon={<CancelIcon />}
+      sx={{
+        flex: 1,
+        py: 1.5,
+        borderRadius: '8px',
+        borderWidth: '2px',
+        fontWeight: 600,
+        letterSpacing: '0.5px',
+        textTransform: 'uppercase',
+        fontSize: '0.75rem',
+        color: '#ef4444',
+        borderColor: '#ef4444',
+        '&:hover': {
+          borderWidth: '2px',
+          backgroundColor: 'rgba(239, 68, 68, 0.08)'
+        }
+      }}
+    >
+      Annuler
+    </Button>
+    <Button
+      onClick={saveChanges}
+      variant="contained"
+      color="primary"
+      startIcon={<SaveIcon />}
+      sx={{
+        flex: 1,
+        py: 1.5,
+        borderRadius: '8px',
+        fontWeight: 600,
+        letterSpacing: '0.5px',
+        textTransform: 'uppercase',
+        fontSize: '0.75rem',
+        background: 'linear-gradient(135deg, #3f7acc 0%, #5fdde5 100%)',
+        boxShadow: '0 2px 4px rgba(63, 122, 204, 0.3)',
+        '&:hover': {
+          boxShadow: '0 4px 8px rgba(63, 122, 204, 0.4)',
+          background: 'linear-gradient(135deg, #3a6fb7 0%, #4fc8d1 100%)'
+        }
+      }}
+    >
+      Enregistrer
+    </Button>
+  </DialogActions>
+</Dialog>
+
 
       {/* Delete Confirmation Dialog */}
       <Dialog
@@ -1317,10 +1278,10 @@ const EditTwoBoxResin = () => {
         </DialogTitle>
         <DialogContent sx={{ py: 3, px: 3 }}>
           <Typography variant="body1" sx={{ color: '#4b5563' }}>
-            Êtes-vous sûr de vouloir supprimer la twoBoxResin "{twoBoxResinToDelete?.name}" ?
+            Êtes-vous sûr de vouloir supprimer la threeBox "{threeBoxToDelete?.name}" ?
           </Typography>
           <Typography variant="body2" sx={{ mt: 1, color: '#6b7280', fontSize: '0.875rem' }}>
-            Cette action est irréversible et supprimera définitivement la twoBoxResin.
+            Cette action est irréversible et supprimera définitivement la threeBox.
           </Typography>
         </DialogContent>
         <DialogActions sx={{ 
@@ -1394,4 +1355,4 @@ const EditTwoBoxResin = () => {
   );
 };
 
-export default EditTwoBoxResin;
+export default EditFiveBox;
