@@ -12,6 +12,8 @@ const facadeRoutes = require('./routes/Facade');
 const threeBoxRoutes = require('./routes/ThreeBox');
 const twoBoxRoutes = require('./routes/TwoBox');
 const twoBoxResinRoutes = require('./routes/TwoBoxResin');
+const fiveBoxRoutes = require('./routes/FiveBox');
+const authRoutes = require('./routes/auth');
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
@@ -20,6 +22,8 @@ app.use('/api/facade', facadeRoutes);
 app.use('/api/twobox', twoBoxRoutes);
 app.use('/api/threebox', threeBoxRoutes);
 app.use('/api/twoboxresin', twoBoxResinRoutes);
+app.use('/api/fivebox', fiveBoxRoutes);
+app.use('/api/auth', authRoutes);
 
 const allowedOrigins = [
   'http://localhost:3000',
@@ -136,18 +140,16 @@ app.get('/test-db', async (req, res) => {
   }
 });
 
-// Connect to MongoDB
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGODB_URI);
     console.log(`Connected to database: "${process.env.DATA_BASE_NAME}"`);
   } catch (err) {
     console.error('MongoDB connection failed:', err.message);
-    process.exit(1); // Exit if DB connection fails
+    process.exit(1); 
   }
 };
 
-// Start Server
 const startServer = async () => {
   await connectDB();
   app.listen(process.env.PORT, () => {

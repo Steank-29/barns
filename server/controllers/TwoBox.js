@@ -1,4 +1,4 @@
-const TwoBox = require('../models/TwoBox'); // Assuming the model is named TwoBox
+const TwoBox = require('../models/TwoBox'); 
 
 exports.createTwoBox = async (req, res) => {
   try {

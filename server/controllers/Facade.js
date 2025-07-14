@@ -34,7 +34,6 @@ const addProduct = async (req, res) => {
   } catch (err) {
     console.error(err);
 
-    // Handle duplicate key error (MongoDB code 11000)
     if (err.code === 11000 && err.keyPattern?.reference) {
       return res.status(400).json({
         message: 'La référence existe déjà. Veuillez en choisir une autre.'
@@ -47,8 +46,6 @@ const addProduct = async (req, res) => {
   }
 };
 
-
-// Get all products
 const getAllProducts = async (req, res) => {
   try {
     const products = await Product.find();
@@ -59,7 +56,6 @@ const getAllProducts = async (req, res) => {
   }
 };
 
-// Get one product by reference
 const getProductByRef = async (req, res) => {
   try {
     const product = await Product.findOne({ reference: req.params.ref });
@@ -73,7 +69,6 @@ const getProductByRef = async (req, res) => {
   }
 };
 
-// Update a product by reference
 const updateProductByRef = async (req, res) => {
   try {
     const updatedProduct = await Product.findOneAndUpdate(
@@ -91,7 +86,6 @@ const updateProductByRef = async (req, res) => {
   }
 };
 
-// Delete one product by reference
 const deleteProductByRef = async (req, res) => {
   try {
     const deletedProduct = await Product.findOneAndDelete({ reference: req.params.ref });
@@ -105,7 +99,6 @@ const deleteProductByRef = async (req, res) => {
   }
 };
 
-// Delete all products
 const deleteAllProducts = async (req, res) => {
   try {
     await Product.deleteMany();

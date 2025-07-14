@@ -1,7 +1,5 @@
 const Barriere = require('../models/Barriere');
 
-
-// Create a new Barriere
 const addBarriere = async (req, res) => {
   try {
     const {
@@ -38,7 +36,6 @@ const addBarriere = async (req, res) => {
   }
 };
 
-// Get all Barrieres
 const getAllBarrieres = async (req, res) => {
   try {
     const barrieres = await Barriere.find();
@@ -49,7 +46,6 @@ const getAllBarrieres = async (req, res) => {
   }
 };
 
-// Get a Barriere by reference
 const getBarriereByRef = async (req, res) => {
   try {
     const barriere = await Barriere.findOne({ reference: req.params.ref });
@@ -63,7 +59,6 @@ const getBarriereByRef = async (req, res) => {
   }
 };
 
-// Update a Barriere by reference
 const updateBarriereByRef = async (req, res) => {
   try {
     const updatedBarriere = await Barriere.findOneAndUpdate(
@@ -81,7 +76,6 @@ const updateBarriereByRef = async (req, res) => {
   }
 };
 
-// Delete a Barriere by reference
 const deleteBarriereByRef = async (req, res) => {
   try {
     const deletedBarriere = await Barriere.findOneAndDelete({ reference: req.params.ref });
@@ -95,7 +89,6 @@ const deleteBarriereByRef = async (req, res) => {
   }
 };
 
-// Delete all Barrieres
 const deleteAllBarrieres = async (req, res) => {
   try {
     await Barriere.deleteMany();

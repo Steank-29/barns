@@ -5,13 +5,11 @@ const path = require('path');
 const router = express.Router();
 const product = require('../controllers/Facade');
 
-// Ensure uploads folder exists
 const uploadDir = path.join(__dirname, '..', 'uploads');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);
 }
 
-// Multer setup
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadDir),
   filename: (req, file, cb) => {
@@ -23,7 +21,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// Routes
 router.post('/', upload.single('image'), product.addProduct);
 router.get('/getonefacade/:ref', product.getProductByRef);
 router.put('/updatefacade/:ref', upload.single('image'), product.updateProductByRef);
