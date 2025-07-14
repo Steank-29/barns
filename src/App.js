@@ -69,195 +69,163 @@ function App() {
     },
      {
       path: '/admin-cards',
-      element: isAuth ? (
+      element: (
         <>
           <AdminBar>
             <Cards />
             </AdminBar>
         </>
-      ) : (
-        <Navigate to="/" />
-      )
+      ) 
     },
     {
       path: '/admin-cards-edit',
-      element: isAuth ? (
+      element: (
         <>
           <AdminBar >
           <EditCards />
           </AdminBar>
         </>
-      ) : (
-        <Navigate to="/" />
-      )
+      ) 
     },
     {
       path: '/admin-dashboard',
-      element: isAuth ? (
+      element: (
         <>
           <AdminBar >
           <AdminDash />
           </AdminBar>
         </>
-      ) : (
-        <Navigate to="/" />
-      )
+      ) 
     },
     {
       path: '/admin-barriere',
-      element: isAuth ? (
+      element: (
         <>
           <AdminBar>
             <Barriere />
             </AdminBar>
         </>
-      ) : (
-        <Navigate to="/" />
-      )
+      ) 
     },
     {
       path: '/admin-barriere-edit',
-      element: isAuth ? (
+      element: (
         <>
           <AdminBar>
             <EditBarriere />
             </AdminBar>
         </>
-      ) : (
-        <Navigate to="/" />
-      )
+      ) 
     },
     {
       path: '/admin-threebox',
-      element:isAuth ? (
+      element:(
         <>
           <AdminBar>
             <ThreeBox />
             </AdminBar>
         </>
-      ) : (
-        <Navigate to="/" />
-      )
+      ) 
     },
     {
       path: '/admin-threebox-edit',
-      element:isAuth ? (
+      element:(
         <>
           <AdminBar>
             <EditThreeBox  />
             </AdminBar>
         </>
-      ) : (
-        <Navigate to="/" />
-      )
+      ) 
     },
     {
       path: '/admin-twobox',
-      element:isAuth ? (
+      element:(
         <>
           <AdminBar>
             <TwoBox />
             </AdminBar>
         </>
-      ) : (
-        <Navigate to="/" />
-      )
+      ) 
     },
         {
       path: '/admin-twobox',
-      element:isAuth ? (
+      element:(
         <>
           <AdminBar>
             <TwoBox />
             </AdminBar>
         </>
-      ) : (
-        <Navigate to="/" />
-      )
+      ) 
     },
     {
       path: '/admin-twobox-edit',
-      element: isAuth ? (
+      element: (
         <>
           <AdminBar>
             <EditTwoBox />
             </AdminBar>
         </>
-      ) : (
-        <Navigate to="/" />
-      )
+      ) 
     },
         {
       path: '/admin-twoboxresin',
-      element:isAuth ? (
+      element:(
         <>
           <AdminBar>
             <TwoBoxResin />
             </AdminBar>
         </>
-      ) : (
-        <Navigate to="/" />
-      )
+      ) 
     },
     {
       path: '/admin-twoboxresin-edit',
-      element: isAuth ? (
+      element: (
         <>
           <AdminBar>
             <EditTwoBoxResin />
             </AdminBar>
         </>
-      ) : (
-        <Navigate to="/" />
-      )
+      ) 
     },
     {
       path: '/admin-fivebox',
-      element:isAuth ? (
+      element:(
         <>
           <AdminBar>
             <FiveBox />
             </AdminBar>
         </>
-      ) : (
-        <Navigate to="/" />
-      )
+      ) 
     },
     {
       path: '/admin-fivebox',
-      element:isAuth ? (
+      element:(
         <>
           <AdminBar>
             <FiveBox />
             </AdminBar>
         </>
-      ) : (
-        <Navigate to="/" />
-      )
+      ) 
     },
     {
       path: '/admin-fivebox-edit',
-      element: isAuth ? (
+      element: (
         <>
           <AdminBar>
             <EditFiveBox  />
             </AdminBar>
         </>
-      ) : (
-        <Navigate to="/" />
-      )
+      ) 
     },
     {
       path: '/admin-fivebox-edit',
-      element: isAuth ? (
+      element: (
         <>
           <AdminBar>
             <EditFiveBox  />
             </AdminBar>
         </>
-      ) : (
-        <Navigate to="/" />
-      )
+      ) 
     },
     {
       path: '*',
