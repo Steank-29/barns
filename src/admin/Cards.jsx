@@ -184,7 +184,7 @@ const Cards = () => {
       formPayload.append('type', formData.type);
       formPayload.append('image', formData.image);
 
-      const response = await axios.post(`http://localhost:5000/api/facade`, formPayload, {
+      const response = await axios.post(`https://barns-backend.onrender.com/api/facade`, formPayload, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 

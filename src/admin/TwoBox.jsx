@@ -209,7 +209,7 @@ const TwoBox = () => {
         }
       });
 
-      const response = await axios.post(`http://localhost:5000/api/twobox`, formPayload, {
+      const response = await axios.post(`https://barns-backend.onrender.com/api/twobox`, formPayload, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 

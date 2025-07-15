@@ -81,7 +81,7 @@ const EditThreeBox = () => {
     if (!imageUrl) return null;
     
     if (imageUrl.startsWith('/') || !imageUrl.startsWith('http')) {
-      return `http://localhost:5000${imageUrl.startsWith('/') ? imageUrl : '/' + imageUrl}`;
+      return `https://barns-backend.onrender.com${imageUrl.startsWith('/') ? imageUrl : '/' + imageUrl}`;
     }
     
     return imageUrl;
@@ -91,7 +91,7 @@ const EditThreeBox = () => {
   useEffect(() => {
     const fetchThreeBoxes = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/threebox/getallthreeboxes');
+        const response = await fetch('https://barns-backend.onrender.com/api/threebox/getallthreeboxes');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -147,7 +147,7 @@ const EditThreeBox = () => {
   // Confirm delete
   const confirmDelete = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/threebox/deletethreebox/${threeBoxToDelete.reference}`, {
+      const response = await fetch(`https://barns-backend.onrender.com/api/threebox/deletethreebox/${threeBoxToDelete.reference}`, {
         method: 'DELETE'
       });
 
@@ -188,7 +188,7 @@ const EditThreeBox = () => {
   // Save updated threeBox
   const saveChanges = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/threebox/updatethreebox/${selectedThreeBox.reference}`, {
+      const response = await fetch(`https://barns-backend.onrender.com/api/threebox/updatethreebox/${selectedThreeBox.reference}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

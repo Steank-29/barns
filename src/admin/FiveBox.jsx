@@ -207,7 +207,7 @@ const FiveBox = () => {
         }
       });
 
-      const response = await axios.post(`http://localhost:5000/api/fivebox`, formPayload, {
+      const response = await axios.post(`https://barns-backend.onrender.com/api/fivebox`, formPayload, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
