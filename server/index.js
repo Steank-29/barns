@@ -4,9 +4,9 @@ const mongoose = require('mongoose');
 const app = express();
 app.use(express.json());
 const cors = require('cors');
-app.use(cors());
 const path = require('path');
 
+// Routes imports
 const barriereRoutes = require('./routes/Barriere');
 const facadeRoutes = require('./routes/Facade');
 const threeBoxRoutes = require('./routes/ThreeBox');
@@ -15,26 +15,16 @@ const twoBoxResinRoutes = require('./routes/TwoBoxResin');
 const fiveBoxRoutes = require('./routes/FiveBox');
 const authRoutes = require('./routes/auth');
 
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-app.use('/api/barriere', barriereRoutes);
-app.use('/api/facade', facadeRoutes);
-app.use('/api/twobox', twoBoxRoutes);
-app.use('/api/threebox', threeBoxRoutes);
-app.use('/api/twoboxresin', twoBoxResinRoutes);
-app.use('/api/fivebox', fiveBoxRoutes);
-app.use('/api/auth', authRoutes);
-
+// CORS Configuration
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://barns-five.vercel.app'
+  'https://barns.onrender.com',
+  'https://barns-five.vercel.app/',
 ];
 
 app.use(cors({
   origin: function(origin, callback) {
-
     if (!origin) return callback(null, true);
-    
     if (allowedOrigins.indexOf(origin) === -1) {
       const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
       return callback(new Error(msg), false);
@@ -44,11 +34,19 @@ app.use(cors({
   credentials: true
 }));
 
+// Static files
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// API Routes
+app.use('/api/barriere', barriereRoutes);
+app.use('/api/facade', facadeRoutes);
+app.use('/api/twobox', twoBoxRoutes);
+app.use('/api/threebox', threeBoxRoutes);
+app.use('/api/twoboxresin', twoBoxResinRoutes);
+app.use('/api/fivebox', fiveBoxRoutes);
+app.use('/api/auth', authRoutes);
 
-
-
-
+// Status route
 app.get('/', (req, res) => {
   res.send(`
     <!DOCTYPE html>
@@ -70,7 +68,6 @@ app.get('/', (req, res) => {
           height: 100vh;
           animation: fadeIn 1s ease-in-out;
         }
-
         .container {
           text-align: center;
           background: rgba(255, 255, 255, 0.1);
@@ -79,16 +76,13 @@ app.get('/', (req, res) => {
           box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
           backdrop-filter: blur(10px);
         }
-
         h1 {
           margin-bottom: 20px;
           font-size: 2.5rem;
         }
-
         p {
           font-size: 1.2rem;
         }
-
         a {
           display: inline-block;
           margin-top: 20px;
@@ -99,11 +93,9 @@ app.get('/', (req, res) => {
           border-radius: 8px;
           transition: background-color 0.3s ease;
         }
-
         a:hover {
           background-color: #16a085;
         }
-
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(-10px); }
           to { opacity: 1; transform: translateY(0); }
@@ -121,9 +113,7 @@ app.get('/', (req, res) => {
   `);
 });
 
-
-
-
+// Database test route
 app.get('/test-db', async (req, res) => {
   try {
     const collections = await mongoose.connection.db.listCollections().toArray();
@@ -140,6 +130,7 @@ app.get('/test-db', async (req, res) => {
   }
 });
 
+// Database connection
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGODB_URI);
@@ -150,11 +141,17 @@ const connectDB = async () => {
   }
 };
 
-const startServer = async () => {
-  await connectDB();
-  app.listen(process.env.PORT,'0.0.0.0', () => {
-    console.log(`Server running on http://localhost:${process.env.PORT}`);
-  });
-};
+// Vercel requires module.exports instead of app.listen
+module.exports = app;
 
-startServer();
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+  const startServer = async () => {
+    await connectDB();
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
+  };
+  startServer();
+}

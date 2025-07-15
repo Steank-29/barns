@@ -91,7 +91,7 @@ const EditCards = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('https://barns-backend.onrender.com/api/facade/getallfacades');
+        const response = await fetch('https://barns.onrender.com/api/facade/getallfacades');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -147,7 +147,7 @@ const EditCards = () => {
   // Confirm delete
   const confirmDelete = async () => {
     try {
-      const response = await fetch(`https://barns-backend.onrender.com/api/facade/deletefacade/${productToDelete.reference}`, {
+      const response = await fetch(`https://barns.onrender.com/api/facade/deletefacade/${productToDelete.reference}`, {
         method: 'DELETE'
       });
 
@@ -189,7 +189,7 @@ const EditCards = () => {
   // Save updated product
   const saveChanges = async () => {
     try {
-      const response = await fetch(`https://barns-backend.onrender.com/api/facade/updatefacade/${selectedProduct.reference}`, {
+      const response = await fetch(`https://barns.onrender.com/api/facade/updatefacade/${selectedProduct.reference}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

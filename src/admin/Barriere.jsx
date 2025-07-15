@@ -123,7 +123,7 @@ const Barriere = () => {
       formPayload.append('description', formData.description);
       formPayload.append('image', formData.image);
 
-      const response = await axios.post(`https://barns-backend.onrender.com/api/barriere`, formPayload, {
+      const response = await axios.post(`https://barns.onrender.com/api/barriere`, formPayload, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 

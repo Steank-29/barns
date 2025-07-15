@@ -120,7 +120,7 @@ const buttonStyles = (variant) => ({
   useEffect(() => {
     const fetchThreeBoxes = async () => {
       try {
-        const response = await fetch('https://barns-backend.onrender.com/api/fivebox/getallfiveboxes');
+        const response = await fetch('https://barns.onrender.com/api/fivebox/getallfiveboxes');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -180,7 +180,7 @@ const handleEdit = (threeBox) => {
   // Confirm delete
   const confirmDelete = async () => {
     try {
-      const response = await fetch(`https://barns-backend.onrender.com/api/fivebox/deletefivebox/${threeBoxToDelete.reference}`, {
+      const response = await fetch(`https://barns.onrender.com/api/fivebox/deletefivebox/${threeBoxToDelete.reference}`, {
         method: 'DELETE'
       });
 
@@ -237,7 +237,7 @@ const saveChanges = async () => {
       formData.append('image', selectedThreeBox.imageFile);
     }
     
-    const response = await fetch(`https://barns-backend.onrender.com/api/fivebox/updatefivebox/${selectedThreeBox.reference}`, {
+    const response = await fetch(`https://barns.onrender.com/api/fivebox/updatefivebox/${selectedThreeBox.reference}`, {
       method: 'PUT',
       body: formData,
       // Don't set Content-Type header - the browser will set it automatically with the correct boundary

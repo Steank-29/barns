@@ -209,7 +209,7 @@ const ThreeBox = () => {
         }
       });
 
-      const response = await axios.post(`https://barns-backend.onrender.com/api/threebox`, formPayload, {
+      const response = await axios.post(`https://barns.onrender.com/api/threebox`, formPayload, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 

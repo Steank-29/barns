@@ -91,7 +91,7 @@ const EditTwoBoxResin = () => {
   useEffect(() => {
     const fetchTwoBoxResins = async () => {
       try {
-        const response = await fetch('https://barns-backend.onrender.com/api/twoboxresin/getalltwoboxresins');
+        const response = await fetch('https://barns.onrender.com/api/twoboxresin/getalltwoboxresins');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -147,7 +147,7 @@ const EditTwoBoxResin = () => {
   // Confirm delete
   const confirmDelete = async () => {
     try {
-      const response = await fetch(`https://barns-backend.onrender.com/api/twoboxresin/deletetwoboxresin/${twoBoxResinToDelete.reference}`, {
+      const response = await fetch(`https://barns.onrender.com/api/twoboxresin/deletetwoboxresin/${twoBoxResinToDelete.reference}`, {
         method: 'DELETE'
       });
 
@@ -188,7 +188,7 @@ const EditTwoBoxResin = () => {
   // Save updated twoBoxResin
   const saveChanges = async () => {
     try {
-      const response = await fetch(`https://barns-backend.onrender.com/api/twoboxresin/updatetwoboxresin/${selectedTwoBoxResin.reference}`, {
+      const response = await fetch(`https://barns.onrender.com/api/twoboxresin/updatetwoboxresin/${selectedTwoBoxResin.reference}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

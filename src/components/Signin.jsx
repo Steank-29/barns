@@ -39,7 +39,7 @@ const Signin = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post('https://barns-backend.onrender.com/api/auth/login', formData);
+      const response = await axios.post('https://barns.onrender.com/api/auth/login', formData);
       const data = response.data;
        if (response.status === 200) {
       login(data.token);

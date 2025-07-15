@@ -91,7 +91,7 @@ const EditTwoBox = () => {
   useEffect(() => {
     const fetchTwoBoxes = async () => {
       try {
-        const response = await fetch('https://barns-backend.onrender.com/api/twobox/getalltwoboxes');
+        const response = await fetch('https://barns.onrender.com/api/twobox/getalltwoboxes');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -147,7 +147,7 @@ const EditTwoBox = () => {
   // Confirm delete
   const confirmDelete = async () => {
     try {
-      const response = await fetch(`https://barns-backend.onrender.com/api/twobox/deletetwobox/${threeBoxToDelete.reference}`, {
+      const response = await fetch(`https://barns.onrender.com/api/twobox/deletetwobox/${threeBoxToDelete.reference}`, {
         method: 'DELETE'
       });
 
@@ -188,7 +188,7 @@ const EditTwoBox = () => {
   // Save updated threeBox
   const saveChanges = async () => {
     try {
-      const response = await fetch(`https://barns-backend.onrender.com/api/twobox/updatetwobox/${selectedThreeBox.reference}`, {
+      const response = await fetch(`https://barns.onrender.com/api/twobox/updatetwobox/${selectedThreeBox.reference}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

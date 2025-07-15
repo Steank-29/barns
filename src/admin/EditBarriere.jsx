@@ -91,7 +91,7 @@ const EditBarriere = () => {
   useEffect(() => {
     const fetchBarrieres = async () => {
       try {
-        const response = await fetch('https://barns-backend.onrender.com/api/barriere/getallbarrieres');
+        const response = await fetch('https://barns.onrender.com/api/barriere/getallbarrieres');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -147,7 +147,7 @@ const EditBarriere = () => {
   // Confirm delete
   const confirmDelete = async () => {
     try {
-      const response = await fetch(`https://barns-backend.onrender.com/api/barriere/deletebarriere/${barriereToDelete.reference}`, {
+      const response = await fetch(`https://barns.onrender.com/api/barriere/deletebarriere/${barriereToDelete.reference}`, {
         method: 'DELETE'
       });
 
@@ -188,7 +188,7 @@ const EditBarriere = () => {
   // Save updated barriere
   const saveChanges = async () => {
     try {
-      const response = await fetch(`https://barns-backend.onrender.com/api/barriere/updatebarriere/${selectedBarriere.reference}`, {
+      const response = await fetch(`https://barns.onrender.com/api/barriere/updatebarriere/${selectedBarriere.reference}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
