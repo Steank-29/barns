@@ -69,162 +69,207 @@ function App() {
     },
      {
       path: '/admin-cards',
-      element: (
+      element: isAuth ? (
         <>
           <AdminBar>
             <Cards />
             </AdminBar>
         </>
+      ) : (
+        <Navigate to="/" />
       ) 
     },
     {
       path: '/admin-cards-edit',
-      element: (
+      element: isAuth ? (
         <>
           <AdminBar >
           <EditCards />
           </AdminBar>
         </>
+      ) : (
+        <Navigate to="/" />
+
       ) 
     },
     {
       path: '/admin-dashboard',
-      element: (
+      element: isAuth ?(
         <>
           <AdminBar >
           <AdminDash />
           </AdminBar>
         </>
+      ) : (
+        <Navigate to="/" />
+
       ) 
     },
     {
       path: '/admin-barriere',
-      element: (
+      element: isAuth ? (
         <>
           <AdminBar>
             <Barriere />
             </AdminBar>
         </>
+      ) : (
+        <Navigate to="/" />
+
       ) 
     },
     {
       path: '/admin-barriere-edit',
-      element: (
+      element: isAuth ? (
         <>
           <AdminBar>
             <EditBarriere />
             </AdminBar>
         </>
+      ) : (
+        <Navigate to="/" />
+
       ) 
     },
     {
       path: '/admin-threebox',
-      element:(
+      element: isAuth ? (
         <>
           <AdminBar>
             <ThreeBox />
             </AdminBar>
         </>
+      ) : (
+        <Navigate to="/" />
       ) 
     },
     {
       path: '/admin-threebox-edit',
-      element:(
+      element: isAuth ? (
         <>
           <AdminBar>
             <EditThreeBox  />
             </AdminBar>
         </>
+      ) : (
+        <Navigate to="/" />
       ) 
     },
     {
       path: '/admin-twobox',
-      element:(
+      element: isAuth ? (
         <>
           <AdminBar>
             <TwoBox />
             </AdminBar>
         </>
+      ) : (
+        <Navigate to="/" />
+
       ) 
     },
         {
       path: '/admin-twobox',
-      element:(
+      element: isAuth ? (
         <>
           <AdminBar>
             <TwoBox />
             </AdminBar>
         </>
+      ) : (
+        <Navigate to="/" />
+
       ) 
     },
     {
       path: '/admin-twobox-edit',
-      element: (
+      element: isAuth ? (
         <>
           <AdminBar>
             <EditTwoBox />
             </AdminBar>
         </>
+      ) : (
+        <Navigate to="/" />
+
       ) 
     },
         {
       path: '/admin-twoboxresin',
-      element:(
+      element: isAuth ? (
         <>
           <AdminBar>
             <TwoBoxResin />
             </AdminBar>
         </>
+      ) : (
+        <Navigate to="/" />
+
       ) 
     },
     {
       path: '/admin-twoboxresin-edit',
-      element: (
+      element: isAuth ? (
         <>
           <AdminBar>
             <EditTwoBoxResin />
             </AdminBar>
         </>
+      ) : (
+        <Navigate to="/" />
+
       ) 
     },
     {
       path: '/admin-fivebox',
-      element:(
+      element: isAuth ? (
         <>
           <AdminBar>
             <FiveBox />
             </AdminBar>
         </>
+      ) : (
+        <Navigate to="/" />
+
       ) 
     },
     {
       path: '/admin-fivebox',
-      element:(
+      element: isAuth ? (
         <>
           <AdminBar>
             <FiveBox />
             </AdminBar>
         </>
+      ) : (
+        <Navigate to="/" />
+
       ) 
     },
     {
       path: '/admin-fivebox-edit',
-      element: (
+      element: isAuth ? (
         <>
           <AdminBar>
             <EditFiveBox  />
             </AdminBar>
         </>
+      ) : (
+        <Navigate to="/" />
+
       ) 
     },
     {
       path: '/admin-fivebox-edit',
-      element: (
+      element: isAuth ? (
         <>
           <AdminBar>
             <EditFiveBox  />
             </AdminBar>
         </>
+      ) : (
+        <Navigate to="/" />
+
       ) 
     },
     {

@@ -1,40 +1,34 @@
-const Userdb = require('../models/User');
 const jwt = require('jsonwebtoken');
+const User = require('../models/User');
+const { JWT_SECRET } = require('../config/config');
 
-// POST /api/auth/login
-exports.login = async (req, res) => {
+exports.signin = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Find the user by email
-    const user = await Userdb.findOne({ email });
-
-    if (!user) {
-      return res.status(401).json({ message: 'Adresse email invalide.' });
+    // Check if user exists
+    const existingUser = await User.findOne({ email });
+    if (!existingUser) {
+      return res.status(404).json({ message: "User doesn't exist." });
     }
 
-    // Plaintext password comparison (⚠️ not secure for production)
-    if (user.password == password) {
-      return res.status(401).json({ message: 'Mot de passe incorrect.' });
+    // Compare passwords directly (no hashing)
+    if (password !== existingUser.password) {
+      return res.status(400).json({ message: "Invalid Password." });
     }
 
-    // Generate access token
+    // Create token
     const token = jwt.sign(
-      { id: user._id },
-      process.env.JWT_SECRET,
-      { expiresIn: '30m' }
+      { email: existingUser.email, id: existingUser._id },
+      JWT_SECRET,
+      { expiresIn: "1h" }
     );
 
-    // Optional: Generate refresh token
-    const refreshToken = jwt.sign(
-      { id: user._id },
-      process.env.JWT_SECRET || 'fallback_secret'
-    );
+    res.status(200).json({ result: existingUser, token });
 
-    // Send back user and tokens
-    res.status(200).json({ user, token, refreshToken });
-  } catch (err) {
-    console.error('Erreur login:', err);
-    res.status(500).json({ message: 'Erreur serveur lors de la connexion.' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Something went wrong." });
   }
 };
+

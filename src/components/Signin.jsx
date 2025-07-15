@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { 
   Box, Button, Container, CssBaseline, TextField, Typography, 
-  Paper, Grid, Link, Divider 
+  Paper, Grid, Link, Divider, Alert, CircularProgress
 } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { login } from "../tools/auth";
-import axios from "axios";
+import {login} from "../tools/auth";
 
 const theme = createTheme({
   palette: {
     primary: { main: '#38598b', contrastText: '#ffffff' },
     secondary: { main: '#ffffff' },
     background: { default: '#38598b' },
+    error: { main: '#d32f2f' }
   },
   typography: {
     fontFamily: ['Roboto', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(','),
@@ -21,29 +23,33 @@ const theme = createTheme({
 });
 
 const Signin = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
-    /* try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', {
-        email,
-        password,
-      });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
 
-      const { token, user } = response.data;
-
-      login(token); // Save token with your own method (e.g. localStorage)
-      console.log("Connected user:", user); // Optional: see user info
-      window.location.href = '/admin-dashboard';
-    } catch (error) {
-      const message = error.response?.data?.message || 'Échec de la connexion.';
-      alert(message);
-      console.error('Login error:', error);
+    try {
+      const response = await axios.post('https://barns-backend.onrender.com/api/auth/login', formData);
+      const data = response.data;
+       if (response.status === 200) {
+      login(data.token);
+      navigate('/admin-dashboard'); 
+       }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Login failed. Please try again.');
+    } finally {
+      setLoading(false);
     }
-      */
   };
 
   return (
@@ -51,7 +57,7 @@ const Signin = () => {
       <CssBaseline />
       <Box
         sx={{
-          minHeight: '30vh',
+          minHeight: '100vh',
           display: 'flex',
           alignItems: 'center',
           backgroundColor: '#38598b',
@@ -81,7 +87,13 @@ const Signin = () => {
                   Accès à votre compte
                 </Typography>
 
-                <Box component="form" onSubmit={handleSubmit} noValidate>
+                {error && (
+                  <Alert severity="error" sx={{ mb: 2 }}>
+                    {error}
+                  </Alert>
+                )}
+
+                <Box component="form" noValidate onSubmit={handleSubmit}>
                   <TextField
                     margin="normal"
                     required
@@ -92,14 +104,14 @@ const Signin = () => {
                     autoComplete="email"
                     autoFocus
                     variant="outlined"
+                    value={formData.email}
+                    onChange={handleChange}
                     sx={{ 
                       '& .MuiOutlinedInput-root': {
                         borderRadius: theme.shape.borderRadius
                       },
                       my: 1.5
                     }}
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
                   />
                   <TextField
                     margin="normal"
@@ -111,14 +123,14 @@ const Signin = () => {
                     id="password"
                     autoComplete="current-password"
                     variant="outlined"
+                    value={formData.password}
+                    onChange={handleChange}
                     sx={{ 
                       '& .MuiOutlinedInput-root': {
                         borderRadius: theme.shape.borderRadius
                       },
                       my: 1.5
                     }}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)} 
                   />
 
                   <Button
@@ -126,6 +138,7 @@ const Signin = () => {
                     fullWidth
                     variant="contained"
                     size="large"
+                    disabled={loading}
                     sx={{ 
                       mt: 2,
                       mb: 1,
@@ -134,12 +147,14 @@ const Signin = () => {
                       fontWeight: 'bold',
                       fontSize: '0.95rem'
                     }}
-                    href='/admin-dashboard'
                   >
-                    Se connecter
+                    {loading ? (
+                      <CircularProgress size={24} color="inherit" />
+                    ) : (
+                      'Se connecter'
+                    )}
                   </Button>
 
-                  {/* Placeholder Gmail button (non-functional) */}
                   <Button
                     fullWidth
                     variant="contained"
@@ -190,6 +205,24 @@ const Signin = () => {
                         }}
                       >
                         Mot de passe oublié ?
+                      </Link>
+                    </Grid>
+                    <Grid item>
+                      <Link 
+                        href="/signup" 
+                        variant="body2" 
+                        sx={{ 
+                          display: 'block',
+                          textAlign: 'center',
+                          color: 'text.secondary',
+                          textDecoration: 'none',
+                          '&:hover': {
+                            color: 'primary.main',
+                            textDecoration: 'underline'
+                          }
+                        }}
+                      >
+                        Créer un nouveau compte
                       </Link>
                     </Grid>
                   </Grid>
