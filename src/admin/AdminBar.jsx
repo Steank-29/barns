@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate  } from 'react-router-dom';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
@@ -426,6 +426,20 @@ const AdminBar = ({ children }) => {
     setOpen(false);
   };
 
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Clear authentication data
+    localStorage.removeItem('userdatatoken');
+    
+    // Close the menu
+    handleProfileMenuClose();
+    
+    // Navigate to home
+    navigate('/');
+    
+  };
+
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -518,8 +532,11 @@ const AdminBar = ({ children }) => {
       >
         <Avatar sx={{ 
           width: { xs: 28, sm: 32 },
-          height: { xs: 28, sm: 32 }
-        }}>A</Avatar>
+          height: { xs: 28, sm: 32 },
+          backgroundColor: 'white',
+          color:'#38598b',
+    
+        }}>G</Avatar>
       </IconButton>
     </Box>
   </Toolbar>
@@ -587,7 +604,7 @@ const AdminBar = ({ children }) => {
     <Typography variant="inherit">Contact Support</Typography>
   </MenuItem>
   <Divider />
-  <MenuItem onClick={handleProfileMenuClose}>
+  <MenuItem onClick={handleLogout}>
     <ListItemIcon>
       <Logout fontSize="small" />
     </ListItemIcon>

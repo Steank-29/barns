@@ -69,22 +69,68 @@ const EditBarriere = () => {
     }));
   };
 
-  const handleImageLoadStart = (barriereId) => {
-    setImageLoadStates(prev => ({
-      ...prev,
-      [barriereId]: 'loading'
-    }));
-  };
+  const renderBarriereImage = (barriere) => {
+    // Construct the full image URL by combining your backend URL with the image path
+    const imageUrl = barriere.imageURL 
+      ? `https://barns.onrender.com${barriere.imageURL}`
+      : null;
 
-  // Function to validate and fix image URLs
-  const getValidImageUrl = (imageUrl) => {
-    if (!imageUrl) return null;
-    
-    if (imageUrl.startsWith('/') || !imageUrl.startsWith('http')) {
-      return `https://barns-backend.onrender.com${imageUrl.startsWith('/') ? imageUrl : '/' + imageUrl}`;
+    const loadState = imageLoadStates[barriere._id];
+
+    // If no image URL or error state
+    if (!imageUrl || loadState === 'error') {
+      return (
+        <Box sx={{
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: 'rgba(0,0,0,0.05)',
+          color: 'rgba(0,0,0,0.3)'
+        }}>
+          <ImageNotSupportedIcon sx={{ fontSize: isMobile ? 32 : 48 }} />
+          <Typography variant="caption" sx={{ mt: 1 }}>
+            {!imageUrl ? 'Pas d\'image' : 'Erreur de chargement'}
+          </Typography>
+        </Box>
+      );
     }
-    
-    return imageUrl;
+
+    // Loading state
+    if (loadState !== 'loaded') {
+      return (
+        <Box sx={{
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: 'rgba(0,0,0,0.05)'
+        }}>
+          <CircularProgress size={isMobile ? 24 : 32} color="inherit" />
+        </Box>
+      );
+    }
+
+    // Loaded state
+    return (
+      <CardMedia
+        component="img"
+        image={imageUrl}
+        alt={barriere.name}
+        onLoad={() => handleImageLoad(barriere._id)}
+        onError={() => handleImageError(barriere._id)}
+        sx={{
+          height: '100%',
+          width: '100%',
+          objectFit: 'cover',
+          transition: 'transform 0.3s ease',
+          '&:hover': {
+            transform: 'scale(1.03)'
+          }
+        }}
+      />
+    );
   };
 
   // Fetch all barrieres
@@ -230,50 +276,6 @@ const EditBarriere = () => {
   // Close snackbar
   const handleCloseSnackbar = () => {
     setSnackbar(prev => ({ ...prev, open: false }));
-  };
-
-  // Render image with loading states
-  const renderBarriereImage = (barriere) => {
-    const imageUrl = getValidImageUrl(barriere.imageURL);
-    const loadState = imageLoadStates[barriere._id];
-
-    if (!imageUrl) {
-      return (
-        <Box sx={{
-          height: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: 'rgba(0,0,0,0.1)',
-          color: 'rgba(0,0,0,0.5)'
-        }}>
-          <ImageNotSupportedIcon sx={{ fontSize: isMobile ? 32 : 48 }} />
-        </Box>
-      );
-    }
-
-    return (
-      <>
-        <CardMedia
-          component="img"
-          image={imageUrl}
-          alt={barriere.name}
-          onLoad={() => handleImageLoad(barriere._id)}
-          onError={() => handleImageError(barriere._id)}
-          onLoadStart={() => handleImageLoadStart(barriere._id)}
-          sx={{
-            height: '100%',
-            width: '100%',
-            objectFit: 'cover',
-            transition: 'transform 0.5s',
-            '&:hover': {
-              transform: 'scale(1.05)'
-            },
-            opacity: loadState === 'loading' ? 0.5 : 1
-          }}
-        />
-      </>
-    );
   };
 
   if (loading) {
@@ -543,11 +545,13 @@ const EditBarriere = () => {
                 backgroundColor: '#f8fafc',
                 boxShadow: 'inset 0 -10px 20px -10px rgba(0,0,0,0.1)'
               }}>
-                {getValidImageUrl(selectedBarriere.imageURL) ? (
+                {selectedBarriere.imageURL ? (
                   <CardMedia
                     component="img"
-                    image={getValidImageUrl(selectedBarriere.imageURL)}
+                    image={`https://barns.onrender.com${selectedBarriere.imageURL}`}
                     alt={selectedBarriere.name}
+                    onLoad={() => handleImageLoad(selectedBarriere._id)}
+                    onError={() => handleImageError(selectedBarriere._id)}
                     sx={{
                       width: '100%',
                       height: '100%',
@@ -679,38 +683,38 @@ const EditBarriere = () => {
                           </Typography>
                         </Box>
                       </Box>
-                                            <Box sx={{ '& > *': { mb: 1.5 } }}>
-                                            <Typography variant={isMobile ? 'subtitle1' : 'h6'} gutterBottom sx={{ 
-                                              fontWeight: 600,
-                                              color: '#2d3748',
-                                              borderBottom: '2px solid #e2e8f0',
-                                              pb: 1,
-                                              mb: 2,
-                                              mt: isMobile ? 1.5 : 3
-                                            }}>
-                                              Information 
-                                            </Typography>
-                                                                    <Box display="flex" sx={{ mt: 2 }}>
-                                                <Typography variant="body1" sx={{ 
-                                                  minWidth: isMobile ? '80px' : '120px', 
-                                                  fontWeight: 500, 
-                                                  color: '#4a5568',
-                                                  fontSize: isMobile ? '0.9rem' : '1rem'
-                                                }}>
-                                                  Information:
-                                                </Typography>
-                                                <Typography variant="body1" sx={{ fontSize: isMobile ? '0.9rem' : '1rem' }}>
-                                                  {new Date().toLocaleString('fr-FR', { 
-                                                    weekday: 'long', 
-                                                    year: 'numeric', 
-                                                    month: 'long', 
-                                                    day: 'numeric',
-                                                    hour: '2-digit',
-                                                    minute: '2-digit'
-                                                  })} - Développé par <strong>Jelassi Sami</strong> - <strong>Golden Box Horse</strong>
-                                                </Typography>
-                                              </Box>
-                                            </Box>
+                      <Box sx={{ '& > *': { mb: 1.5 } }}>
+                        <Typography variant={isMobile ? 'subtitle1' : 'h6'} gutterBottom sx={{ 
+                          fontWeight: 600,
+                          color: '#2d3748',
+                          borderBottom: '2px solid #e2e8f0',
+                          pb: 1,
+                          mb: 2,
+                          mt: isMobile ? 1.5 : 3
+                        }}>
+                          Information 
+                        </Typography>
+                        <Box display="flex" sx={{ mt: 2 }}>
+                          <Typography variant="body1" sx={{ 
+                            minWidth: isMobile ? '80px' : '120px', 
+                            fontWeight: 500, 
+                            color: '#4a5568',
+                            fontSize: isMobile ? '0.9rem' : '1rem'
+                          }}>
+                            Information:
+                          </Typography>
+                          <Typography variant="body1" sx={{ fontSize: isMobile ? '0.9rem' : '1rem' }}>
+                            {new Date().toLocaleString('fr-FR', { 
+                              weekday: 'long', 
+                              year: 'numeric', 
+                              month: 'long', 
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })} - Développé par <strong>Jelassi Sami</strong> - <strong>Golden Box Horse</strong>
+                          </Typography>
+                        </Box>
+                      </Box>
                     </Box>
                     
                   </Grid>
