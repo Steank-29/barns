@@ -16,7 +16,9 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  IconButton
+  IconButton,
+  useMediaQuery,
+  useTheme
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
@@ -72,7 +74,7 @@ const StyledFormControl = styled(FormControl)(({ theme }) => ({
     color: '#38598b',
     fontFamily: 'Savate',
   },
-  width: '100%',
+  width: '220px',
   marginBottom: theme.spacing(2),
 }));
 
@@ -123,6 +125,10 @@ const boxOptions = [
 ];
 
 const TwoBoxResin = () => {
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
+  const isExtraSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
   const [formData, setFormData] = useState({
     reference: '',
     name: '',
@@ -194,8 +200,6 @@ const TwoBoxResin = () => {
     setPreviewImage(null);
   };
 
-  // const apiUrl = process.env.RENDER_API_URL || 'https://barns.onrender.com';
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.name.includes('Box')) {
@@ -213,7 +217,7 @@ const TwoBoxResin = () => {
         }
       });
 
-      const response = await axios.post(`https://barns.onrender.com/api/twoboxresin`, formPayload, {
+      const response = await axios.post(`http://localhost:5000/api/twoboxresin`, formPayload, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
@@ -228,17 +232,28 @@ const TwoBoxResin = () => {
   const formattedProductName = `${formData.name || 'Nom du produit'}  ${formData.type || 'Type'} `;
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh', p: 2 }}>
-      {/* Left Side Form */}
+    <Box sx={{ 
+      display: 'flex', 
+      flexDirection: isSmallScreen ? 'column' : 'row',
+      minHeight: '100vh',
+      p: isExtraSmallScreen ? 1 : 2 
+    }}>
       <Toaster position="top-right" />
-      <Box sx={{ width: '50%', overflowY: 'auto', pr: 2 }}>
+      
+      {/* Left Side Form */}
+      <Box sx={{ 
+        width: isSmallScreen ? '100%' : '50%', 
+        pr: isSmallScreen ? 0 : 2,
+        mb: isSmallScreen ? 3 : 0
+      }}>
         <Typography variant="h4" gutterBottom sx={{ 
           fontFamily: 'Savate', 
           fontWeight: 'bolder', 
           textAlign: 'center', 
           color: '#38598b', 
           textTransform: 'uppercase',
-          mb: 4
+          mb: 4,
+          fontSize: isExtraSmallScreen ? '1.5rem' : '2rem'
         }}>
           Création d'une fiche produit 2 BOX
         </Typography>
@@ -247,37 +262,35 @@ const TwoBoxResin = () => {
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
               {/* Row 1: Référence et Nom */}
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Référence"
                   name="reference"
                   value={formData.reference}
                   onChange={handleInputChange}
                   required
-                  sx={{ width: 220 }}
                 />
               </Grid>
-            <Grid item xs={6}>
-            <StyledFormControl>
-                <InputLabel id="name-select-label">Nom du produit</InputLabel>
-                <Select
-                labelId="name-select-label"
-                id="name-select"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                label="Nom du produit"
-                required
-                sx={{ width: 220 }}
-                >
-                {boxOptions.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                    </MenuItem>
-                ))}
-                </Select>
-            </StyledFormControl>
-            </Grid>
+              <Grid item xs={12} sm={6}>
+                <StyledFormControl>
+                  <InputLabel id="name-label">Nom du produit</InputLabel>
+                  <Select
+                    labelId="name-label"
+                    id="name-select"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    label="Nom du produit"
+                    required
+                  >
+                    {boxOptions.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </StyledFormControl>
+              </Grid>
 
               {/* Row 2: Image */}
               <Grid item xs={12}>
@@ -287,12 +300,11 @@ const TwoBoxResin = () => {
                   InputLabelProps={{ shrink: true }}
                   onChange={handleImageChange}
                   inputProps={{ accept: "image/*" }}
-                  sx={{ width: 220 }}
                 />
               </Grid>
 
               {/* Row 3: Prix et Type */}
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Prix (€)"
                   name="price"
@@ -303,10 +315,9 @@ const TwoBoxResin = () => {
                     startAdornment: <InputAdornment position="start">€</InputAdornment>,
                   }}
                   required
-                  sx={{ width: 220 }}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <StyledFormControl>
                   <InputLabel id="type-select-label">Type</InputLabel>
                   <Select
@@ -315,7 +326,6 @@ const TwoBoxResin = () => {
                     value={formData.type}
                     onChange={handleInputChange}
                     label="Type"
-                    sx={{ width: 220 }}
                   >
                     <MenuItem value="standard">Standard</MenuItem>
                     <MenuItem value="premium">Premium</MenuItem>
@@ -324,7 +334,7 @@ const TwoBoxResin = () => {
               </Grid>
 
               {/* Row 4: Conception et Épaisseur */}
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <StyledFormControl>
                   <InputLabel id="conception-select-label">Conception</InputLabel>
                   <Select
@@ -333,7 +343,6 @@ const TwoBoxResin = () => {
                     value={formData.conception}
                     onChange={handleInputChange}
                     label="Conception"
-                    sx={{ width: 220 }}
                   >
                     {conceptionOptions.map((option) => (
                       <MenuItem key={option.value} value={option.value}>
@@ -343,7 +352,7 @@ const TwoBoxResin = () => {
                   </Select>
                 </StyledFormControl>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Épaisseur (mm)"
                   name="epaisseur"
@@ -353,12 +362,11 @@ const TwoBoxResin = () => {
                   InputProps={{
                     endAdornment: <InputAdornment position="end">mm</InputAdornment>,
                   }}
-                  sx={{ width: 220 }}
                 />
               </Grid>
 
               {/* Row 5: Hauteurs */}
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Hauteur partie basse (m)"
                   name="hauteurPartieBasse"
@@ -368,10 +376,9 @@ const TwoBoxResin = () => {
                   InputProps={{
                     endAdornment: <InputAdornment position="end">m</InputAdornment>,
                   }}
-                  sx={{ width: 220 }}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Hauteur partie haute (m)"
                   name="hauteurPartieHaute"
@@ -381,12 +388,11 @@ const TwoBoxResin = () => {
                   InputProps={{
                     endAdornment: <InputAdornment position="end">m</InputAdornment>,
                   }}
-                  sx={{ width: 220 }}
                 />
               </Grid>
 
               {/* Row 6: Avancée */}
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Avancée (ML)"
                   name="avancee"
@@ -396,10 +402,9 @@ const TwoBoxResin = () => {
                   InputProps={{
                     endAdornment: <InputAdornment position="end">ML</InputAdornment>,
                   }}
-                  sx={{ width: 220 }}
                 />
               </Grid>
-            <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Longueur (m)"
                   name="longueur"
@@ -409,10 +414,9 @@ const TwoBoxResin = () => {
                   InputProps={{
                     endAdornment: <InputAdornment position="end">m</InputAdornment>,
                   }}
-                  sx={{ width: 220 }}
                 />
               </Grid>
-            <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Pannes"
                   name="pannes"
@@ -422,11 +426,10 @@ const TwoBoxResin = () => {
                   InputProps={{
                     endAdornment: <InputAdornment position="end">m</InputAdornment>,
                   }}
-                  sx={{ width: 220 }}
                 />
               </Grid>
               
-            <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Profondeur (m)"
                   name="profondeur"
@@ -436,11 +439,10 @@ const TwoBoxResin = () => {
                   InputProps={{
                     endAdornment: <InputAdornment position="end">m</InputAdornment>,
                   }}
-                  sx={{ width: 220 }}
                 />
               </Grid>
 
-               <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Ossature Metallique (mm)"
                   name="ossatureM"
@@ -450,23 +452,21 @@ const TwoBoxResin = () => {
                   InputProps={{
                     endAdornment: <InputAdornment position="end">mm</InputAdornment>,
                   }}
-                  sx={{ width: 220 }}
                 />
               </Grid>
 
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Option"
                   name="option"
                   value={formData.option}
                   onChange={handleInputChange}
                   placeholder="Options spéciales..."
-                  sx={{ width: 220 }}
                 />
               </Grid>
 
               {/* Row 7: Poteaux et Tôle */}
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <StyledFormControl>
                   <InputLabel id="poteaux-select-label">Poteaux</InputLabel>
                   <Select
@@ -475,7 +475,6 @@ const TwoBoxResin = () => {
                     value={formData.poteaux}
                     onChange={handleInputChange}
                     label="Poteaux"
-                    sx={{ width: 220 }}
                   >
                     {poteauxOptions.map((option) => (
                       <MenuItem key={option.value} value={option.value}>
@@ -485,7 +484,7 @@ const TwoBoxResin = () => {
                   </Select>
                 </StyledFormControl>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <StyledFormControl>
                   <InputLabel id="tole-select-label">Tôle</InputLabel>
                   <Select
@@ -494,7 +493,6 @@ const TwoBoxResin = () => {
                     value={formData.tole}
                     onChange={handleInputChange}
                     label="Tôle"
-                    sx={{ width: 220 }}
                   >
                     {toleOptions.map((option) => (
                       <MenuItem key={option.value} value={option.value}>
@@ -506,7 +504,7 @@ const TwoBoxResin = () => {
               </Grid>
 
               {/* Row 8: Couleur et Ouverture */}
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <StyledFormControl>
                   <InputLabel id="couleur-select-label">Couleur</InputLabel>
                   <Select
@@ -515,7 +513,6 @@ const TwoBoxResin = () => {
                     value={formData.couleur}
                     onChange={handleInputChange}
                     label="Couleur"
-                    sx={{ width: 220 }}
                   >
                     {couleurOptions.map((option) => (
                       <MenuItem key={option.value} value={option.value}>
@@ -525,7 +522,7 @@ const TwoBoxResin = () => {
                   </Select>
                 </StyledFormControl>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <StyledFormControl>
                   <InputLabel id="ouverture-select-label">Ouverture</InputLabel>
                   <Select
@@ -534,7 +531,6 @@ const TwoBoxResin = () => {
                     value={formData.ouverture}
                     onChange={handleInputChange}
                     label="Ouverture"
-                    sx={{ width: 460 }}
                   >
                     {ouvertureOptions.map((option) => (
                       <MenuItem key={option.value} value={option.value}>
@@ -546,26 +542,28 @@ const TwoBoxResin = () => {
               </Grid>
 
               {/* Row 9: Description */}
-              <Grid item xs={8}>
+              <Grid item xs={12}>
                 <StyledTextarea
                   name="description"
                   value={formData.description}
                   onChange={handleInputChange}
                   placeholder='Description du produit 2 Box...'
-                  sx={{ width: 460 }}
                 />
               </Grid>
 
               {/* Buttons */}
-              <Grid item xs={4} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+              <Grid item xs={12} sx={{ 
+                display: 'flex', 
+                justifyContent: isExtraSmallScreen ? 'center' : 'flex-end', 
+                alignItems: 'center',
+                gap: 1
+              }}>
                 <IconButton 
                   onClick={handleReset}
                   sx={{ 
                     backgroundColor: '#f5f5f5', 
                     borderRadius: '8px',
-                    mr: 1,
                     '&:hover': { backgroundColor: '#e0e0e0' },
-                    width: 50,
                   }}
                 >
                   <RestartAltIcon sx={{ color: '#38598b' }} />
@@ -588,7 +586,7 @@ const TwoBoxResin = () => {
                     px: 2,
                     fontSize: '0.8rem',
                     borderRadius: '8px',
-                    width: 160
+                    minWidth: 160
                   }}
                 >
                   Créer les 2 Box
@@ -599,18 +597,38 @@ const TwoBoxResin = () => {
         </StyledPaper>
       </Box>
 
-      {/* Divider */}
-      <Divider orientation="vertical" flexItem sx={{ mx: 2, borderColor: '#38598b' }} />
+      {/* Divider - Only show on larger screens */}
+      {!isSmallScreen && (
+        <Divider 
+          orientation="vertical" 
+          flexItem 
+          sx={{ mx: 2, borderColor: '#38598b' }} 
+        />
+      )}
+
+      {/* Show horizontal divider on small screens */}
+      {isSmallScreen && (
+        <Divider 
+          orientation="horizontal" 
+          flexItem 
+          sx={{ my: 2, borderColor: '#38598b', width: '100%' }} 
+        />
+      )}
 
       {/* Preview */}
-      <Box sx={{ width: '50%', backgroundColor: 'white', p: 3 }}>
+      <Box sx={{ 
+        width: isSmallScreen ? '100%' : '50%', 
+        backgroundColor: 'white', 
+        p: isExtraSmallScreen ? 1 : 3 
+      }}>
         <Typography variant="h4" gutterBottom sx={{ 
           fontFamily: 'Savate', 
           fontWeight: 'bolder', 
           textAlign: 'center', 
           color: '#38598b', 
           textTransform: 'uppercase',
-          mb: 4
+          mb: 4,
+          fontSize: isExtraSmallScreen ? '1.5rem' : '2rem'
         }}>
           Aperçu du produit
         </Typography>
@@ -621,7 +639,7 @@ const TwoBoxResin = () => {
           {previewImage && (
             <CardMedia
               component="img"
-              height="280"
+              height={isSmallScreen ? '200' : '280'}
               image={previewImage}
               alt="Aperçu du produit"
               sx={{ objectFit: 'fill' }}
@@ -631,21 +649,24 @@ const TwoBoxResin = () => {
             <Typography variant="h6" sx={{ 
               fontFamily: 'Savate',
               color: '#38598b',
-              mb: 1
+              mb: 1,
+              fontSize: isExtraSmallScreen ? '1rem' : '1.25rem'
             }}>
               {formattedProductName}
             </Typography>
             <Typography sx={{ 
               color: '#38598b',
               fontFamily: 'Savate',
-              mb: 2
+              mb: 2,
+              fontSize: isExtraSmallScreen ? '0.875rem' : '1rem'
             }}>
               Réf: {formData.reference || 'N/A'} | Prix: <span style={{ color: '#2e7d32' }}>€{formData.price || '0.00'}</span>
             </Typography>
             <Typography variant="body2" sx={{ 
               color: '#38598b',
               fontFamily: 'Savate',
-              mb: 3
+              mb: 3,
+              fontSize: isExtraSmallScreen ? '0.8rem' : '0.9rem'
             }}>
               {formData.description || 'Aucune description fournie'}
             </Typography>
@@ -653,212 +674,240 @@ const TwoBoxResin = () => {
             <Divider sx={{ my: 2, borderColor: '#38598b' }} />
 
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <Typography variant="subtitle2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
-                  fontWeight: 'bold'
+                  fontWeight: 'bold',
+                  fontSize: isExtraSmallScreen ? '0.75rem' : '0.875rem'
                 }}>
                   Conception:
                 </Typography>
                 <Typography variant="body2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
+                  fontSize: isExtraSmallScreen ? '0.7rem' : '0.8rem'
                 }}>
                   {formData.conception || 'N/A'}
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <Typography variant="subtitle2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
-                  fontWeight: 'bold'
+                  fontWeight: 'bold',
+                  fontSize: isExtraSmallScreen ? '0.75rem' : '0.875rem'
                 }}>
                   Épaisseur:
                 </Typography>
                 <Typography variant="body2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
+                  fontSize: isExtraSmallScreen ? '0.7rem' : '0.8rem'
                 }}>
                   {formData.epaisseur || 'N/A'} mm
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <Typography variant="subtitle2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
-                  fontWeight: 'bold'
+                  fontWeight: 'bold',
+                  fontSize: isExtraSmallScreen ? '0.75rem' : '0.875rem'
                 }}>
                   H. Partie Basse:
                 </Typography>
                 <Typography variant="body2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
+                  fontSize: isExtraSmallScreen ? '0.7rem' : '0.8rem'
                 }}>
                   {formData.hauteurPartieBasse || 'N/A'} m
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
-  <Typography variant="subtitle2" sx={{ 
-    color: '#38598b',
-    fontFamily: 'Savate',
-    fontWeight: 'bold'
-  }}>
-    Longueur:
-  </Typography>
-  <Typography variant="body2" sx={{ 
-    color: '#38598b',
-    fontFamily: 'Savate',
-  }}>
-    {formData.longueur || 'N/A'} m
-  </Typography>
-                </Grid>
-                <Grid item xs={6}>
-                <Typography variant="subtitle2" sx={{ 
-                    color: '#38598b',
-                    fontFamily: 'Savate',
-                    fontWeight: 'bold'
-                }}>
-                    Profondeur:
-                </Typography>
-                <Typography variant="body2" sx={{ 
-                    color: '#38598b',
-                    fontFamily: 'Savate',
-                }}>
-                    {formData.profondeur || 'N/A'} m
-                </Typography>
-                </Grid>
-                <Grid item xs={6}>
-                <Typography variant="subtitle2" sx={{ 
-                    color: '#38598b',
-                    fontFamily: 'Savate',
-                    fontWeight: 'bold'
-                }}>
-                    Pannes:
-                </Typography>
-                <Typography variant="body2" sx={{ 
-                    color: '#38598b',
-                    fontFamily: 'Savate',
-                }}>
-                    {formData.pannes || 'N/A'} m
-                </Typography>
-                </Grid>
-                <Grid item xs={6}>
-                <Typography variant="subtitle2" sx={{ 
-                    color: '#38598b',
-                    fontFamily: 'Savate',
-                    fontWeight: 'bold'
-                }}>
-                    Ossature:
-                </Typography>
-                <Typography variant="body2" sx={{ 
-                    color: '#38598b',
-                    fontFamily: 'Savate',
-                }}>
-                    {formData.ossature || 'N/A'} mm
-                </Typography>
-                </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <Typography variant="subtitle2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
-                  fontWeight: 'bold'
+                  fontWeight: 'bold',
+                  fontSize: isExtraSmallScreen ? '0.75rem' : '0.875rem'
+                }}>
+                  Longueur:
+                </Typography>
+                <Typography variant="body2" sx={{ 
+                  color: '#38598b',
+                  fontFamily: 'Savate',
+                  fontSize: isExtraSmallScreen ? '0.7rem' : '0.8rem'
+                }}>
+                  {formData.longueur || 'N/A'} m
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Typography variant="subtitle2" sx={{ 
+                  color: '#38598b',
+                  fontFamily: 'Savate',
+                  fontWeight: 'bold',
+                  fontSize: isExtraSmallScreen ? '0.75rem' : '0.875rem'
+                }}>
+                  Profondeur:
+                </Typography>
+                <Typography variant="body2" sx={{ 
+                  color: '#38598b',
+                  fontFamily: 'Savate',
+                  fontSize: isExtraSmallScreen ? '0.7rem' : '0.8rem'
+                }}>
+                  {formData.profondeur || 'N/A'} m
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Typography variant="subtitle2" sx={{ 
+                  color: '#38598b',
+                  fontFamily: 'Savate',
+                  fontWeight: 'bold',
+                  fontSize: isExtraSmallScreen ? '0.75rem' : '0.875rem'
+                }}>
+                  Pannes:
+                </Typography>
+                <Typography variant="body2" sx={{ 
+                  color: '#38598b',
+                  fontFamily: 'Savate',
+                  fontSize: isExtraSmallScreen ? '0.7rem' : '0.8rem'
+                }}>
+                  {formData.pannes || 'N/A'} m
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Typography variant="subtitle2" sx={{ 
+                  color: '#38598b',
+                  fontFamily: 'Savate',
+                  fontWeight: 'bold',
+                  fontSize: isExtraSmallScreen ? '0.75rem' : '0.875rem'
+                }}>
+                  Ossature:
+                </Typography>
+                <Typography variant="body2" sx={{ 
+                  color: '#38598b',
+                  fontFamily: 'Savate',
+                  fontSize: isExtraSmallScreen ? '0.7rem' : '0.8rem'
+                }}>
+                  {formData.ossatureM || 'N/A'} mm
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Typography variant="subtitle2" sx={{ 
+                  color: '#38598b',
+                  fontFamily: 'Savate',
+                  fontWeight: 'bold',
+                  fontSize: isExtraSmallScreen ? '0.75rem' : '0.875rem'
                 }}>
                   H. Partie Haute:
                 </Typography>
                 <Typography variant="body2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
+                  fontSize: isExtraSmallScreen ? '0.7rem' : '0.8rem'
                 }}>
                   {formData.hauteurPartieHaute || 'N/A'} m
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <Typography variant="subtitle2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
-                  fontWeight: 'bold'
+                  fontWeight: 'bold',
+                  fontSize: isExtraSmallScreen ? '0.75rem' : '0.875rem'
                 }}>
                   Avancée:
                 </Typography>
                 <Typography variant="body2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
+                  fontSize: isExtraSmallScreen ? '0.7rem' : '0.8rem'
                 }}>
                   {formData.avancee || 'N/A'} ML
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <Typography variant="subtitle2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
-                  fontWeight: 'bold'
+                  fontWeight: 'bold',
+                  fontSize: isExtraSmallScreen ? '0.75rem' : '0.875rem'
                 }}>
                   Poteaux:
                 </Typography>
                 <Typography variant="body2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
+                  fontSize: isExtraSmallScreen ? '0.7rem' : '0.8rem'
                 }}>
                   {formData.poteaux || 'N/A'}
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <Typography variant="subtitle2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
-                  fontWeight: 'bold'
+                  fontWeight: 'bold',
+                  fontSize: isExtraSmallScreen ? '0.75rem' : '0.875rem'
                 }}>
                   Tôle:
                 </Typography>
                 <Typography variant="body2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
+                  fontSize: isExtraSmallScreen ? '0.7rem' : '0.8rem'
                 }}>
                   {formData.tole || 'N/A'}
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <Typography variant="subtitle2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
-                  fontWeight: 'bold'
+                  fontWeight: 'bold',
+                  fontSize: isExtraSmallScreen ? '0.75rem' : '0.875rem'
                 }}>
                   Couleur:
                 </Typography>
                 <Typography variant="body2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
+                  fontSize: isExtraSmallScreen ? '0.7rem' : '0.8rem'
                 }}>
                   {formData.couleur || 'N/A'}
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <Typography variant="subtitle2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
-                  fontWeight: 'bold'
+                  fontWeight: 'bold',
+                  fontSize: isExtraSmallScreen ? '0.75rem' : '0.875rem'
                 }}>
                   Ouverture:
                 </Typography>
                 <Typography variant="body2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
+                  fontSize: isExtraSmallScreen ? '0.7rem' : '0.8rem'
                 }}>
                   {formData.ouverture || 'N/A'}
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <Typography variant="subtitle2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
-                  fontWeight: 'bold'
+                  fontWeight: 'bold',
+                  fontSize: isExtraSmallScreen ? '0.75rem' : '0.875rem'
                 }}>
                   Option:
                 </Typography>
                 <Typography variant="body2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
+                  fontSize: isExtraSmallScreen ? '0.7rem' : '0.8rem'
                 }}>
                   {formData.option || 'N/A'}
                 </Typography>

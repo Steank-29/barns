@@ -16,7 +16,9 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  IconButton
+  IconButton,
+  useMediaQuery,
+  useTheme
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
@@ -26,6 +28,9 @@ import toast, { Toaster } from 'react-hot-toast';
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),
   marginTop: theme.spacing(2),
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(2),
+  },
 }));
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
@@ -45,10 +50,17 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   '& .MuiInputLabel-root': {
     color: '#38598b',
     fontFamily: 'Savate',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.8rem',
+    },
   },
   '& .MuiInputBase-input': {
     fontFamily: 'Savate',
     color: '#38598b',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.9rem',
+      padding: '10.5px 14px',
+    },
   },
   width: '100%',
   marginBottom: theme.spacing(2),
@@ -71,8 +83,18 @@ const StyledFormControl = styled(FormControl)(({ theme }) => ({
   '& .MuiInputLabel-root': {
     color: '#38598b',
     fontFamily: 'Savate',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.8rem',
+    },
   },
-  width: '100%',
+  '& .MuiSelect-select': {
+    fontFamily: 'Savate',
+    color: '#38598b',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.9rem',
+    },
+  },
+  width: '220px',
   marginBottom: theme.spacing(2),
 }));
 
@@ -91,6 +113,10 @@ const StyledTextarea = styled(TextareaAutosize)(({ theme }) => ({
   },
   minHeight: '120px',
   resize: 'vertical',
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '0.9rem',
+    minHeight: '80px',
+  },
 }));
 
 const conceptionOptions = [
@@ -116,7 +142,7 @@ const couleurOptions = [
 const ouvertureOptions = [
   { value: 'porte battante deux volets avec huisserie galvanisée et entourage en 50 mm', 
     label: 'porte battante deux volets avec huisserie galvanisée et entourage en 50 mm' 
-},
+  },
 ];
 
 const boxOptions = [
@@ -127,6 +153,10 @@ const boxOptions = [
 ];
 
 const ThreeBox = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
+  
   const [formData, setFormData] = useState({
     reference: '',
     name: '',
@@ -190,8 +220,6 @@ const ThreeBox = () => {
     setPreviewImage(null);
   };
 
-  // const apiUrl = process.env.RENDER_API_URL || 'https://barns.onrender.com';
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.name.includes('Box')) {
@@ -209,7 +237,7 @@ const ThreeBox = () => {
         }
       });
 
-      const response = await axios.post(`https://barns.onrender.com/api/threebox`, formPayload, {
+      const response = await axios.post(`http://localhost:5000/api/threebox`, formPayload, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
@@ -224,58 +252,82 @@ const ThreeBox = () => {
   const formattedProductName = `${formData.name || 'Nom du produit'}  ${formData.type || 'Type'} `;
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh', p: 2 }}>
+    <Box sx={{ 
+      display: 'flex', 
+      flexDirection: isMobile ? 'column' : 'row',
+      minHeight: '100vh',
+      p: isMobile ? 1 : 2,
+      gap: isMobile ? 2 : 0
+    }}>
       {/* Left Side Form */}
-      <Toaster position="top-right" />
-      <Box sx={{ width: '50%', overflowY: 'auto', pr: 2 }}>
-        <Typography variant="h4" gutterBottom sx={{ 
-          fontFamily: 'Savate', 
-          fontWeight: 'bolder', 
-          textAlign: 'center', 
-          color: '#38598b', 
-          textTransform: 'uppercase',
-          mb: 4
-        }}>
+      <Toaster 
+        position={isMobile ? "top-center" : "top-right"}
+        toastOptions={{
+          style: {
+            fontFamily: 'Savate',
+            color: '#38598b',
+            border: '1px solid #38598b',
+            fontSize: isMobile ? '0.8rem' : '1rem'
+          },
+        }}
+      />
+      <Box sx={{ 
+        width: isMobile ? '100%' : '50%', 
+        pr: isMobile ? 0 : 2 
+      }}>
+        <Typography 
+          variant={isMobile ? "h5" : "h4"} 
+          gutterBottom 
+          sx={{ 
+            fontFamily: 'Savate', 
+            fontWeight: 'bolder', 
+            textAlign: 'center', 
+            color: '#38598b', 
+            textTransform: 'uppercase',
+            mb: 4,
+            fontSize: isMobile ? '1.4rem' : '2rem'
+          }}
+        >
           Création d'une fiche produit 3 BOX
         </Typography>
 
         <StyledPaper elevation={3}>
           <form onSubmit={handleSubmit}>
-            <Grid container spacing={2}>
-              {/* Row 1: Référence et Nom */}
-              <Grid item xs={6}>
+            <Grid container spacing={isMobile ? 1 : 2}>
+              {/* Reference and Name */}
+              <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Référence"
                   name="reference"
                   value={formData.reference}
                   onChange={handleInputChange}
                   required
-                  sx={{ width: 220 }}
+                  fullWidth
                 />
               </Grid>
-            <Grid item xs={6}>
-            <StyledFormControl>
-                <InputLabel id="name-select-label">Nom du produit</InputLabel>
-                <Select
-                labelId="name-select-label"
-                id="name-select"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                label="Nom du produit"
-                required
-                sx={{ width: 220 }}
-                >
-                {boxOptions.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                    </MenuItem>
-                ))}
-                </Select>
-            </StyledFormControl>
-            </Grid>
+              <Grid item xs={12} sm={6}>
+                <StyledFormControl>
+                  <InputLabel id="name-select-label">Nom du produit</InputLabel>
+                  <Select
+                    labelId="name-select-label"
+                    id="name-select"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    label="Nom du produit"
+                    required
+                    fullWidth
+                  >
+                    {boxOptions.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </StyledFormControl>
+              </Grid>
 
-              {/* Row 2: Image */}
+              {/* Image Upload */}
               <Grid item xs={12}>
                 <StyledTextField
                   type="file"
@@ -283,12 +335,12 @@ const ThreeBox = () => {
                   InputLabelProps={{ shrink: true }}
                   onChange={handleImageChange}
                   inputProps={{ accept: "image/*" }}
-                  sx={{ width: 220 }}
+                  fullWidth
                 />
               </Grid>
 
-              {/* Row 3: Prix et Type */}
-              <Grid item xs={6}>
+              {/* Price and Type */}
+              <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Prix (€)"
                   name="price"
@@ -299,10 +351,10 @@ const ThreeBox = () => {
                     startAdornment: <InputAdornment position="start">€</InputAdornment>,
                   }}
                   required
-                  sx={{ width: 220 }}
+                  fullWidth
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <StyledFormControl>
                   <InputLabel id="type-select-label">Type</InputLabel>
                   <Select
@@ -311,7 +363,7 @@ const ThreeBox = () => {
                     value={formData.type}
                     onChange={handleInputChange}
                     label="Type"
-                    sx={{ width: 220 }}
+                    fullWidth
                   >
                     <MenuItem value="standard">Standard</MenuItem>
                     <MenuItem value="premium">Premium</MenuItem>
@@ -319,8 +371,8 @@ const ThreeBox = () => {
                 </StyledFormControl>
               </Grid>
 
-              {/* Row 4: Conception et Épaisseur */}
-              <Grid item xs={6}>
+              {/* Conception and Thickness */}
+              <Grid item xs={12} sm={6}>
                 <StyledFormControl>
                   <InputLabel id="conception-select-label">Conception</InputLabel>
                   <Select
@@ -329,7 +381,7 @@ const ThreeBox = () => {
                     value={formData.conception}
                     onChange={handleInputChange}
                     label="Conception"
-                    sx={{ width: 220 }}
+                    fullWidth
                   >
                     {conceptionOptions.map((option) => (
                       <MenuItem key={option.value} value={option.value}>
@@ -339,7 +391,7 @@ const ThreeBox = () => {
                   </Select>
                 </StyledFormControl>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Épaisseur (mm)"
                   name="epaisseur"
@@ -349,12 +401,12 @@ const ThreeBox = () => {
                   InputProps={{
                     endAdornment: <InputAdornment position="end">mm</InputAdornment>,
                   }}
-                  sx={{ width: 220 }}
+                  fullWidth
                 />
               </Grid>
 
-              {/* Row 5: Hauteurs */}
-              <Grid item xs={6}>
+              {/* Heights */}
+              <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Hauteur partie basse (m)"
                   name="hauteurPartieBasse"
@@ -364,10 +416,10 @@ const ThreeBox = () => {
                   InputProps={{
                     endAdornment: <InputAdornment position="end">m</InputAdornment>,
                   }}
-                  sx={{ width: 220 }}
+                  fullWidth
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Hauteur partie haute (m)"
                   name="hauteurPartieHaute"
@@ -377,12 +429,12 @@ const ThreeBox = () => {
                   InputProps={{
                     endAdornment: <InputAdornment position="end">m</InputAdornment>,
                   }}
-                  sx={{ width: 220 }}
+                  fullWidth
                 />
               </Grid>
 
-              {/* Row 6: Avancée */}
-              <Grid item xs={6}>
+              {/* Advance and Option */}
+              <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Avancée (ML)"
                   name="avancee"
@@ -392,22 +444,22 @@ const ThreeBox = () => {
                   InputProps={{
                     endAdornment: <InputAdornment position="end">ML</InputAdornment>,
                   }}
-                  sx={{ width: 220 }}
+                  fullWidth
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Option"
                   name="option"
                   value={formData.option}
                   onChange={handleInputChange}
                   placeholder="Options spéciales..."
-                  sx={{ width: 220 }}
+                  fullWidth
                 />
               </Grid>
 
-              {/* Row 7: Poteaux et Tôle */}
-              <Grid item xs={6}>
+              {/* Posts and Sheet */}
+              <Grid item xs={12} sm={6}>
                 <StyledFormControl>
                   <InputLabel id="poteaux-select-label">Poteaux</InputLabel>
                   <Select
@@ -416,7 +468,7 @@ const ThreeBox = () => {
                     value={formData.poteaux}
                     onChange={handleInputChange}
                     label="Poteaux"
-                    sx={{ width: 220 }}
+                    fullWidth
                   >
                     {poteauxOptions.map((option) => (
                       <MenuItem key={option.value} value={option.value}>
@@ -426,7 +478,7 @@ const ThreeBox = () => {
                   </Select>
                 </StyledFormControl>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <StyledFormControl>
                   <InputLabel id="tole-select-label">Tôle</InputLabel>
                   <Select
@@ -435,7 +487,7 @@ const ThreeBox = () => {
                     value={formData.tole}
                     onChange={handleInputChange}
                     label="Tôle"
-                    sx={{ width: 220 }}
+                    fullWidth
                   >
                     {toleOptions.map((option) => (
                       <MenuItem key={option.value} value={option.value}>
@@ -446,8 +498,8 @@ const ThreeBox = () => {
                 </StyledFormControl>
               </Grid>
 
-              {/* Row 8: Couleur et Ouverture */}
-              <Grid item xs={6}>
+              {/* Color and Opening */}
+              <Grid item xs={12} sm={6}>
                 <StyledFormControl>
                   <InputLabel id="couleur-select-label">Couleur</InputLabel>
                   <Select
@@ -456,7 +508,7 @@ const ThreeBox = () => {
                     value={formData.couleur}
                     onChange={handleInputChange}
                     label="Couleur"
-                    sx={{ width: 220 }}
+                    fullWidth
                   >
                     {couleurOptions.map((option) => (
                       <MenuItem key={option.value} value={option.value}>
@@ -466,7 +518,7 @@ const ThreeBox = () => {
                   </Select>
                 </StyledFormControl>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <StyledFormControl>
                   <InputLabel id="ouverture-select-label">Ouverture</InputLabel>
                   <Select
@@ -475,7 +527,7 @@ const ThreeBox = () => {
                     value={formData.ouverture}
                     onChange={handleInputChange}
                     label="Ouverture"
-                    sx={{ width: 460 }}
+                    fullWidth
                   >
                     {ouvertureOptions.map((option) => (
                       <MenuItem key={option.value} value={option.value}>
@@ -486,27 +538,31 @@ const ThreeBox = () => {
                 </StyledFormControl>
               </Grid>
 
-              {/* Row 9: Description */}
-              <Grid item xs={8}>
+              {/* Description */}
+              <Grid item xs={12}>
                 <StyledTextarea
                   name="description"
                   value={formData.description}
                   onChange={handleInputChange}
                   placeholder='Description du produit 3 Box...'
-                  sx={{ width: 460 }}
                 />
               </Grid>
 
               {/* Buttons */}
-              <Grid item xs={4} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+              <Grid item xs={12} sx={{ 
+                display: 'flex', 
+                justifyContent: isMobile ? 'center' : 'flex-end',
+                alignItems: 'center',
+                gap: 1
+              }}>
                 <IconButton 
                   onClick={handleReset}
                   sx={{ 
                     backgroundColor: '#f5f5f5', 
                     borderRadius: '8px',
-                    mr: 1,
                     '&:hover': { backgroundColor: '#e0e0e0' },
-                    width: 50,
+                    width: isMobile ? 40 : 50,
+                    height: isMobile ? 40 : 50
                   }}
                 >
                   <RestartAltIcon sx={{ color: '#38598b' }} />
@@ -525,11 +581,12 @@ const ThreeBox = () => {
                       color: '#38598b',
                       border: '1px solid #38598b'
                     },
-                    py: 1,
+                    py: isMobile ? 0.8 : 1,
                     px: 2,
-                    fontSize: '0.8rem',
+                    fontSize: isMobile ? '0.8rem' : '0.9rem',
                     borderRadius: '8px',
-                    width: 160
+                    width: isMobile ? 'auto' : 160,
+                    minWidth: isMobile ? 120 : 'auto'
                   }}
                 >
                   Créer les 3 Box
@@ -540,29 +597,50 @@ const ThreeBox = () => {
         </StyledPaper>
       </Box>
 
-      {/* Divider */}
-      <Divider orientation="vertical" flexItem sx={{ mx: 2, borderColor: '#38598b' }} />
+      {/* Divider - Only show on desktop */}
+      {!isMobile && (
+        <Divider 
+          orientation="vertical" 
+          flexItem 
+          sx={{ 
+            mx: 2, 
+            borderColor: '#38598b',
+            display: isMobile ? 'none' : 'block'
+          }} 
+        />
+      )}
 
-      {/* Preview */}
-      <Box sx={{ width: '50%', backgroundColor: 'white', p: 3 }}>
-        <Typography variant="h4" gutterBottom sx={{ 
-          fontFamily: 'Savate', 
-          fontWeight: 'bolder', 
-          textAlign: 'center', 
-          color: '#38598b', 
-          textTransform: 'uppercase',
-          mb: 4
-        }}>
+      {/* Preview Section */}
+      <Box sx={{ 
+        width: isMobile ? '100%' : '50%', 
+        backgroundColor: isMobile ? 'transparent' : 'white', 
+        p: isMobile ? 0 : 3,
+        mt: isMobile ? 2 : 0
+      }}>
+        <Typography 
+          variant={isMobile ? "h5" : "h4"} 
+          gutterBottom 
+          sx={{ 
+            fontFamily: 'Savate', 
+            fontWeight: 'bolder', 
+            textAlign: 'center', 
+            color: '#38598b', 
+            textTransform: 'uppercase',
+            mb: 4,
+            fontSize: isMobile ? '1.4rem' : '2rem'
+          }}
+        >
           Aperçu du produit
         </Typography>
         <Card sx={{ 
           borderRadius: '12px',
-          boxShadow: '0 4px 20px rgba(117, 81, 57, 0.2)'
+          boxShadow: '0 4px 20px rgba(117, 81, 57, 0.2)',
+          mb: isMobile ? 2 : 0
         }}>
           {previewImage && (
             <CardMedia
               component="img"
-              height="280"
+              height={isMobile ? "180" : "280"}
               image={previewImage}
               alt="Aperçu du produit"
               sx={{ objectFit: 'fill' }}
@@ -572,21 +650,24 @@ const ThreeBox = () => {
             <Typography variant="h6" sx={{ 
               fontFamily: 'Savate',
               color: '#38598b',
-              mb: 1
+              mb: 1,
+              fontSize: isMobile ? '1rem' : '1.25rem'
             }}>
               {formattedProductName}
             </Typography>
             <Typography sx={{ 
               color: '#38598b',
               fontFamily: 'Savate',
-              mb: 2
+              mb: 2,
+              fontSize: isMobile ? '0.9rem' : '1rem'
             }}>
               Réf: {formData.reference || 'N/A'} | Prix: <span style={{ color: '#2e7d32' }}>€{formData.price || '0.00'}</span>
             </Typography>
             <Typography variant="body2" sx={{ 
               color: '#38598b',
               fontFamily: 'Savate',
-              mb: 3
+              mb: 3,
+              fontSize: isMobile ? '0.8rem' : '0.875rem'
             }}>
               {formData.description || 'Aucune description fournie'}
             </Typography>
@@ -594,152 +675,172 @@ const ThreeBox = () => {
             <Divider sx={{ my: 2, borderColor: '#38598b' }} />
 
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid item xs={6} sm={4}>
                 <Typography variant="subtitle2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
-                  fontWeight: 'bold'
+                  fontWeight: 'bold',
+                  fontSize: isMobile ? '0.8rem' : '0.875rem'
                 }}>
                   Conception:
                 </Typography>
                 <Typography variant="body2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
+                  fontSize: isMobile ? '0.8rem' : '0.875rem'
                 }}>
                   {formData.conception || 'N/A'}
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={6} sm={4}>
                 <Typography variant="subtitle2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
-                  fontWeight: 'bold'
+                  fontWeight: 'bold',
+                  fontSize: isMobile ? '0.8rem' : '0.875rem'
                 }}>
                   Épaisseur:
                 </Typography>
                 <Typography variant="body2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
+                  fontSize: isMobile ? '0.8rem' : '0.875rem'
                 }}>
                   {formData.epaisseur || 'N/A'} mm
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={6} sm={4}>
                 <Typography variant="subtitle2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
-                  fontWeight: 'bold'
+                  fontWeight: 'bold',
+                  fontSize: isMobile ? '0.8rem' : '0.875rem'
                 }}>
                   H. Partie Basse:
                 </Typography>
                 <Typography variant="body2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
+                  fontSize: isMobile ? '0.8rem' : '0.875rem'
                 }}>
                   {formData.hauteurPartieBasse || 'N/A'} m
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={6} sm={4}>
                 <Typography variant="subtitle2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
-                  fontWeight: 'bold'
+                  fontWeight: 'bold',
+                  fontSize: isMobile ? '0.8rem' : '0.875rem'
                 }}>
                   H. Partie Haute:
                 </Typography>
                 <Typography variant="body2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
+                  fontSize: isMobile ? '0.8rem' : '0.875rem'
                 }}>
                   {formData.hauteurPartieHaute || 'N/A'} m
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={6} sm={4}>
                 <Typography variant="subtitle2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
-                  fontWeight: 'bold'
+                  fontWeight: 'bold',
+                  fontSize: isMobile ? '0.8rem' : '0.875rem'
                 }}>
                   Avancée:
                 </Typography>
                 <Typography variant="body2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
+                  fontSize: isMobile ? '0.8rem' : '0.875rem'
                 }}>
                   {formData.avancee || 'N/A'} ML
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={6} sm={4}>
                 <Typography variant="subtitle2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
-                  fontWeight: 'bold'
+                  fontWeight: 'bold',
+                  fontSize: isMobile ? '0.8rem' : '0.875rem'
                 }}>
                   Poteaux:
                 </Typography>
                 <Typography variant="body2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
+                  fontSize: isMobile ? '0.8rem' : '0.875rem'
                 }}>
                   {formData.poteaux || 'N/A'}
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={6} sm={4}>
                 <Typography variant="subtitle2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
-                  fontWeight: 'bold'
+                  fontWeight: 'bold',
+                  fontSize: isMobile ? '0.8rem' : '0.875rem'
                 }}>
                   Tôle:
                 </Typography>
                 <Typography variant="body2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
+                  fontSize: isMobile ? '0.8rem' : '0.875rem'
                 }}>
                   {formData.tole || 'N/A'}
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={6} sm={4}>
                 <Typography variant="subtitle2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
-                  fontWeight: 'bold'
+                  fontWeight: 'bold',
+                  fontSize: isMobile ? '0.8rem' : '0.875rem'
                 }}>
                   Couleur:
                 </Typography>
                 <Typography variant="body2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
+                  fontSize: isMobile ? '0.8rem' : '0.875rem'
                 }}>
                   {formData.couleur || 'N/A'}
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={6} sm={4}>
                 <Typography variant="subtitle2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
-                  fontWeight: 'bold'
+                  fontWeight: 'bold',
+                  fontSize: isMobile ? '0.8rem' : '0.875rem'
                 }}>
                   Ouverture:
                 </Typography>
                 <Typography variant="body2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
+                  fontSize: isMobile ? '0.8rem' : '0.875rem'
                 }}>
                   {formData.ouverture || 'N/A'}
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={6} sm={4}>
                 <Typography variant="subtitle2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
-                  fontWeight: 'bold'
+                  fontWeight: 'bold',
+                  fontSize: isMobile ? '0.8rem' : '0.875rem'
                 }}>
                   Option:
                 </Typography>
                 <Typography variant="body2" sx={{ 
                   color: '#38598b',
                   fontFamily: 'Savate',
+                  fontSize: isMobile ? '0.8rem' : '0.875rem'
                 }}>
                   {formData.option || 'N/A'}
                 </Typography>

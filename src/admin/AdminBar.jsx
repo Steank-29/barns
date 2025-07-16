@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, useNavigate  } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation  } from 'react-router-dom';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
@@ -413,10 +413,12 @@ const sidebarTabs = [
 
 const AdminBar = ({ children }) => {
   const theme = useTheme();
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false); // Start with sidebar closed
   const [anchorEl, setAnchorEl] = useState(null);
   const [openMenus, setOpenMenus] = useState({});
   const profileMenuOpen = Boolean(anchorEl);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -426,18 +428,10 @@ const AdminBar = ({ children }) => {
     setOpen(false);
   };
 
-  const navigate = useNavigate();
-
   const handleLogout = () => {
-    // Clear authentication data
     localStorage.removeItem('userdatatoken');
-    
-    // Close the menu
     handleProfileMenuClose();
-    
-    // Navigate to home
     navigate('/');
-    
   };
 
   const handleProfileMenuOpen = (event) => {
@@ -448,169 +442,178 @@ const AdminBar = ({ children }) => {
     setAnchorEl(null);
   };
 
-  const handleMenuClick = (menuId) => {
-    setOpenMenus(prev => ({
-      ...prev,
-      [menuId]: !prev[menuId]
-    }));
+  const handleMainTabClick = (tabId) => {
+    const tab = sidebarTabs.find(tab => tab.id === tabId);
+    if (tab?.nested) {
+      setOpenMenus(prev => ({
+        [tabId]: !prev[tabId] // Toggle only the clicked menu, close others
+      }));
+    } else {
+      setOpenMenus({}); // Close all nested menus when clicking a non-nested tab
+    }
+    setOpen(true); // Close the sidebar when any tab is clicked
   };
+
+  // Close sidebar and nested menus when route changes
+  useEffect(() => {
+    setOpen(false);
+    setOpenMenus({});
+  }, [location.pathname]);
 
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-<AppBar position="fixed" open={open} sx={{ backgroundColor: '#38598b', color: 'white' }}>
-  <Toolbar>
-    <IconButton
-      color="inherit"
-      aria-label="open drawer"
-      onClick={handleDrawerOpen}
-      edge="start"
-      sx={{
-        marginRight: { xs: 2, sm: 3, md: 5 },
-        display: { xs: 'block', sm: open ? 'none' : 'block' },
-      }}
-    >
-      <MenuIcon />
-    </IconButton>
-    
-    <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
-      <Avatar 
-        src={adminlogo} 
-        alt="Logo" 
-        sx={{ 
-          mr: { xs: 1, sm: 2 },
-          width: { xs: 32, sm: 40 },
-          height: { xs: 32, sm: 40 },
-          bgcolor: 'white' 
-        }}
-      />
-      <Typography 
-        variant="h6" 
-        noWrap 
-        component="div"
-        sx={{ 
-          fontFamily: 'Savate', 
-          textTransform: 'uppercase',
-          fontWeight: 'bold',
-          color: 'white',
-          fontSize: {
-            xs: '0.7rem', 
-            sm: '0.875rem',      
-            md: '1.4rem'    
-          }
-        }}
-      >
-        Espace administrateur GBH
-      </Typography>
-    </Box>
-    
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      {/* Show mail icon on all screens */}
-      <IconButton 
-        size="large" 
-        color="inherit"
-        sx={{ 
-          display: { xs: 'flex', sm: 'flex' },
-          p: { xs: 0.5, sm: 1 }
-        }}
-      >
-        <Badge badgeContent={4} color="error">
-          <MailIcon fontSize="small" />
-        </Badge>
-      </IconButton>
-      
-      <IconButton
-        onClick={handleProfileMenuOpen}
-        size="small"
-        sx={{ 
-          ml: { xs: 1, sm: 2 },
-          p: { xs: 0.5, sm: 1 }
-        }}
-        aria-controls={profileMenuOpen ? 'account-menu' : undefined}
-        aria-haspopup="true"
-        aria-expanded={profileMenuOpen ? 'true' : undefined}
-      >
-        <Avatar sx={{ 
-          width: { xs: 28, sm: 32 },
-          height: { xs: 28, sm: 32 },
-          backgroundColor: 'white',
-          color:'#38598b',
-    
-        }}>G</Avatar>
-      </IconButton>
-    </Box>
-  </Toolbar>
-</AppBar>
+      <AppBar position="fixed" open={open} sx={{ backgroundColor: '#38598b', color: 'white' }}>
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            edge="start"
+            sx={{
+              marginRight: { xs: 2, sm: 3, md: 5 },
+              display: { xs: 'block', sm: open ? 'none' : 'block' },
+            }}
+          >
+            <MenuIcon />
+          </IconButton>
+          
+          <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
+            <Avatar 
+              src={adminlogo} 
+              alt="Logo" 
+              sx={{ 
+                mr: { xs: 1, sm: 2 },
+                width: { xs: 32, sm: 40 },
+                height: { xs: 32, sm: 40 },
+                bgcolor: 'white' 
+              }}
+            />
+            <Typography 
+              variant="h6" 
+              noWrap 
+              component="div"
+              sx={{ 
+                fontFamily: 'Savate', 
+                textTransform: 'uppercase',
+                fontWeight: 'bold',
+                color: 'white',
+                fontSize: {
+                  xs: '0.7rem', 
+                  sm: '0.875rem',      
+                  md: '1.4rem'    
+                }
+              }}
+            >
+              Espace administrateur GBH
+            </Typography>
+          </Box>
+          
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <IconButton 
+              size="large" 
+              color="inherit"
+              sx={{ 
+                display: { xs: 'flex', sm: 'flex' },
+                p: { xs: 0.5, sm: 1 }
+              }}
+            >
+              <Badge badgeContent={4} color="error">
+                <MailIcon fontSize="small" />
+              </Badge>
+            </IconButton>
+            
+            <IconButton
+              onClick={handleProfileMenuOpen}
+              size="small"
+              sx={{ 
+                ml: { xs: 1, sm: 2 },
+                p: { xs: 0.5, sm: 1 }
+              }}
+              aria-controls={profileMenuOpen ? 'account-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={profileMenuOpen ? 'true' : undefined}
+            >
+              <Avatar sx={{ 
+                width: { xs: 28, sm: 32 },
+                height: { xs: 28, sm: 32 },
+                backgroundColor: 'white',
+                color:'#38598b',
+              }}>G</Avatar>
+            </IconButton>
+          </Box>
+        </Toolbar>
+      </AppBar>
 
-<Menu
-  anchorEl={anchorEl}
-  id="account-menu"
-  open={profileMenuOpen}
-  onClose={handleProfileMenuClose}
-  onClick={handleProfileMenuClose}
-  PaperProps={{
-    elevation: 0,
-    sx: {
-      overflow: 'visible',
-      filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-      mt: 1.5,
-      minWidth: 200,
-      '& .MuiAvatar-root': {
-        width: 32,
-        height: 32,
-        ml: -0.5,
-        mr: 1,
-      },
-      '&:before': {
-        content: '""',
-        display: 'block',
-        position: 'absolute',
-        top: 0,
-        right: 14,
-        width: 10,
-        height: 10,
-        bgcolor: 'background.paper',
-        transform: 'translateY(-50%) rotate(45deg)',
-        zIndex: 0,
-      },
-    },
-  }}
-  transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-  anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
->
-  <MenuItem onClick={handleProfileMenuClose}>
-    <Avatar /> Profile
-  </MenuItem>
-  <MenuItem onClick={handleProfileMenuClose}>
-    <Avatar /> My account
-  </MenuItem>
-  <Divider />
-  <MenuItem onClick={handleProfileMenuClose}>
-    <ListItemIcon>
-      <SettingsIcon fontSize="small" />
-    </ListItemIcon>
-    <Typography variant="inherit">Settings</Typography>
-  </MenuItem>
-  <MenuItem onClick={handleProfileMenuClose}>
-    <ListItemIcon>
-      <HelpOutlineIcon fontSize="small" />
-    </ListItemIcon>
-    <Typography variant="inherit">Help</Typography>
-  </MenuItem>
-  <MenuItem onClick={handleProfileMenuClose}>
-    <ListItemIcon>
-      <MailIcon fontSize="small" />
-    </ListItemIcon>
-    <Typography variant="inherit">Contact Support</Typography>
-  </MenuItem>
-  <Divider />
-  <MenuItem onClick={handleLogout}>
-    <ListItemIcon>
-      <Logout fontSize="small" />
-    </ListItemIcon>
-    <Typography variant="inherit">Logout</Typography>
-  </MenuItem>
-</Menu>
+      <Menu
+        anchorEl={anchorEl}
+        id="account-menu"
+        open={profileMenuOpen}
+        onClose={handleProfileMenuClose}
+        onClick={handleProfileMenuClose}
+        PaperProps={{
+          elevation: 0,
+          sx: {
+            overflow: 'visible',
+            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+            mt: 1.5,
+            minWidth: 200,
+            '& .MuiAvatar-root': {
+              width: 32,
+              height: 32,
+              ml: -0.5,
+              mr: 1,
+            },
+            '&:before': {
+              content: '""',
+              display: 'block',
+              position: 'absolute',
+              top: 0,
+              right: 14,
+              width: 10,
+              height: 10,
+              bgcolor: 'background.paper',
+              transform: 'translateY(-50%) rotate(45deg)',
+              zIndex: 0,
+            },
+          },
+        }}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      >
+        <MenuItem onClick={handleProfileMenuClose}>
+          <Avatar /> Profile
+        </MenuItem>
+        <MenuItem onClick={handleProfileMenuClose}>
+          <Avatar /> My account
+        </MenuItem>
+        <Divider />
+        <MenuItem onClick={handleProfileMenuClose}>
+          <ListItemIcon>
+            <SettingsIcon fontSize="small" />
+          </ListItemIcon>
+          <Typography variant="inherit">Settings</Typography>
+        </MenuItem>
+        <MenuItem onClick={handleProfileMenuClose}>
+          <ListItemIcon>
+            <HelpOutlineIcon fontSize="small" />
+          </ListItemIcon>
+          <Typography variant="inherit">Help</Typography>
+        </MenuItem>
+        <MenuItem onClick={handleProfileMenuClose}>
+          <ListItemIcon>
+            <MailIcon fontSize="small" />
+          </ListItemIcon>
+          <Typography variant="inherit">Contact Support</Typography>
+        </MenuItem>
+        <Divider />
+        <MenuItem onClick={handleLogout}>
+          <ListItemIcon>
+            <Logout fontSize="small" />
+          </ListItemIcon>
+          <Typography variant="inherit">Logout</Typography>
+        </MenuItem>
+      </Menu>
 
       <Drawer variant="permanent" open={open} sx={{
         '& .MuiDrawer-paper': {
@@ -631,7 +634,7 @@ const AdminBar = ({ children }) => {
                 <>
                   <ListItem disablePadding sx={{ display: 'block' }}>
                     <ListItemButton
-                      onClick={() => handleMenuClick(tab.id)}
+                      onClick={() => handleMainTabClick(tab.id)}
                       sx={{
                         minHeight: 48,
                         justifyContent: open ? 'initial' : 'center',
@@ -711,6 +714,7 @@ const AdminBar = ({ children }) => {
                   }}
                   component={Link}
                   to={tab.path}
+                  onClick={() => handleMainTabClick(tab.id)}
                 >
                   <ListItemButton
                     sx={{

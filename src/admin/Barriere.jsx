@@ -11,7 +11,9 @@ import {
   Card,
   CardContent,
   CardMedia,
-  TextareaAutosize
+  TextareaAutosize,
+  useMediaQuery,
+  useTheme
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import axios from 'axios';
@@ -20,6 +22,9 @@ import toast, { Toaster } from 'react-hot-toast';
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),
   marginTop: theme.spacing(2),
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(2),
+  },
 }));
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
@@ -39,10 +44,17 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   '& .MuiInputLabel-root': {
     color: '#38598b',
     fontFamily: 'Savate',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.8rem',
+    },
   },
   '& .MuiInputBase-input': {
     fontFamily: 'Savate',
     color: '#38598b',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.9rem',
+      padding: '10.5px 14px',
+    },
   },
   width: '100%',
   marginBottom: theme.spacing(2),
@@ -63,9 +75,17 @@ const StyledTextarea = styled(TextareaAutosize)(({ theme }) => ({
   },
   minHeight: '120px',
   resize: 'vertical',
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '0.9rem',
+    minHeight: '80px',
+  },
 }));
 
 const Barriere = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
+  
   const [formData, setFormData] = useState({
     reference: '',
     name: '',
@@ -87,14 +107,14 @@ const Barriere = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-  if (file.size > 5 * 1024 * 1024) { 
-    toast.error('Image size must be less than 5MB');
-    return;
-  }
-  if (!file.type.startsWith('image/')) {
-    toast.error('Please upload an image file');
-    return;
-  }
+    if (file.size > 5 * 1024 * 1024) { 
+      toast.error('Image size must be less than 5MB');
+      return;
+    }
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please upload an image file');
+      return;
+    }
     if (file) {
       setFormData(prev => ({
         ...prev,
@@ -108,10 +128,8 @@ const Barriere = () => {
     }
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const toastId = toast.loading('Envoi en cours...');
     
     try {
@@ -123,7 +141,7 @@ const Barriere = () => {
       formPayload.append('description', formData.description);
       formPayload.append('image', formData.image);
 
-      const response = await axios.post(`https://barns.onrender.com/api/barriere`, formPayload, {
+      const response = await axios.post(`http://localhost:5000/api/barriere`, formPayload, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
@@ -152,70 +170,80 @@ const Barriere = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh', p: 2 }}>
+    <Box sx={{ 
+      display: 'flex', 
+      flexDirection: isMobile ? 'column' : 'row',
+      minHeight: '100vh',
+      p: isMobile ? 1 : 2,
+      gap: isMobile ? 2 : 0
+    }}>
       <Toaster 
-        position="top-center"
+        position={isMobile ? "top-center" : "top-center"}
         toastOptions={{
           style: {
             fontFamily: 'Savate',
             color: '#38598b',
             border: '1px solid #38598b',
+            fontSize: isMobile ? '0.8rem' : '1rem'
           },
         }}
       />
       
-      <Box sx={{ width: '50%', overflowY: 'auto', pr: 2 }}>
-        <Typography variant="h4" gutterBottom sx={{ 
+      {/* Form Section */}
+      <Box sx={{ 
+        width: isMobile ? '100%' : '50%', 
+        pr: isMobile ? 0 : 0.5 
+      }}>
+        <Typography variant={isMobile ? "h5" : "h4"} gutterBottom sx={{ 
           fontFamily: 'Savate', 
           fontWeight: 'bolder', 
           textAlign: 'center', 
           color: '#38598b', 
           textTransform: 'uppercase',
-          mb: 4
+          mb: 4,
+          fontSize: isMobile ? '1.4rem' : '2rem'
         }}>
           Création d'une barrière
         </Typography>
 
-        <StyledPaper elevation={3}>
+        <StyledPaper elevation={6}>
           <form onSubmit={handleSubmit}>
-            <Grid container spacing={1}>
-              <Grid item xs={6}>
+            <Grid container spacing={isMobile ? 1 : 2}>
+              <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Référence"
                   name="reference"
                   value={formData.reference}
                   onChange={handleInputChange}
                   required
-                  sx={{ width: 250 }}
+                  fullWidth
                 />
-                
               </Grid>
 
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Nom de la barrière"
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
                   required
-                  sx={{ width: 250 }}
+                  fullWidth
                 />
-                
               </Grid>
 
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <StyledTextField
                   type="file"
                   name='image'
                   label="Image de la barrière"
-                InputLabelProps={{ shrink: true }}
-                onChange={handleImageChange}
-                inputProps={{ accept: "image/*" }}
-                sx={{ width: 250 }}
+                  InputLabelProps={{ shrink: true }}
+                  onChange={handleImageChange}
+                  inputProps={{ accept: "image/*" }}
+                  fullWidth
                 />
               </Grid>
 
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Largeur (cm)"
                   name="width"
@@ -225,21 +253,20 @@ const Barriere = () => {
                   InputProps={{
                     endAdornment: <InputAdornment position="end">mL</InputAdornment>,
                   }}
-                  sx={{ width: 250 }}
+                  fullWidth
                 />
               </Grid>
 
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <StyledTextarea
                   name="description"
                   value={formData.description}
                   onChange={handleInputChange}
                   placeholder='Description de la barrière...'
-                  sx={{ width: 510 }}
                 />
               </Grid>
 
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Prix (€)"
                   name="price"
@@ -250,8 +277,11 @@ const Barriere = () => {
                     startAdornment: <InputAdornment position="start">€</InputAdornment>,
                   }}
                   required
-                  sx={{ width: 250 }}
+                  fullWidth
                 />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
                 <Button
                   type="submit"
                   variant="contained"
@@ -266,11 +296,11 @@ const Barriere = () => {
                       color: '#38598b',
                       border: '1px solid #38598b'
                     },
-                    py: 1.7,
-                    fontSize: '0.9rem',
+                    py: isMobile ? 1 : 1.7,
+                    fontSize: isMobile ? '0.8rem' : '0.9rem',
                     borderRadius: '8px',
-                    width: 250,
-                    ml: 2
+                    height: '56px', // Match text field height
+                    mt: isMobile ? 0 : '8px'
                   }}
                 >
                   Créer la fiche barrière
@@ -281,29 +311,46 @@ const Barriere = () => {
         </StyledPaper>
       </Box>
 
-      {/* Divider */}
-      <Divider orientation="vertical" flexItem sx={{ mx: 2, borderColor: '#38598b' }} />
+      {/* Divider - Only show on desktop */}
+      {!isMobile && (
+        <Divider 
+          orientation="vertical" 
+          flexItem 
+          sx={{ 
+            mx: 2, 
+            borderColor: '#38598b',
+            display: isMobile ? 'none' : 'block'
+          }} 
+        />
+      )}
 
-      {/* Preview */}
-      <Box sx={{ width: '50%', backgroundColor: 'white', p: 3 }}>
-        <Typography variant="h4" gutterBottom sx={{ 
+      {/* Preview Section */}
+      <Box sx={{ 
+        width: isMobile ? '100%' : '50%', 
+        backgroundColor: isMobile ? 'transparent' : 'white', 
+        p: isMobile ? 0 : 3,
+        mt: isMobile ? 2 : 0
+      }}>
+        <Typography variant={isMobile ? "h5" : "h4"} gutterBottom sx={{ 
           fontFamily: 'Savate', 
           fontWeight: 'bolder', 
           textAlign: 'center', 
           color: '#38598b', 
           textTransform: 'uppercase',
-          mb: 4
+          mb: 4,
+          fontSize: isMobile ? '1.4rem' : '2rem'
         }}>
           Aperçu de la barrière
         </Typography>
         <Card sx={{ 
           borderRadius: '12px',
-          boxShadow: '0 4px 20px rgba(117, 81, 57, 0.2)'
+          boxShadow: '0 4px 20px rgba(117, 81, 57, 0.2)',
+          mb: isMobile ? 2 : 0
         }}>
           {previewImage && (
             <CardMedia
               component="img"
-              height="280"
+              height={isMobile ? "180" : "280"}
               image={previewImage}
               alt="Aperçu de la barrière"
               sx={{ objectFit: 'fill' }}
@@ -313,21 +360,24 @@ const Barriere = () => {
             <Typography variant="h6" sx={{ 
               fontFamily: 'Savate',
               color: '#38598b',
-              mb: 1
+              mb: 1,
+              fontSize: isMobile ? '1rem' : '1.25rem'
             }}>
               {formData.name || 'Nom de la barrière'} — <span style={{ color: '#2e7d32' }}>€{formData.price || '0'}</span>
             </Typography>
             <Typography sx={{ 
               color: '#38598b',
               fontFamily: 'Savate',
-              mb: 2
+              mb: 2,
+              fontSize: isMobile ? '0.9rem' : '1rem'
             }}>
               Réf: {formData.reference || 'N/A'}
             </Typography>
             <Typography variant="body2" sx={{ 
               color: '#38598b',
               fontFamily: 'Savate',
-              mb: 3
+              mb: 3,
+              fontSize: isMobile ? '0.8rem' : '0.875rem'
             }}>
               {formData.description || 'Aucune description fournie'}
             </Typography>
@@ -337,7 +387,8 @@ const Barriere = () => {
             <Typography variant="subtitle2" sx={{ 
               color: '#38598b',
               fontFamily: 'Savate',
-              mb: 3
+              mb: 3,
+              fontSize: isMobile ? '0.8rem' : '0.875rem'
             }}>
               Largeur : {formData.width || 'N/A'} mL
             </Typography>
