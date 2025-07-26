@@ -25,13 +25,20 @@ import MailIcon from '@mui/icons-material/Mail';
 import Collapse from '@mui/material/Collapse';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-
-
 import SettingsIcon from '@mui/icons-material/Settings';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import Logout from '@mui/icons-material/Logout';
-import adminlogo from '../assets/admin.png';
+import CloseIcon from '@mui/icons-material/Close';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import TextField from '@mui/material/TextField';
+import CircularProgress from '@mui/material/CircularProgress';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
+import adminlogo from '../assets/admin.png';
 import fence from '../assets/fence.png';
 import stable from '../assets/stable.png';
 import stables from '../assets/stables.png';
@@ -43,6 +50,7 @@ import barn from '../assets/barn.png';
 import manger from '../assets/manger.png';
 import help from '../assets/help.png';
 import settings from '../assets/settings.png';
+import { Button } from '@mui/material';
 
 const drawerWidth = 250;
 
@@ -110,7 +118,6 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
-// Sidebar tabs data with paths
 const sidebarTabs = [
   { 
     id: 'dashboard',
@@ -144,7 +151,7 @@ const sidebarTabs = [
       ),  path: '/admin-cards-edit' },
       { text: (
           <Typography sx={{ fontFamily: 'Savate' }}> Création d'une façade </Typography>
-      ),  path: '/admin-cards' }
+      ),  path: '/admin-cards' },
     ]
   },
   { 
@@ -259,33 +266,6 @@ const sidebarTabs = [
     ]
   },
   { 
-    id: 'sixbox',
-    text: (
-      <Typography sx={{ fontFamily: 'Savate' }}>
-        6 Box
-      </Typography>
-    ), 
-    icon:  (
-    <Box component="img" src={stables} alt="Barn Icon" sx={{ 
-      width: 20, 
-      height: 20,
-      filter: 'brightness(1) invert(1)' 
-    }} />
-  ), 
-    nested: [
-      { text: (
-          <Typography sx={{ fontFamily: 'Savate' }}>
-            Gestion des 6 Box
-          </Typography>
-      ), path: '/admin-sixbox-edit' },
-      { text: (
-          <Typography sx={{ fontFamily: 'Savate' }}>
-            Création d'un 6 Box
-          </Typography>
-      ), path: '/admin-sixbox' }
-    ]
-  },
-  { 
     id: 'malle',
     text: (
           <Typography sx={{ fontFamily: 'Savate' }}>Malle de Concours</Typography>
@@ -342,10 +322,10 @@ const sidebarTabs = [
     nested: [
       { text: (
           <Typography sx={{ fontFamily: 'Savate' }}>Gestion des Fenêtres</Typography>
-      ), path: '/admin-fenetre-edit' },
+      ), path: '/admin-fenet-edit' },
       { text: (
           <Typography sx={{ fontFamily: 'Savate' }}>Création d'une Fenêtre</Typography>
-      ), path: '/admin-fenetre' }
+      ), path: '/admin-fenet' }
     ]
   },
   { 
@@ -363,10 +343,10 @@ const sidebarTabs = [
     nested: [
       { text: (
           <Typography sx={{ fontFamily: 'Savate' }}>Gestion des Mangeoires</Typography>
-      ), path: '/admin-mangeoire-edit' },
+      ), path: '/admin-mang-edit' },
       { text: (
           <Typography sx={{ fontFamily: 'Savate' }}>Création d'une Mangeoire</Typography>
-      ), path: '/admin-mangeoire' }
+      ), path: '/admin-mang' }
     ]
   },
   { 
@@ -390,7 +370,6 @@ const sidebarTabs = [
       ), path: '/admin-barn' }
     ]
   },
-  // Non-nested items
   { id: 'parametres', text: (
       <Typography sx={{ fontFamily: 'Savate' }}>Paramètres</Typography>
   ), icon: (
@@ -400,25 +379,29 @@ const sidebarTabs = [
       filter: 'brightness(1) invert(1)' 
     }} />
   ), path: '/admin-parametres' },
-  { id: 'support', text: (
-      <Typography sx={{ fontFamily: 'Savate' }}>Support</Typography>
-  ), icon: (
-    <Box component="img" src={help} alt="Barn Icon" sx={{ 
-      width: 20, 
-      height: 20,
-      filter: 'brightness(1) invert(1)' 
-    }} />
-  ),  path: '/admin-support' },
 ];
 
 const AdminBar = ({ children }) => {
   const theme = useTheme();
-  const [open, setOpen] = useState(false); // Start with sidebar closed
+  const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [openMenus, setOpenMenus] = useState({});
   const profileMenuOpen = Boolean(anchorEl);
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Contact Support Dialog State
+  const [contactDialogOpen, setContactDialogOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -440,6 +423,53 @@ const AdminBar = ({ children }) => {
 
   const handleProfileMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleProfileSettings = () => {
+    setAnchorEl(null);
+    navigate('/admin-parametres');
+  };
+
+  const handleProfileSupport = () => {
+    setAnchorEl(null);
+    setContactDialogOpen(true);
+  };
+
+  const handleContactDialogClose = () => {
+    setContactDialogOpen(false);
+  };
+
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Simulate API call
+    setTimeout(() => {
+      console.log('Form submitted:', formData);
+      setIsSubmitting(false);
+      setSnackbarMessage('Votre message a été envoyé avec succès!');
+      setSnackbarSeverity('success');
+      setSnackbarOpen(true);
+      setContactDialogOpen(false);
+      setFormData({
+        name: '',
+        email: '',
+        subject: '',
+        message: ''
+      });
+    }, 1500);
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   const handleMainTabClick = (tabId) => {
@@ -505,7 +535,7 @@ const AdminBar = ({ children }) => {
                 }
               }}
             >
-              Espace administrateur GBH
+              Espace GBH
             </Typography>
           </Box>
           
@@ -581,30 +611,17 @@ const AdminBar = ({ children }) => {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={handleProfileMenuClose}>
-          <Avatar /> Profile
-        </MenuItem>
-        <MenuItem onClick={handleProfileMenuClose}>
-          <Avatar /> My account
-        </MenuItem>
-        <Divider />
-        <MenuItem onClick={handleProfileMenuClose}>
+        <MenuItem onClick={handleProfileSettings}>
           <ListItemIcon>
             <SettingsIcon fontSize="small" />
           </ListItemIcon>
-          <Typography variant="inherit">Settings</Typography>
+          <Typography variant="inherit">Paramétres</Typography>
         </MenuItem>
-        <MenuItem onClick={handleProfileMenuClose}>
-          <ListItemIcon>
-            <HelpOutlineIcon fontSize="small" />
-          </ListItemIcon>
-          <Typography variant="inherit">Help</Typography>
-        </MenuItem>
-        <MenuItem onClick={handleProfileMenuClose}>
+        <MenuItem onClick={handleProfileSupport}>
           <ListItemIcon>
             <MailIcon fontSize="small" />
           </ListItemIcon>
-          <Typography variant="inherit">Contact Support</Typography>
+          <Typography variant="inherit">Contacter le support</Typography>
         </MenuItem>
         <Divider />
         <MenuItem onClick={handleLogout}>
@@ -758,6 +775,137 @@ const AdminBar = ({ children }) => {
         <DrawerHeader />
         {children}
       </Box>
+
+      {/* Contact Support Dialog */}
+      <Dialog
+        open={contactDialogOpen}
+        onClose={handleContactDialogClose}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: '12px'
+          }
+        }}
+      >
+        <DialogTitle sx={{ 
+          backgroundColor: '#38598b',
+          color: 'white',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <Box display="flex" alignItems="center">
+            <MailIcon sx={{ mr: 1 }} />
+            <Typography variant="h6">Contact Support</Typography>
+          </Box>
+          <IconButton onClick={handleContactDialogClose} sx={{ color: 'white' }}>
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        
+        <Divider />
+        
+        <DialogContent sx={{ pt: 3 }}>
+          <form onSubmit={handleFormSubmit}>
+            <Box mb={3}>
+              <TextField
+                fullWidth
+                label="Votre Nom"
+                name="name"
+                value={formData.name}
+                onChange={handleFormChange}
+                required
+                margin="normal"
+                variant="outlined"
+                size="small"
+              />
+            </Box>
+            
+            <Box mb={3}>
+              <TextField
+                fullWidth
+                label="Adresse Email"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleFormChange}
+                required
+                margin="normal"
+                variant="outlined"
+                size="small"
+              />
+            </Box>
+            
+            <Box mb={3}>
+              <TextField
+                fullWidth
+                label="Sujet"
+                name="subject"
+                value={formData.subject}
+                onChange={handleFormChange}
+                required
+                margin="normal"
+                variant="outlined"
+                size="small"
+              />
+            </Box>
+            
+            <Box mb={3}>
+              <TextField
+                fullWidth
+                label="Message"
+                name="message"
+                value={formData.message}
+                onChange={handleFormChange}
+                required
+                margin="normal"
+                variant="outlined"
+                multiline
+                rows={4}
+              />
+            </Box>
+            
+            <DialogActions sx={{ px: 0 }}>
+              <Button 
+                onClick={handleContactDialogClose} 
+                color="inherit"
+                sx={{ color: 'text.secondary' }}
+              >
+                Annuler
+              </Button>
+              <Button 
+                type="submit" 
+                variant="contained"
+                disabled={isSubmitting}
+                sx={{ 
+                  backgroundColor: '#38598b',
+                  '&:hover': { backgroundColor: '#2a4568' },
+                  minWidth: '100px'
+                }}
+              >
+                {isSubmitting ? <CircularProgress size={24} color="inherit" /> : 'Envoyer'}
+              </Button>
+            </DialogActions>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Snackbar Notification */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert 
+          onClose={handleSnackbarClose} 
+          severity={snackbarSeverity}
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

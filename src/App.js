@@ -24,6 +24,17 @@ import EditFiveBox from './admin/EditFiveBox';
 
 
 import { isAuthenticated } from './tools/auth';
+import Malle from './admin/Malle';
+import EditMalle from './admin/EditMalle';
+import Porte from './admin/Porte';
+import EditPorte from './admin/EditPorte';
+import EditFenet from './admin/EditFenet';
+import Fenet from './admin/Fenet';
+import Mangeoire from './admin/Mangeoire';
+import EditMangeoire from './admin/EditMangeoire';
+import Parametre from './admin/Parametre';
+import Barn from './admin/Barn';
+import EditBarn from './admin/EditBarn';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -265,6 +276,149 @@ function App() {
         <>
           <AdminBar>
             <EditFiveBox  />
+            </AdminBar>
+        </>
+      ) : (
+        <Navigate to="/" />
+
+      ) 
+    },
+    {
+      path: '/admin-malle',
+      element: isAuth ? (
+        <>
+          <AdminBar>
+            <Malle  />
+            </AdminBar>
+        </>
+      ) : (
+        <Navigate to="/" />
+
+      ) 
+    },
+            {
+      path: '/admin-malle-edit',
+      element: isAuth ? (
+        <>
+          <AdminBar>
+            <EditMalle  />
+            </AdminBar>
+        </>
+      ) : (
+        <Navigate to="/" />
+
+      ) 
+    },
+    {
+      path: '/admin-porte',
+      element: isAuth ? (
+        <>
+          <AdminBar>
+            <Porte  />
+            </AdminBar>
+        </>
+      ) : (
+        <Navigate to="/" />
+
+      ) 
+    },
+            {
+      path: '/admin-porte-edit',
+      element: isAuth ? (
+        <>
+          <AdminBar>
+            <EditPorte  />
+            </AdminBar>
+        </>
+      ) : (
+        <Navigate to="/" />
+
+      ) 
+    },
+    {
+      path: '/admin-fenet',
+      element: isAuth ? (
+        <>
+          <AdminBar>
+            <Fenet  />
+            </AdminBar>
+        </>
+      ) : (
+        <Navigate to="/" />
+
+      ) 
+    },
+            {
+      path: '/admin-fenet-edit',
+      element: isAuth ? (
+        <>
+          <AdminBar>
+            <EditFenet  />
+            </AdminBar>
+        </>
+      ) : (
+        <Navigate to="/" />
+
+      ) 
+    },
+    {
+      path: '/admin-mang',
+      element: isAuth ? (
+        <>
+          <AdminBar>
+            <Mangeoire  />
+            </AdminBar>
+        </>
+      ) : (
+        <Navigate to="/" />
+
+      ) 
+    },
+            {
+      path: '/admin-mang-edit',
+      element: isAuth ? (
+        <>
+          <AdminBar>
+            <EditMangeoire  />
+            </AdminBar>
+        </>
+      ) : (
+        <Navigate to="/" />
+
+      ) 
+    },
+    {
+      path: '/admin-parametres',
+      element: isAuth ? (
+        <>
+          <AdminBar>
+            <Parametre  />
+            </AdminBar>
+        </>
+      ) : (
+        <Navigate to="/" />
+
+      ) 
+    },
+    {
+      path: '/admin-barn',
+      element: isAuth ? (
+        <>
+          <AdminBar>
+            <Barn  />
+            </AdminBar>
+        </>
+      ) : (
+        <Navigate to="/" />
+
+      ) 
+    },
+    {
+      path: '/admin-barn-edit',
+      element: isAuth ? (
+        <>
+          <AdminBar>
+            <EditBarn  />
             </AdminBar>
         </>
       ) : (

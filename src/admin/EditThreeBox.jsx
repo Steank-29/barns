@@ -330,7 +330,7 @@ const EditThreeBox = () => {
         justifyContent: 'center',
         padding: isMobile ? 1 : 3,
       }}>
-        <Grid container spacing={isMobile ? 2 : 4} sx={{ 
+        <Grid container spacing={isMobile ? 2 : 1} sx={{ 
           maxWidth: 'lg',
           justifyContent: 'center'
         }}>

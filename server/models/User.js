@@ -5,10 +5,14 @@ const userSchema = mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   name: { type: String },
+  namecompany: { type: String, required: true },
+  date: { type: String, required: true },
+  adresse: { type: String, required: true },
+  fondateur: { type: String, required: true },
+  produit: { type: String, required: true },
   createdAt: { type: Date, default: Date.now }
 });
 
-// Hash password before saving
 userSchema.pre('save', async function(next) {
   if (!this.isModified('password')) return next();
   
@@ -21,4 +25,8 @@ userSchema.pre('save', async function(next) {
   }
 });
 
-module.exports = mongoose.model('User', userSchema);
+// Make sure this line is present and correct
+const User = mongoose.model('User', userSchema);
+
+// And this export
+module.exports = User;

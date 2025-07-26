@@ -14,12 +14,15 @@ const twoBoxRoutes = require('./routes/TwoBox');
 const twoBoxResinRoutes = require('./routes/TwoBoxResin');
 const fiveBoxRoutes = require('./routes/FiveBox');
 const authRoutes = require('./routes/auth');
+const malleRoutes = require('./routes/Malle');
+const porteRoutes = require('./routes/Porte');
+const fenetRoutes = require('./routes/Fenet');
+const mangRoutes = require('./routes/Mang');
+const barnRoutes = require('./routes/Barn');
 
 // CORS Configuration
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://barns.onrender.com',
-  'https://barns-five.vercel.app/',
 ];
 
 app.use(cors({
@@ -45,6 +48,13 @@ app.use('/api/threebox', threeBoxRoutes);
 app.use('/api/twoboxresin', twoBoxResinRoutes);
 app.use('/api/fivebox', fiveBoxRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/malle', malleRoutes);
+app.use('/api/fenet', fenetRoutes);
+app.use('/api/porte', porteRoutes);
+app.use('/api/mang', mangRoutes);
+app.use('/api/barn', barnRoutes);
+
+
 
 // Status route
 app.get('/', (req, res) => {

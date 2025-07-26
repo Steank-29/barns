@@ -307,7 +307,7 @@ const EditCards = () => {
         <TextField
           fullWidth
           variant="outlined"
-          placeholder="Search products by name or reference..."
+          placeholder="Rechercher des produits par nom ou par référence..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           InputProps={{
@@ -331,7 +331,7 @@ const EditCards = () => {
         justifyContent: 'center',
         padding: isMobile ? 1 : 3,
       }}>
-        <Grid container spacing={isMobile ? 2 : 4} sx={{ 
+        <Grid container spacing={isMobile ? 2 : 1} sx={{ 
           maxWidth: 'lg',
           justifyContent: 'center'
         }}>
@@ -751,7 +751,7 @@ const EditCards = () => {
             <Box display="flex" alignItems="center">
               <EditIcon sx={{ mr: 1.5, fontSize: isMobile ? '1.2rem' : '1.5rem' }} />
               <Typography variant={isMobile ? 'h6' : 'h6'} fontWeight={600} sx={{ letterSpacing: '0.5px' }}>
-                Edit Product Details
+              Gérer et Modifier les Détails de Façade
               </Typography>
             </Box>
             <IconButton 

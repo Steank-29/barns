@@ -39,11 +39,11 @@ const Signin = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post('https://barns.onrender.com/api/auth/login', formData);
+      const response = await axios.post('http://localhost:5000/api/auth/login', formData);
       const data = response.data;
        if (response.status === 200) {
-      login(data.token);
-      navigate('/admin-dashboard'); 
+         window.location.href = '/admin-dashboard'; 
+         login(data.token);
        }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
