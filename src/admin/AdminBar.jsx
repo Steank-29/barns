@@ -393,7 +393,7 @@ const AdminBar = ({ children }) => {
   // Contact Support Dialog State
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
+    email1: '',
     email: '',
     subject: '',
     message: ''
@@ -412,7 +412,7 @@ const AdminBar = ({ children }) => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('userdatatoken');
+    localStorage.removeItem('usersdatatoken');
     handleProfileMenuClose();
     navigate('/');
   };
@@ -447,26 +447,44 @@ const AdminBar = ({ children }) => {
     }));
   };
 
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      console.log('Form submitted:', formData);
-      setIsSubmitting(false);
-      setSnackbarMessage('Votre message a été envoyé avec succès!');
-      setSnackbarSeverity('success');
-      setSnackbarOpen(true);
-      setContactDialogOpen(false);
-      setFormData({
-        name: '',
-        email: '',
-        subject: '',
-        message: ''
-      });
-    }, 1500);
-  };
+const handleFormSubmit = async (e) => {
+  e.preventDefault();
+  setIsSubmitting(true);
+  
+  try {
+    const response = await fetch('http://localhost:5000/api/send-email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Failed to send message');
+    }
+
+    setSnackbarMessage('Votre message a été envoyé avec succès!');
+    setSnackbarSeverity('success');
+    setSnackbarOpen(true);
+    setContactDialogOpen(false);
+    setFormData({
+      email1: '',
+      email: '',
+      subject: '',
+      message: ''
+    });
+  } catch (error) {
+    console.error('Error sending message:', error);
+    setSnackbarMessage(error.message || 'Une erreur est survenue lors de l\'envoi du message');
+    setSnackbarSeverity('error');
+    setSnackbarOpen(true);
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
@@ -628,7 +646,7 @@ const AdminBar = ({ children }) => {
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>
-          <Typography variant="inherit">Logout</Typography>
+          <Typography variant="inherit">Déconnexion</Typography>
         </MenuItem>
       </Menu>
 
@@ -811,9 +829,9 @@ const AdminBar = ({ children }) => {
             <Box mb={3}>
               <TextField
                 fullWidth
-                label="Votre Nom"
-                name="name"
-                value={formData.name}
+                label="Votre Adresse email"
+                name="email1"
+                value={formData.email1}
                 onChange={handleFormChange}
                 required
                 margin="normal"
@@ -825,7 +843,7 @@ const AdminBar = ({ children }) => {
             <Box mb={3}>
               <TextField
                 fullWidth
-                label="Adresse Email"
+                label="Adresse email que vous contactez"
                 name="email"
                 type="email"
                 value={formData.email}
@@ -840,7 +858,7 @@ const AdminBar = ({ children }) => {
             <Box mb={3}>
               <TextField
                 fullWidth
-                label="Sujet"
+                label="Sujet de votre message"  
                 name="subject"
                 value={formData.subject}
                 onChange={handleFormChange}
@@ -854,7 +872,7 @@ const AdminBar = ({ children }) => {
             <Box mb={3}>
               <TextField
                 fullWidth
-                label="Message"
+                label="Décrivez votre demande ou votre message"
                 name="message"
                 value={formData.message}
                 onChange={handleFormChange}

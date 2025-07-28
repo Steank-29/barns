@@ -1,402 +1,267 @@
-import React, { useState } from 'react';
-import {
-  Box,
-  TextField,
-  Button,
-  Typography,
-  Grid,
-  Paper,
-  InputAdornment,
-  Divider,
+import React from 'react';
+import { 
+  Box, 
+  Container, 
+  Typography, 
+  Grid, 
+  TextField, 
+  InputAdornment, 
+  MenuItem, 
+  Select, 
+  FormControl, 
+  InputLabel,
   Card,
   CardContent,
   CardMedia,
-  TextareaAutosize,
-  useMediaQuery,
-  useTheme
+  Button,
+  CircularProgress
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import SearchIcon from '@mui/icons-material/Search';
 import axios from 'axios';
-import toast, { Toaster } from 'react-hot-toast';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-const StyledPaper = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(3),
-  marginTop: theme.spacing(2),
-  [theme.breakpoints.down('sm')]: {
-    padding: theme.spacing(2),
-  },
-}));
-
-const StyledTextField = styled(TextField)(({ theme }) => ({
-  '& .MuiOutlinedInput-root': {
-    borderRadius: '8px',
-    backgroundColor: '#FFFFFF',
-    '& fieldset': {
-      borderColor: '#38598b',
+// Custom theme
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#38598b',
     },
-    '&:hover fieldset': {
-      borderColor: '#38598b',
-    },
-    '&.Mui-focused fieldset': {
-      borderColor: '#38598b',
+    secondary: {
+      main: '#f50057',
     },
   },
-  '& .MuiInputLabel-root': {
-    color: '#38598b',
-    fontFamily: 'Savate',
-    [theme.breakpoints.down('sm')]: {
-      fontSize: '0.8rem',
+  typography: {
+    fontFamily: 'Savate, Arial, sans-serif',
+    h1: {
+      fontWeight: 700,
+      fontSize: '2.5rem',
+    },
+    h2: {
+      fontWeight: 600,
+      fontSize: '2rem',
     },
   },
-  '& .MuiInputBase-input': {
-    fontFamily: 'Savate',
-    color: '#38598b',
-    [theme.breakpoints.down('sm')]: {
-      fontSize: '0.9rem',
-      padding: '10.5px 14px',
-    },
-  },
-  width: '100%',
-  marginBottom: theme.spacing(2),
-}));
+});
 
-const StyledTextarea = styled(TextareaAutosize)(({ theme }) => ({
-  width: '100%',
-  fontFamily: 'Savate',
-  padding: theme.spacing(1),
-  borderRadius: '8px',
-  borderColor: '#38598b',
-  backgroundColor: '#FFFFFF',
-  color: '#38598b',
-  '&:focus': {
-    outline: 'none',
-    borderColor: '#38598b',
-    borderWidth: '2px',
-  },
-  minHeight: '120px',
-  resize: 'vertical',
-  [theme.breakpoints.down('sm')]: {
-    fontSize: '0.9rem',
-    minHeight: '80px',
-  },
-}));
+const Equipements = () => {
+  const [facades, setFacades] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState(null);
+  const [searchTerm, setSearchTerm] = React.useState('');
+  const [typeFilter, setTypeFilter] = React.useState('');
+  const [priceFilter, setPriceFilter] = React.useState('');
 
-const Barriere = () => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
-  
-  const [formData, setFormData] = useState({
-    reference: '',
-    name: '',
-    price: 0,
-    width: '',
-    description: '',
-    image: null
-  });
+  // Fetch facades from backend
+  React.useEffect(() => {
+    const fetchFacades = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/facade/getallfacades');
+        setFacades(response.data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
 
-  const [previewImage, setPreviewImage] = useState(null);
+    fetchFacades();
+  }, []);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+  // Extract unique types for filter
+  const types = [...new Set(facades.map(facade => facade.type))].filter(Boolean);
+
+  const filteredFacades = facades.filter(facade => {
+    return (
+      facade.productName.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (typeFilter === '' || facade.type === typeFilter) &&
+      (priceFilter === '' || 
+        (priceFilter === 'low' && facade.price <= 1500) || 
+        (priceFilter === 'high' && facade.price > 25000))
+  )});
+
+  // Function to chunk array into groups of 5 for perfect rows
+  const chunkArray = (array, size) => {
+    const result = [];
+    for (let i = 0; i < array.length; i += size) {
+      result.push(array.slice(i, i + size));
+    }
+    return result;
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file.size > 5 * 1024 * 1024) { 
-      toast.error('Image size must be less than 5MB');
-      return;
-    }
-    if (!file.type.startsWith('image/')) {
-      toast.error('Please upload an image file');
-      return;
-    }
-    if (file) {
-      setFormData(prev => ({
-        ...prev,
-        image: file
-      }));
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewImage(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  const facadeRows = chunkArray(filteredFacades, 5);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const toastId = toast.loading('Envoi en cours...');
-    
-    try {
-      const formPayload = new FormData();
-      formPayload.append('reference', formData.reference);
-      formPayload.append('name', formData.name);
-      formPayload.append('price', formData.price)
-      formPayload.append('width', formData.width);
-      formPayload.append('description', formData.description);
-      formPayload.append('image', formData.image);
+  if (loading) {
+    return (
+      <ThemeProvider theme={theme}>
+        <Container maxWidth="lg" sx={{ py: 10, textAlign: 'center' }}>
+          <CircularProgress color="primary" />
+          <Typography variant="h6" sx={{ mt: 2 }}>Chargement des produits...</Typography>
+        </Container>
+      </ThemeProvider>
+    );
+  }
 
-      const response = await axios.post(`http://localhost:5000/api/barriere`, formPayload, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-
-      console.log(response.data);
-      toast.success('Barrière ajoutée avec succès !', {
-        id: toastId,
-        duration: 4000,
-      });
-      
-      setFormData({
-        reference: '',
-        name: '',
-        price: 0,
-        width: '',
-        description: '',
-        image: null
-      });
-      setPreviewImage(null);
-    } catch (error) {
-      console.error('Erreur lors de l\'envoi ', error);
-      toast.error('Erreur lors de la création de la barrière', {
-        id: toastId,
-        duration: 4000,
-      });
-    }
-  };
+  if (error) {
+    return (
+      <ThemeProvider theme={theme}>
+        <Container maxWidth="lg" sx={{ py: 10, textAlign: 'center' }}>
+          <Typography variant="h6" color="error">Erreur: {error}</Typography>
+        </Container>
+      </ThemeProvider>
+    );
+  }
 
   return (
-    <Box sx={{ 
-      display: 'flex', 
-      flexDirection: isMobile ? 'column' : 'row',
-      minHeight: '100vh',
-      p: isMobile ? 1 : 2,
-      gap: isMobile ? 2 : 0
-    }}>
-      <Toaster 
-        position={isMobile ? "top-center" : "top-center"}
-        toastOptions={{
-          style: {
-            fontFamily: 'Savate',
-            color: '#38598b',
-            border: '1px solid #38598b',
-            fontSize: isMobile ? '0.8rem' : '1rem'
-          },
-        }}
-      />
-      
-      {/* Form Section */}
-      <Box sx={{ 
-        width: isMobile ? '100%' : '50%', 
-        pr: isMobile ? 0 : 0.5 
-      }}>
-        <Typography variant={isMobile ? "h5" : "h4"} gutterBottom sx={{ 
-          fontFamily: 'Savate', 
-          fontWeight: 'bolder', 
-          textAlign: 'center', 
-          color: '#38598b', 
-          textTransform: 'uppercase',
-          mb: 4,
-          fontSize: isMobile ? '1.4rem' : '2rem'
+    <ThemeProvider theme={theme}>
+      <Container maxWidth="xl" sx={{ py: 4 }}>
+        {/* Main Title Section */}
+        <Box textAlign="center" mb={6}>
+          <Typography variant="h1" component="h1" gutterBottom sx={{ color: 'primary.main' }}>
+            Découvrez nos façades pour équipements équestres
+          </Typography>
+          <Typography variant="subtitle1" color="text.secondary" sx={{ maxWidth: 800, mx: 'auto' }}>
+            Nous proposons une gamme complète de façades de qualité professionnelle pour boxes et barns démontables.
+          </Typography>
+        </Box>
+
+        {/* Search and Filter Section */}
+        <Box sx={{ 
+          mb: 6, 
+          display: "flex", 
+          flexDirection: "column", 
+          justifyContent: "center", 
+          alignItems: "center",
+          width: '100%'
         }}>
-          Création d'une barrière
-        </Typography>
-
-        <StyledPaper elevation={6}>
-          <form onSubmit={handleSubmit}>
-            <Grid container spacing={isMobile ? 1 : 2}>
-              <Grid item xs={12} sm={6}>
-                <StyledTextField
-                  label="Référence"
-                  name="reference"
-                  value={formData.reference}
-                  onChange={handleInputChange}
-                  required
-                  fullWidth
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <StyledTextField
-                  label="Nom de la barrière"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  required
-                  fullWidth
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <StyledTextField
-                  type="file"
-                  name='image'
-                  label="Image de la barrière"
-                  InputLabelProps={{ shrink: true }}
-                  onChange={handleImageChange}
-                  inputProps={{ accept: "image/*" }}
-                  fullWidth
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <StyledTextField
-                  label="Largeur (cm)"
-                  name="width"
-                  type="number"
-                  value={formData.width}
-                  onChange={handleInputChange}
-                  InputProps={{
-                    endAdornment: <InputAdornment position="end">mL</InputAdornment>,
-                  }}
-                  fullWidth
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <StyledTextarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  placeholder='Description de la barrière...'
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <StyledTextField
-                  label="Prix (€)"
-                  name="price"
-                  type="number"
-                  value={formData.price}
-                  onChange={handleInputChange}
-                  InputProps={{
-                    startAdornment: <InputAdornment position="start">€</InputAdornment>,
-                  }}
-                  required
-                  fullWidth
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  fullWidth
-                  sx={{ 
-                    fontFamily: 'Savate', 
-                    fontWeight: 'bold', 
-                    backgroundColor: '#38598b', 
-                    color: 'white', 
-                    '&:hover': { 
-                      backgroundColor: 'white', 
-                      color: '#38598b',
-                      border: '1px solid #38598b'
-                    },
-                    py: isMobile ? 1 : 1.7,
-                    fontSize: isMobile ? '0.8rem' : '0.9rem',
-                    borderRadius: '8px',
-                    height: '56px', // Match text field height
-                    mt: isMobile ? 0 : '8px'
-                  }}
-                >
-                  Créer la fiche barrière
-                </Button>
+          <Grid container spacing={2} justifyContent="center">
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                placeholder="Rechercher des façades..."
+                variant="outlined"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{ maxWidth: 600 }}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Grid container spacing={2} justifyContent="center">
+                <Grid item xs={12} sm={6} md={4}>
+                  <FormControl sx={{ width: 200 }}>
+                    <InputLabel>Type</InputLabel>
+                    <Select
+                      value={typeFilter}
+                      onChange={(e) => setTypeFilter(e.target.value)}
+                      label="Type"
+                    >
+                      <MenuItem value="">Tous les types</MenuItem>
+                      {types.map((type) => (
+                        <MenuItem key={type} value={type}>{type}</MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} sm={6} md={4}>
+                  <FormControl sx={{ width: 200 }}>
+                    <InputLabel>Prix</InputLabel>
+                    <Select
+                      value={priceFilter}
+                      onChange={(e) => setPriceFilter(e.target.value)}
+                      label="Prix"
+                    >
+                      <MenuItem value="">Toutes gammes</MenuItem>
+                      <MenuItem value="low">Moins de 1500€</MenuItem>
+                      <MenuItem value="high">Plus de 25000€</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
               </Grid>
             </Grid>
-          </form>
-        </StyledPaper>
-      </Box>
+          </Grid>
+        </Box>
 
-      {/* Divider - Only show on desktop */}
-      {!isMobile && (
-        <Divider 
-          orientation="vertical" 
-          flexItem 
-          sx={{ 
-            mx: 2, 
-            borderColor: '#38598b',
-            display: isMobile ? 'none' : 'block'
-          }} 
-        />
-      )}
-
-      {/* Preview Section */}
-      <Box sx={{ 
-        width: isMobile ? '100%' : '50%', 
-        backgroundColor: isMobile ? 'transparent' : 'white', 
-        p: isMobile ? 0 : 3,
-        mt: isMobile ? 2 : 0
-      }}>
-        <Typography variant={isMobile ? "h5" : "h4"} gutterBottom sx={{ 
-          fontFamily: 'Savate', 
-          fontWeight: 'bolder', 
-          textAlign: 'center', 
-          color: '#38598b', 
-          textTransform: 'uppercase',
-          mb: 4,
-          fontSize: isMobile ? '1.4rem' : '2rem'
-        }}>
-          Aperçu de la barrière
-        </Typography>
-        <Card sx={{ 
-          borderRadius: '12px',
-          boxShadow: '0 4px 20px rgba(117, 81, 57, 0.2)',
-          mb: isMobile ? 2 : 0
-        }}>
-          {previewImage && (
-            <CardMedia
-              component="img"
-              height={isMobile ? "180" : "280"}
-              image={previewImage}
-              alt="Aperçu de la barrière"
-              sx={{ objectFit: 'fill' }}
-            />
-          )}
-          <CardContent sx={{ backgroundColor: '#FFFFFF' }}>
-            <Typography variant="h6" sx={{ 
-              fontFamily: 'Savate',
-              color: '#38598b',
-              mb: 1,
-              fontSize: isMobile ? '1rem' : '1.25rem'
-            }}>
-              {formData.name || 'Nom de la barrière'} — <span style={{ color: '#2e7d32' }}>€{formData.price || '0'}</span>
+        {/* Products Grid - Now with perfect 5-card rows */}
+        {facadeRows.length > 0 ? (
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            {facadeRows.map((row, rowIndex) => (
+              <Grid key={`row-${rowIndex}`} container spacing={4} justifyContent="center">
+                {row.map((facade) => (
+                  <Grid item key={facade._id} xs={12} sm={6} md={4} lg={2.4}>
+                    <Card sx={{ 
+                      height: '100%', 
+                      display: 'flex', 
+                      flexDirection: 'column',
+                      transition: 'transform 0.3s',
+                      '&:hover': {
+                        transform: 'scale(1.03)',
+                        boxShadow: 3
+                      }
+                    }}>
+                      <CardMedia
+                        component="img"
+                        height="200"
+                        image={facade.imageUrl || '/placeholder-facade.jpg'}
+                        alt={facade.productName}
+                        sx={{ 
+                          objectFit: 'cover',
+                          width: '100%',
+                          height: 200
+                        }}
+                        onError={(e) => {
+                          e.target.src = '/placeholder-facade.jpg';
+                        }}
+                      />
+                      <CardContent sx={{ flexGrow: 1 }}>
+                        <Typography gutterBottom variant="h5" component="h2">
+                          {facade.productName}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" paragraph>
+                          {facade.description || 'Façade de qualité professionnelle'}
+                        </Typography>
+                        <Typography variant="body2" paragraph>
+                          <strong>Référence:</strong> {facade.reference}
+                        </Typography>
+                        {facade.height && facade.width && (
+                          <Typography variant="body2" paragraph>
+                            <strong>Dimensions:</strong> {facade.height} x {facade.width} {facade.thickness && `x ${facade.thickness}`}
+                          </Typography>
+                        )}
+                        <Typography variant="h6" color="primary" paragraph>
+                          {facade.price.toLocaleString('fr-FR')} €
+                        </Typography>
+                      </CardContent>
+                      <Box sx={{ p: 2 }}>
+                        <Button 
+                          variant="contained" 
+                          fullWidth
+                          color="primary"
+                        >
+                          Ajouter au panier
+                        </Button>
+                      </Box>
+                    </Card>
+                  </Grid>
+                ))}
+              </Grid>
+            ))}
+          </Box>
+        ) : (
+          <Box textAlign="center" py={4}>
+            <Typography variant="h6" color="text.secondary">
+              Aucune façade ne correspond à vos critères de recherche
             </Typography>
-            <Typography sx={{ 
-              color: '#38598b',
-              fontFamily: 'Savate',
-              mb: 2,
-              fontSize: isMobile ? '0.9rem' : '1rem'
-            }}>
-              Réf: {formData.reference || 'N/A'}
-            </Typography>
-            <Typography variant="body2" sx={{ 
-              color: '#38598b',
-              fontFamily: 'Savate',
-              mb: 3,
-              fontSize: isMobile ? '0.8rem' : '0.875rem'
-            }}>
-              {formData.description || 'Aucune description fournie'}
-            </Typography>
-
-            <Divider sx={{ my: 2, borderColor: '#38598b' }} />
-
-            <Typography variant="subtitle2" sx={{ 
-              color: '#38598b',
-              fontFamily: 'Savate',
-              mb: 3,
-              fontSize: isMobile ? '0.8rem' : '0.875rem'
-            }}>
-              Largeur : {formData.width || 'N/A'} mL
-            </Typography>
-          </CardContent>
-        </Card>
-      </Box>
-    </Box>
+          </Box>
+        )}
+      </Container>
+    </ThemeProvider>
   );
 };
 
-export default Barriere;
+export default Equipements;

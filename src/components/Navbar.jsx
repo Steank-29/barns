@@ -5,8 +5,9 @@ import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
 import PersonIcon from '@mui/icons-material/ExitToApp';
 import Logo from '../assets/goldenbh_logo.png';
-import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import CartDialog from '../components/CartDialog';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { 
   faHouse, 
   faCircleInfo, 
@@ -23,6 +24,7 @@ import {
 function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [cartOpen, setCartOpen] = useState(false);
 
   const toggleDrawer = (open) => () => {
     setDrawerOpen(open);
@@ -79,6 +81,8 @@ function Navbar() {
           </Box>
 
           {/* Connexion IconButton */}
+          <Button onClick={() => setCartOpen(true)} startIcon={<ShoppingCartIcon />}>
+          </Button>
           <IconButton
             href="/signin"
             sx={{
@@ -295,6 +299,9 @@ function Navbar() {
               />
             </form>
           </Box>
+
+          <Button onClick={() => setCartOpen(true)} startIcon={<ShoppingCartIcon />}>
+          </Button>
           
           <IconButton
             href="/signin"
@@ -313,6 +320,7 @@ function Navbar() {
           </IconButton>
         </Box>
       </Drawer>
+      <CartDialog open={cartOpen} onClose={() => setCartOpen(false)} />
     </AppBar>
   );
 }

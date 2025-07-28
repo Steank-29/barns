@@ -29,3 +29,4 @@ router.delete('/deletefenet', product.deleteAllProducts);
 router.get('/getallfenets', product.getAllProducts);
 
 module.exports = router;
+

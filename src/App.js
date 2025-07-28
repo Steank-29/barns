@@ -35,6 +35,7 @@ import EditMangeoire from './admin/EditMangeoire';
 import Parametre from './admin/Parametre';
 import Barn from './admin/Barn';
 import EditBarn from './admin/EditBarn';
+import Equipements from './components/Equipements';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -425,6 +426,15 @@ function App() {
         <Navigate to="/" />
 
       ) 
+    },
+    {
+      path: '/equipmenets',
+      element: 
+      <> 
+      <Layout>
+      <Equipements />
+      </Layout>
+      </>
     },
     {
       path: '*',

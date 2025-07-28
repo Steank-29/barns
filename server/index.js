@@ -19,8 +19,10 @@ const porteRoutes = require('./routes/Porte');
 const fenetRoutes = require('./routes/Fenet');
 const mangRoutes = require('./routes/Mang');
 const barnRoutes = require('./routes/Barn');
+const sendEmail = require('./routes/emailRoute');
+const sendMail = require('./routes/mail')
 
-// CORS Configuration
+
 const allowedOrigins = [
   'http://localhost:3000',
 ];
@@ -53,7 +55,8 @@ app.use('/api/fenet', fenetRoutes);
 app.use('/api/porte', porteRoutes);
 app.use('/api/mang', mangRoutes);
 app.use('/api/barn', barnRoutes);
-
+app.use('/api', sendEmail);
+app.use('/apic', sendMail);
 
 
 // Status route
