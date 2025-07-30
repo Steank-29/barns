@@ -36,7 +36,7 @@ exports.subscribe = async (req, res) => {
 
 exports.unsubscribe = async (req, res) => {
   try {
-    const { email } = req.body;
+    const { email } = req.params;
 
     const subscriber = await Newsletter.findOneAndDelete({ email });
     
@@ -59,6 +59,7 @@ exports.unsubscribe = async (req, res) => {
     });
   }
 };
+
 
 exports.getAllSubscribers = async (req, res) => {
   try {

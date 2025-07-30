@@ -298,7 +298,7 @@ const EditTwoBoxResin = () => {
         mb: isMobile ? 2 : 4,
         mt: isMobile ? 1 : 0
       }}>
-        Gestion des TwoBoxResin
+        Gestion des 2 Box Résine
       </Typography>
 
       {/* Search Bar */}

@@ -298,7 +298,7 @@ const EditThreeBox = () => {
         mb: isMobile ? 2 : 4,
         mt: isMobile ? 1 : 0
       }}>
-        Gestion des ThreeBox
+        Gestion des 3 Box
       </Typography>
 
       {/* Search Bar */}

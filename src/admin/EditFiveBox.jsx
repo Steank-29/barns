@@ -345,7 +345,7 @@ const saveChanges = async () => {
         mb: isMobile ? 2 : 4,
         mt: isMobile ? 1 : 0
       }}>
-        FiveBox Management – Solutions Intelligentes de Gestion et de Suivi
+        5 Box Management – Solutions Intelligentes de Gestion et de Suivi
       </Typography>
 
       {/* Search Bar */}
