@@ -21,6 +21,7 @@ const mangRoutes = require('./routes/Mang');
 const barnRoutes = require('./routes/Barn');
 const sendEmail = require('./routes/emailRoute');
 const sendMail = require('./routes/mail')
+const news = require('./routes/Newsletter')
 
 
 const allowedOrigins = [
@@ -57,7 +58,7 @@ app.use('/api/mang', mangRoutes);
 app.use('/api/barn', barnRoutes);
 app.use('/api', sendEmail);
 app.use('/apic', sendMail);
-
+app.use('/news', news);
 
 // Status route
 app.get('/', (req, res) => {

@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { AppBar, Box, Toolbar, Typography, Container, Avatar, Button, IconButton, Drawer, InputAdornment, TextField, Badge } from '@mui/material';
+import { 
+  AppBar, Box, Toolbar, Typography, Container, Avatar, Button, 
+  IconButton, Drawer, InputAdornment, TextField, Badge, Paper, 
+  List, ListItem, ListItemText, CircularProgress, Link, ListItemAvatar 
+} from '@mui/material';
+import axios from 'axios';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
@@ -14,21 +19,32 @@ import {
   faCircleInfo, 
   faHorse, 
   faWarehouse, 
-  faRecycle, 
-  faPersonChalkboard,
   faUser,
   faShieldHalved,
   faTruck,
   faHandshake
 } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
+
+const getValidImageUrl = (product) => {
+  const imageUrl = product.imageUrl || product.imageURL || product.ImageUrl || product.ImageURL;
+  if (!imageUrl) return '/placeholder-barn.jpg';
+  if (imageUrl.startsWith('/') || !imageUrl.startsWith('http')) {
+    return `http://localhost:5000${imageUrl.startsWith('/') ? imageUrl : '/' + imageUrl}`;
+  }
+  return imageUrl;
+};
 
 function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showResults, setShowResults] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const {  cartItems } = useCart();
-
+  const { cartItems } = useCart();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,12 +64,73 @@ function Navbar() {
     setDrawerOpen(open);
   };
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    console.log('À la recherche de:', searchQuery);
+  const searchProducts = async (query) => {
+    if (query.length < 2) {
+      setSearchResults([]);
+      return;
+    }
+
+    setIsSearching(true);
+    
+    try {
+      const endpoints = [
+        'http://localhost:5000/api/facade/getallfacades',
+        'http://localhost:5000/api/barriere/getallbarrieres',
+        'http://localhost:5000/api/twobox/getalltwoboxes',
+        'http://localhost:5000/api/twoboxresin/getalltwoboxresins',
+        'http://localhost:5000/api/threebox/getallthreeboxes',
+        'http://localhost:5000/api/fivebox/getallfiveboxes',
+        'http://localhost:5000/api/mang/getallmangs',
+        'http://localhost:5000/api/porte/getallportes',
+        'http://localhost:5000/api/fenet/getallfenets',
+        'http://localhost:5000/api/malle/getallmalles'
+      ];
+
+      const responses = await Promise.all(
+        endpoints.map(endpoint => axios.get(endpoint))
+      );
+
+      const allResults = responses.flatMap(response => response.data);
+      
+      const filteredResults = allResults.filter(item => {
+        const name = item.name || item.ProductName || '';
+        const description = item.description || '';
+        return (
+          name.toLowerCase().includes(query.toLowerCase()) ||
+          description.toLowerCase().includes(query.toLowerCase())
+        );
+      }).slice(0, 5);
+
+      setSearchResults(filteredResults);
+    } catch (error) {
+      console.error('Search error:', error);
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
   };
 
-  // Styles that change based on scroll state
+  const handleSearchChange = async (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    await searchProducts(query);
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim() && searchResults.length > 0) {
+      navigate('/equipmenets', { state: { searchResults } });
+      setShowResults(false);
+      setSearchQuery('');
+    }
+  };
+
+  const handleResultClick = (result) => {
+    navigate('/equipmenets', { state: { selectedProduct: result } });
+    setShowResults(false);
+    setSearchQuery('');
+  };
+
   const appBarStyle = {
     backgroundColor: scrolled ? '#38598b' : 'rgba(255, 255, 255, 0.7)',
     backdropFilter: 'blur(10px)',
@@ -63,6 +140,7 @@ function Navbar() {
 
   const textColor = scrolled ? 'white' : 'black';
   const iconColor = scrolled ? 'white' : '#38598b';
+
   const searchFieldStyle = scrolled ? {
     '& .MuiOutlinedInput-root': {
       '& fieldset': {
@@ -92,7 +170,7 @@ function Navbar() {
   const navLinkStyle = {
     color: textColor,
     textDecoration: 'none',
-    mx: 3,
+    mx: 6,
     fontFamily: 'monospace',
     textTransform: 'uppercase',
     fontWeight: 600,
@@ -102,7 +180,8 @@ function Navbar() {
       transform: 'scale(1.1)',
       backgroundColor: 'transparent'
     },
-    ml: 6
+    ml: 6,
+    fontSize:'1.1rem'
   };
 
   const iconButtonStyle = {
@@ -128,11 +207,21 @@ function Navbar() {
     p: 1.5
   };
 
+  const searchResultsStyle = {
+    position: 'absolute',
+    top: '100%',
+    left: 0,
+    width: '100%',
+    maxHeight: '300px',
+    overflowY: 'auto',
+    zIndex: 9999,
+    boxShadow: '0px 5px 15px rgba(0,0,0,0.2)',
+    borderRadius: '0 0 4px 4px',
+    backgroundColor: scrolled ? '#38598b' : 'white',
+  };
+
   return (
-    <AppBar
-      position="sticky"
-      sx={appBarStyle}
-    >
+    <AppBar position="sticky" sx={appBarStyle}>
       <Container maxWidth="xl">
         <Toolbar disableGutters sx={{ py: 1 }}>
           <Avatar
@@ -148,72 +237,64 @@ function Navbar() {
           />
 
           <Box sx={{ flexGrow: 2, display: { xs: 'none', md: 'flex' } }}>
-            <a href="/" style={{ textDecoration: 'none' }}>
-              <Typography sx={navLinkStyle}>
-                <FontAwesomeIcon icon={faHouse} fontSize="meduim" style={{color: iconColor}} />&nbsp; Accueil
-              </Typography>
-            </a>
-            <a href="/about" style={{ textDecoration: 'none' }}>
-              <Typography sx={navLinkStyle}>
-                <FontAwesomeIcon icon={faCircleInfo} fontSize="meduim" style={{color: iconColor}} /> &nbsp; Qui sommes-nous
-              </Typography>
-            </a>
-            <a href="/barn" style={{ textDecoration: 'none' }}>
-              <Typography sx={navLinkStyle}>
-                <FontAwesomeIcon icon={faHorse} fontSize="meduim" style={{color: iconColor}} />&nbsp; Barn Démontable
-              </Typography>
-            </a>
-            <a href="/equipmenets" style={{ textDecoration: 'none' }}>
-              <Typography sx={navLinkStyle}>
-                <FontAwesomeIcon icon={faWarehouse} fontSize="meduim" style={{color: iconColor}} /> &nbsp; Equipements
-              </Typography>
-            </a>
+            <Link href="/" sx={navLinkStyle}>
+              <FontAwesomeIcon icon={faHouse} fontSize="meduim" style={{color: iconColor}} />&nbsp; Accueil
+            </Link>
+            <Link href="/about" sx={navLinkStyle}>
+              <FontAwesomeIcon icon={faCircleInfo} fontSize="meduim" style={{color: iconColor}} /> &nbsp; Qui sommes-nous
+            </Link>
+            <Link href="/barn" sx={navLinkStyle}>
+              <FontAwesomeIcon icon={faHorse} fontSize="meduim" style={{color: iconColor}} />&nbsp; Barn Démontable
+            </Link>
+            <Link href="/equipmenets" sx={navLinkStyle}>
+              <FontAwesomeIcon icon={faWarehouse} fontSize="meduim" style={{color: iconColor}} /> &nbsp; Equipements
+            </Link>
             <Typography sx={navLinkStyle}>
               <FontAwesomeIcon icon={faTruck} fontSize="small" style={{color: iconColor}} />&nbsp; Camion
             </Typography>
           </Box>
 
-        <IconButton 
-          sx={{
-            ...actionButtonStyle,
-            position: 'relative',
-            transition: 'all 0.3s ease',
-            '&:hover': {
-              transform: 'scale(1.05)',
-            }
-          }}
-          size="large"
-          onClick={() => setCartOpen(true)}
-          aria-label={`Shopping cart with ${cartItems.length} items`}
-          disableRipple={false}
-        >
-          <Badge 
-            badgeContent={cartItems.length} 
-            color="error"
-            overlap="circular"
+          <IconButton 
             sx={{
-              '& .MuiBadge-badge': {
-                right: 5,
-                top: 5,
-                minWidth: 20,
-                height: 20,
-                fontSize: '0.75rem',
-                fontWeight: 'bold',
-                boxShadow: '0 0 0 2px rgba(255,255,255,0.8)',
+              ...actionButtonStyle,
+              position: 'relative',
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                transform: 'scale(1.05)',
               }
             }}
+            size="large"
+            onClick={() => setCartOpen(true)}
+            aria-label={`Shopping cart with ${cartItems.length} items`}
+            disableRipple={false}
           >
-            <ShoppingCartIcon 
+            <Badge 
+              badgeContent={cartItems.length} 
+              color="error"
+              overlap="circular"
               sx={{
-                fontSize: '1.5rem',
-                transition: 'transform 0.2s ease',
-                '&:hover': {
-                  transform: 'scale(1.1)',
+                '& .MuiBadge-badge': {
+                  right: 5,
+                  top: 5,
+                  minWidth: 20,
+                  height: 20,
+                  fontSize: '0.75rem',
+                  fontWeight: 'bold',
+                  boxShadow: '0 0 0 2px rgba(255,255,255,0.8)',
                 }
               }}
-            />
-          </Badge>
-        </IconButton>
+            >
+              <ShoppingCartIcon 
+                sx={{
+                  fontSize: '1.5rem',
+                  transition: 'transform 0.2s ease',
+                  '&:hover': {
+                    transform: 'scale(1.1)',
+                  }
+                }}
+              />
+            </Badge>
+          </IconButton>
           
           <IconButton
             href="/signin"
@@ -223,94 +304,76 @@ function Navbar() {
             <PersonIcon />
           </IconButton>
 
-<Box 
-  sx={{ 
-    display: 'flex', 
-    ml: 'auto',
-    alignItems: 'center',
-    gap: 1
-  }}
->
-  {/* Enhanced Shopping Cart Icon */}
-  <IconButton
-    size="large"
-    edge="end"
-    onClick={() => setCartOpen(true)}
-    aria-label={`View cart (${cartItems.length} items)`}
-    sx={{
-      color: iconColor,
-      display: { xs: 'flex', md: 'none' },
-      position: 'relative',
-      transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-      '&:hover': {
-        transform: 'scale(1.1)',
-        backgroundColor: 'rgba(255, 255, 255, 0.1)'
-      },
-      '&:active': {
-        transform: 'scale(0.95)'
-      }
-    }}
-  >
-    <Badge
-      badgeContent={cartItems.length}
-      color="error"
-      overlap="circular"
-      invisible={cartItems.length === 0}
-      sx={{
-        '& .MuiBadge-badge': {
-          right: 6,
-          top: 6,
-          minWidth: 18,
-          height: 18,
-          fontSize: '0.65rem',
-          fontWeight: 'bold',
-          border: '1.5px solid currentColor'
-        }
-      }}
-    >
-      <ShoppingCartIcon 
-        sx={{ 
-          fontSize: '1.4rem',
-          transition: 'transform 0.15s ease'
-        }} 
-      />
-    </Badge>
-  </IconButton>
+          <Box sx={{ display: 'flex', ml: 'auto', alignItems: 'center', gap: 1 }}>
+            <IconButton
+              size="large"
+              edge="end"
+              onClick={() => setCartOpen(true)}
+              aria-label={`View cart (${cartItems.length} items)`}
+              sx={{
+                color: iconColor,
+                display: { xs: 'flex', md: 'none' },
+                position: 'relative',
+                transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                '&:hover': {
+                  transform: 'scale(1.1)',
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                },
+                '&:active': {
+                  transform: 'scale(0.95)'
+                }
+              }}
+            >
+              <Badge
+                badgeContent={cartItems.length}
+                color="error"
+                overlap="circular"
+                invisible={cartItems.length === 0}
+                sx={{
+                  '& .MuiBadge-badge': {
+                    right: 6,
+                    top: 6,
+                    minWidth: 18,
+                    height: 18,
+                    fontSize: '0.65rem',
+                    fontWeight: 'bold',
+                    border: '1.5px solid currentColor'
+                  }
+                }}
+              >
+                <ShoppingCartIcon sx={{ fontSize: '1.4rem' }} />
+              </Badge>
+            </IconButton>
 
-  {/* Enhanced Menu Icon */}
-  <IconButton
-    size="large"
-    edge="end"
-    onClick={toggleDrawer(true)}
-    aria-label="Open navigation menu"
-    sx={{
-      color: iconColor,
-      display: { xs: 'flex', md: 'none' },
-      transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-      '&:hover': {
-        transform: 'rotate(5deg) scale(1.1)',
-        backgroundColor: 'rgba(255, 255, 255, 0.1)'
-      },
-      '&:active': {
-        transform: 'scale(0.95)'
-      }
-    }}
-  >
-    <MenuIcon 
-      sx={{ 
-        fontSize: '1.6rem',
-        transition: 'transform 0.15s ease'
-      }} 
-    />
-  </IconButton>
-</Box>
+            <IconButton
+              size="large"
+              edge="end"
+              onClick={toggleDrawer(true)}
+              aria-label="Open navigation menu"
+              sx={{
+                color: iconColor,
+                display: { xs: 'flex', md: 'none' },
+                transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                '&:hover': {
+                  transform: 'rotate(5deg) scale(1.1)',
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                },
+                '&:active': {
+                  transform: 'scale(0.95)'
+                }
+              }}
+            >
+              <MenuIcon sx={{ fontSize: '1.6rem' }} />
+            </IconButton>
+          </Box>
         </Toolbar>
 
         <Toolbar disableGutters sx={{ 
           py: 0,
           display: { xs: 'none', md: 'flex' },
           justifyContent: 'center',
-          borderTop: scrolled ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(56, 89, 139, 0.1)'
+          borderTop: scrolled ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(56, 89, 139, 0.1)',
+          position: 'relative'
         }}>
           <Box sx={{ display: 'flex', flexGrow: 1, justifyContent: 'center' }}>
             <IconButton sx={iconButtonStyle}>
@@ -350,14 +413,16 @@ function Navbar() {
             </IconButton>
           </Box>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', ml: 'auto' }}>
-            <form onSubmit={handleSearch}>
+          <Box sx={{ display: 'flex', alignItems: 'center', ml: 'auto', position: 'relative' }}>
+            <form onSubmit={handleSearchSubmit}>
               <TextField
                 variant="outlined"
                 size="small"
                 placeholder="Rechercher..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={handleSearchChange}
+                onFocus={() => searchQuery.length >= 2 && setShowResults(true)}
+                onBlur={() => setTimeout(() => setShowResults(false), 200)}
                 sx={{
                   ...searchFieldStyle,
                   fontFamily: 'monospace',
@@ -366,17 +431,73 @@ function Navbar() {
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <IconButton
-                        type="submit"
-                        edge="end"
-                        sx={{ color: iconColor }}
-                      >
-                        <SearchIcon />
-                      </IconButton>
+                      {isSearching ? (
+                        <CircularProgress size={20} sx={{ color: iconColor }} />
+                      ) : (
+                        <IconButton
+                          type="submit"
+                          edge="end"
+                          sx={{ color: iconColor }}
+                        >
+                          <SearchIcon />
+                        </IconButton>
+                      )}
                     </InputAdornment>
                   ),
                 }}
               />
+              {showResults && searchResults.length > 0 && (
+                <Paper sx={searchResultsStyle}>
+                  <List>
+                    {searchResults.map((result, index) => (
+                      <ListItem 
+                        key={index} 
+                        button 
+                        onClick={() => handleResultClick(result)}
+                        sx={{
+                          '&:hover': {
+                            backgroundColor: scrolled ? 'rgba(255,255,255,0.1)' : 'rgba(56, 89, 139, 0.1)'
+                          }
+                        }}
+                      >
+                        <ListItemAvatar>
+                          <Avatar 
+                            src={getValidImageUrl(result)} 
+                            alt={result.name || result.ProductName}
+                            sx={{ width: 56, height: 56, mr: 2 }}
+                          />
+                        </ListItemAvatar>
+                        <ListItemText 
+                          primary={result.name || result.ProductName} 
+                          secondary={result.description && result.description.length > 50 
+                            ? `${result.description.substring(0, 50)}...` 
+                            : result.description}
+                          primaryTypographyProps={{ 
+                            color: scrolled ? 'white' : 'text.primary',
+                            fontWeight: 'bold'
+                          }}
+                          secondaryTypographyProps={{ 
+                            color: scrolled ? 'rgba(255,255,255,0.7)' : 'text.secondary'
+                          }}
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+                </Paper>
+              )}
+              {showResults && searchQuery.length >= 2 && searchResults.length === 0 && !isSearching && (
+                <Paper sx={searchResultsStyle}>
+                  <ListItem>
+                    <ListItemText 
+                      primary="No results found" 
+                      primaryTypographyProps={{ 
+                        color: scrolled ? 'white' : 'text.primary',
+                        textAlign: 'center'
+                      }}
+                    />
+                  </ListItem>
+                </Paper>
+              )}
             </form>
           </Box>
         </Toolbar>
@@ -423,39 +544,33 @@ function Navbar() {
               mb: 2
             }}
           />
-          <a href="/" style={{ textDecoration: 'none' }}>
-            <Typography sx={{ ...navLinkStyle, color: textColor }}>
-              <FontAwesomeIcon icon={faHouse} fontSize="small" style={{color: iconColor}} />&nbsp; Accueil
-            </Typography>
-          </a>
-          <a href="/about" style={{ textDecoration: 'none' }}>
-            <Typography sx={{ ...navLinkStyle, color: textColor }}>
-              <FontAwesomeIcon icon={faCircleInfo} fontSize="small" style={{color: iconColor}} /> &nbsp; Qui sommes-nous
-            </Typography>
-          </a>
-          <a href="/barn" style={{ textDecoration: 'none' }}>
-            <Typography sx={{ ...navLinkStyle, color: textColor }}>
-              <FontAwesomeIcon icon={faHorse} fontSize="small" style={{color: iconColor}} />&nbsp; Barn Démontable
-            </Typography>
-          </a>
-          <a href="/equipmenets" style={{ textDecoration: 'none' }}>
-            <Typography sx={{ ...navLinkStyle, color: textColor }}>
-              <FontAwesomeIcon icon={faWarehouse} fontSize="small" style={{color: iconColor}} />&nbsp; Equipements
-            </Typography>
-          </a>
+          <Link href="/" sx={{ ...navLinkStyle, color: textColor }}>
+            <FontAwesomeIcon icon={faHouse} fontSize="small" style={{color: iconColor}} />&nbsp; Accueil
+          </Link>
+          <Link href="/about" sx={{ ...navLinkStyle, color: textColor }}>
+            <FontAwesomeIcon icon={faCircleInfo} fontSize="small" style={{color: iconColor}} /> &nbsp; Qui sommes-nous
+          </Link>
+          <Link href="/barn" sx={{ ...navLinkStyle, color: textColor }}>
+            <FontAwesomeIcon icon={faHorse} fontSize="small" style={{color: iconColor}} />&nbsp; Barn Démontable
+          </Link>
+          <Link href="/equipmenets" sx={{ ...navLinkStyle, color: textColor }}>
+            <FontAwesomeIcon icon={faWarehouse} fontSize="small" style={{color: iconColor}} />&nbsp; Equipements
+          </Link>
           <Typography sx={{ ...navLinkStyle, color: textColor }}>
             <FontAwesomeIcon icon={faTruck} fontSize="small" style={{color: iconColor}} />&nbsp; Camion
           </Typography>
 
-          <Box sx={{ display: 'flex', gap: 2, mt: 2, width: '80%' }}>
-            <form onSubmit={handleSearch} style={{ width: '100%' }}>
+          <Box sx={{ display: 'flex', gap: 2, mt: 2, width: '80%', position: 'relative' }}>
+            <form onSubmit={handleSearchSubmit} style={{ width: '100%' }}>
               <TextField
                 fullWidth
                 variant="outlined"
                 size="small"
                 placeholder="Search..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={handleSearchChange}
+                onFocus={() => searchQuery.length >= 2 && setShowResults(true)}
+                onBlur={() => setTimeout(() => setShowResults(false), 200)}
                 sx={{
                   ...searchFieldStyle,
                   fontFamily: 'monospace',
@@ -463,17 +578,64 @@ function Navbar() {
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <IconButton
-                        type="submit"
-                        edge="end"
-                        sx={{ color: iconColor }}
-                      >
-                        <SearchIcon />
-                      </IconButton>
+                      {isSearching ? (
+                        <CircularProgress size={20} sx={{ color: iconColor }} />
+                      ) : (
+                        <IconButton
+                          type="submit"
+                          edge="end"
+                          sx={{ color: iconColor }}
+                        >
+                          <SearchIcon />
+                        </IconButton>
+                      )}
                     </InputAdornment>
                   ),
                 }}
               />
+              {showResults && searchResults.length > 0 && (
+                <Paper sx={{
+                  ...searchResultsStyle,
+                  backgroundColor: scrolled ? '#38598b' : 'white',
+                  width: '100%'
+                }}>
+                  <List>
+                    {searchResults.map((result, index) => (
+                      <ListItem 
+                        key={index} 
+                        button 
+                        onClick={() => handleResultClick(result)}
+                        sx={{
+                          '&:hover': {
+                            backgroundColor: scrolled ? 'rgba(255,255,255,0.1)' : 'rgba(56, 89, 139, 0.1)'
+                          }
+                        }}
+                      >
+                        <ListItemAvatar>
+                          <Avatar 
+                            src={getValidImageUrl(result)} 
+                            alt={result.name || result.ProductName}
+                            sx={{ width: 56, height: 56, mr: 2 }}
+                          />
+                        </ListItemAvatar>
+                        <ListItemText 
+                          primary={result.name || result.ProductName} 
+                          secondary={result.description && result.description.length > 50 
+                            ? `${result.description.substring(0, 50)}...` 
+                            : result.description}
+                          primaryTypographyProps={{ 
+                            color: scrolled ? 'white' : 'text.primary',
+                            fontWeight: 'bold'
+                          }}
+                          secondaryTypographyProps={{ 
+                            color: scrolled ? 'rgba(255,255,255,0.7)' : 'text.secondary'
+                          }}
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+                </Paper>
+              )}
             </form>
           </Box>
 

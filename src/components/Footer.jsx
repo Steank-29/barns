@@ -1,8 +1,68 @@
-import React from 'react';
-import { Box, Container, Grid, Link, Typography, TextField, Button } from '@mui/material';
+import React, { useState } from 'react';
+import { 
+  Box, 
+  Container, 
+  Grid, 
+  Link, 
+  Typography, 
+  TextField, 
+  Button,
+  Snackbar,
+  Alert 
+} from '@mui/material';
 import { Facebook, Twitter, Instagram, LinkedIn, Email } from '@mui/icons-material';
 
 const Footer = () => {
+  const [email, setEmail] = useState('');
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubscribe = async (e) => {
+    e.preventDefault();
+    
+    // Basic email validation
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setSnackbarMessage('Please enter a valid email address');
+      setSnackbarSeverity('error');
+      setOpenSnackbar(true);
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch('http://localhost:5000/news/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Subscription failed');
+      }
+
+      setSnackbarMessage('Thank you for subscribing to our newsletter!');
+      setSnackbarSeverity('success');
+      setEmail('');
+    } catch (error) {
+      setSnackbarMessage(error.message || 'Failed to subscribe. Please try again.');
+      setSnackbarSeverity('error');
+    } finally {
+      setIsSubmitting(false);
+      setOpenSnackbar(true);
+    }
+  };
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
+
   return (
     <Box
       component="footer"
@@ -11,7 +71,8 @@ const Footer = () => {
         color: 'white',
         fontFamily: 'Savate, sans-serif',
         pt: 4,
-        pb: 2
+        pb: 2,
+        mt: 'auto'
       }}
     >
       <Container maxWidth="lg">
@@ -161,11 +222,19 @@ const Footer = () => {
                   <Typography variant="body2" sx={{ color: 'white', mb: 2 }}>
                     Abonnez-vous pour les dernières nouveautés.
                   </Typography>
-                  <Box component="form" sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Box 
+                    component="form" 
+                    onSubmit={handleSubscribe}
+                    sx={{ display: 'flex', alignItems: 'center' }}
+                  >
                     <TextField
                       variant="outlined"
                       size="small"
                       placeholder="Votre email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
                       sx={{ 
                         mr: 1, 
                         flexGrow: 1,
@@ -179,17 +248,22 @@ const Footer = () => {
                     <Button
                       variant="contained"
                       size="small"
+                      type="submit"
                       startIcon={<Email />}
+                      disabled={isSubmitting}
                       sx={{
                         backgroundColor: '#ffc107',
                         color: '#38598b',
                         fontWeight: 'bold',
                         '&:hover': {
                           backgroundColor: '#ffca28'
+                        },
+                        '&:disabled': {
+                          backgroundColor: '#cccccc'
                         }
                       }}
                     >
-                      S'inscrire
+                      {isSubmitting ? 'Envoi...' : "S'inscrire"}
                     </Button>
                   </Box>
                 </Box>
@@ -221,6 +295,8 @@ const Footer = () => {
                       <Link 
                         key={index}
                         href={social.url} 
+                        target="_blank"
+                        rel="noopener noreferrer"
                         sx={{ 
                           display: 'flex', 
                           alignItems: 'center', 
@@ -315,6 +391,21 @@ const Footer = () => {
           </Typography>
         </Box>
       </Container>
+
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert 
+          onClose={handleCloseSnackbar} 
+          severity={snackbarSeverity}
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
