@@ -39,8 +39,8 @@ exports.sendOrderEmail = async (req, res) => {
 
     // Admin Email
     const mailOptions = {
-      from:  customer.email ,
-      to: process.env.GMAIL_USER,
+      from:  process.env.EMAIL_FROM ,
+      to: process.env.EMAIL_FROM,
       replyTo: customer.email,
       subject: `Nouvelle commande de ${customer.name}`,
       html: `
@@ -131,7 +131,6 @@ exports.sendOrderEmail = async (req, res) => {
             <table>
                 <thead>
                     <tr>
-                        <th>Image</th>
                         <th>Produit</th>
                         <th style="text-align: center;">Quantité</th>
                         <th style="text-align: right;">Prix unitaire</th>

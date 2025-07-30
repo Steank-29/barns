@@ -23,8 +23,8 @@ exports.sendEmail = async (req, res) => {
     const logoPath = path.join(__dirname, '../assets/goldenbh_logo.png');
 
     const mailOptions = {
-      from: email1,
-      to: process.env.GMAIL_USER, // or your receiving email
+      from: process.env.EMAIL_FROM,
+      to: email, // or your receiving email
       replyTo: email,
       subject: subject || 'New message from contact form',
       text: `

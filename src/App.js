@@ -36,6 +36,7 @@ import Parametre from './admin/Parametre';
 import Barn from './admin/Barn';
 import EditBarn from './admin/EditBarn';
 import Equipements from './components/Equipements';
+import Barn1 from './components/Barn';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -433,6 +434,15 @@ function App() {
       <> 
       <Layout>
       <Equipements />
+      </Layout>
+      </>
+    },
+        {
+      path: '/barn',
+      element: 
+      <> 
+      <Layout>
+      <Barn1 />
       </Layout>
       </>
     },

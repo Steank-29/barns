@@ -65,24 +65,41 @@ function Navbar() {
             <a href="/" style={{ textDecoration: 'none' }}>
             <Typography sx={navLinkStyle}>
               <FontAwesomeIcon icon={faHouse} fontSize="meduim" style={{color:'#38598b'}} />&nbsp; Accueil
-            </Typography></a>
+            </Typography>
+            </a>
+             <a href="/about" style={{ textDecoration: 'none' }}>
             <Typography sx={navLinkStyle}>
               <FontAwesomeIcon icon={faCircleInfo} fontSize="meduim" style={{color:'#38598b'}} /> &nbsp; Qui sommes-nous
             </Typography>
+            </a>
+            <a href="/barn" style={{ textDecoration: 'none' }}>
             <Typography sx={navLinkStyle}>
               <FontAwesomeIcon icon={faHorse} fontSize="meduim" style={{color:'#38598b'}} />&nbsp; Barn Démontable
             </Typography>
+            </a>
+             <a href="/equipmenets" style={{ textDecoration: 'none' }}>
             <Typography sx={navLinkStyle}>
               <FontAwesomeIcon icon={faWarehouse} fontSize="meduim" style={{color:'#38598b'}} /> &nbsp; Equipements
             </Typography>
-            <Typography sx={navLinkStyle}>
-              <FontAwesomeIcon icon={faRecycle} fontSize="meduim" style={{color:'#38598b'}} /> &nbsp; Seconde main
-            </Typography>
+            </a>
+          <Typography sx={navLinkStyle}>
+            <FontAwesomeIcon icon={faTruck} fontSize="small" style={{color:'#38598b'}} />&nbsp; Camion
+          </Typography>
           </Box>
 
-          {/* Connexion IconButton */}
-          <Button onClick={() => setCartOpen(true)} startIcon={<ShoppingCartIcon />}>
-          </Button>
+                    <IconButton sx={{
+              color: '#38598b',
+              backgroundColor: 'rgba(56, 89, 139, 0.1)',
+              '&:hover': {
+                backgroundColor: 'rgba(56, 89, 139, 0.2)',
+              },
+              display: { xs: 'none', md: 'flex' },
+              ml: 2,
+              p: 1.5
+            }}
+            size="large" onClick={() => setCartOpen(true)} color="primary" aria-label="shopping cart">
+          <ShoppingCartIcon />
+        </IconButton>
           <IconButton
             href="/signin"
             sx={{
@@ -101,20 +118,43 @@ function Navbar() {
           </IconButton>
 
           {/* Mobile Menu Button */}
-          <IconButton
-            size="large"
-            edge="end"
-            color="inherit"
-            aria-label="menu"
-            onClick={toggleDrawer(true)}
-            sx={{
-              color: '#38598b',
-              display: { xs: 'flex', md: 'none' },
-              ml: 'auto'
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
+
+
+          
+<Box sx={{ display: 'flex', ml: 'auto' }}>
+  {/* Shopping Cart Icon */}
+  <IconButton
+    size="large"
+    edge="end"
+    color="inherit"
+    aria-label="shopping cart"
+    onClick={() => setCartOpen(true)}
+    sx={{
+      color: '#38598b',
+      display: { xs: 'flex', md: 'none' },
+    }}
+  >
+    
+    <ShoppingCartIcon />
+  </IconButton>
+
+  {/* Menu Icon */}
+  <IconButton
+    size="large"
+    edge="end"
+    color="inherit"
+    aria-label="menu"
+    onClick={toggleDrawer(true)}
+    sx={{
+      color: '#38598b',
+      display: { xs: 'flex', md: 'none' },
+      ml: 1, // Adds spacing between icons
+    }}
+  >
+    <MenuIcon />
+  </IconButton>
+</Box>
+
         </Toolbar>
 
         {/* Second Line with Icons and Search */}
@@ -243,21 +283,28 @@ function Navbar() {
               mb: 2
             }}
           />
-          
+           <a href="/" style={{ textDecoration: 'none' }}>
           <Typography sx={navLinkStyle}>
             <FontAwesomeIcon icon={faHouse} fontSize="small" style={{color:'#38598b'}} />&nbsp; Accueil
           </Typography>
+          </a>
+           <a href="/about" style={{ textDecoration: 'none' }}>
           <Typography sx={navLinkStyle}>
             <FontAwesomeIcon icon={faCircleInfo} fontSize="small" style={{color:'#38598b'}} /> &nbsp; Qui sommes-nous
           </Typography>
+          </a>
+          <a href="/barn" style={{ textDecoration: 'none' }}>
           <Typography sx={navLinkStyle}>
             <FontAwesomeIcon icon={faHorse} fontSize="small" style={{color:'#38598b'}} />&nbsp; Barn Démontable
           </Typography>
+          </a>
+           <a href="/equipmenets" style={{ textDecoration: 'none' }}>
           <Typography sx={navLinkStyle}>
             <FontAwesomeIcon icon={faWarehouse} fontSize="small" style={{color:'#38598b'}} />&nbsp; Equipements
           </Typography>
+          </a>
           <Typography sx={navLinkStyle}>
-            <FontAwesomeIcon icon={faRecycle} fontSize="small" style={{color:'#38598b'}} />&nbsp; Seconde main
+            <FontAwesomeIcon icon={faTruck} fontSize="small" style={{color:'#38598b'}} />&nbsp; Camion
           </Typography>
 
           <Box sx={{ display: 'flex', gap: 2, mt: 2, width: '80%' }}>
@@ -300,8 +347,6 @@ function Navbar() {
             </form>
           </Box>
 
-          <Button onClick={() => setCartOpen(true)} startIcon={<ShoppingCartIcon />}>
-          </Button>
           
           <IconButton
             href="/signin"

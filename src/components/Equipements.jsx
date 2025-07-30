@@ -499,7 +499,7 @@ const Equipements = () => {
             />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <FormControl fullWidth size="small">
+            <FormControl fullWidth size="small" sx={{width:200}}>
               <InputLabel sx={{ fontFamily: 'Savate, Arial, sans-serif' }}>Type</InputLabel>
               <Select
                 value={typeFilter}
@@ -529,7 +529,7 @@ const Equipements = () => {
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <FormControl fullWidth size="small">
+            <FormControl fullWidth size="small" sx={{width:200}}>
               <InputLabel sx={{ fontFamily: 'Savate, Arial, sans-serif' }}>Prix</InputLabel>
               <Select
                 value={priceFilter}

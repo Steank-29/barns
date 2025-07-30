@@ -103,7 +103,7 @@ const CartDialog = ({ open, onClose }) => {
 
   const getImageSource = (item) => {
     const name = (item.productName || item.name || '').toUpperCase();
-    const specialPrefixes = ['MALLE', 'FENÊTRE', 'PORTE', 'MANGEOIRE', 'FACADE'];
+    const specialPrefixes = ['MALLE', 'FENÊTRE', 'PORTE', 'MANGEOIRE', 'FACADE', 'BARN'];
     const useImageUrl = specialPrefixes.some(prefix => name.startsWith(prefix));
     const imagePath = useImageUrl ? item.imageUrl : item.imageURL;
     return getValidImageUrl(imagePath);
