@@ -8,10 +8,10 @@ const HorseSpinner = () => (
 
   <Box
     sx={{
-      position: 'fixed', // Takes spinner out of normal document flow
-      top: '50%',       // Centers vertically
-      left: '50%',      // Centers horizontally
-      transform: 'translate(-50%, -50%)', // Precise centering
+      position: 'fixed', 
+      top: '50%',       
+      left: '50%',      
+      transform: 'translate(-50%, -50%)', 
       height: '50vh',
       width: '50vw',
       display: 'flex',

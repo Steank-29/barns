@@ -34,11 +34,10 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-
+import { motion } from "framer-motion";
 import { useCart } from './CartContext';
 
 
-// --- UTILS
 const getValidImageUrl = (imageUrl) => {
   if (!imageUrl) return '/placeholder-facade.jpg';
   if (imageUrl.startsWith('/') || !imageUrl.startsWith('http')) {
@@ -47,7 +46,6 @@ const getValidImageUrl = (imageUrl) => {
   return imageUrl;
 };
 
-// THEME
 const theme = createTheme({
   palette: {
     primary: { main: '#38598b' },
@@ -83,7 +81,6 @@ const theme = createTheme({
 const Equipements = () => {
 
     const { addToCart } = useCart();
-  // State for all product categories
   const [facades, setFacades] = useState([]);
   const [barrieres, setBarrieres] = useState([]);
   const [twoBoxes, setTwoBoxes] = useState([]);
@@ -104,7 +101,6 @@ const Equipements = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   
-  // Refs for all sliders
   const sliderRefs = {
     facades: useRef(null),
     barrieres: useRef(null),
@@ -174,7 +170,6 @@ const Equipements = () => {
     setSnackbarOpen(false);
   };
 
-  // Get all unique types across all products
   const types = [
     ...new Set([
       ...facades.map(f => f.type),
@@ -212,7 +207,6 @@ const Equipements = () => {
     });
   };
 
-  // Filter all product categories
   const filteredFacades = filterProducts(facades, 'facade');
   const filteredBarrieres = filterProducts(barrieres, 'barriere');
   const filteredTwoBoxes = filterProducts(twoBoxes, '2 Box');
@@ -232,7 +226,7 @@ const Equipements = () => {
 
   const sliderSettings = {
     dots: true,
-    infinite: false, // Changed to false to prevent duplication
+    infinite: false, 
     speed: 500,
     slidesToShow: getSlidesToShow(),
     slidesToScroll: 1,
@@ -282,13 +276,16 @@ const Equipements = () => {
     );
   };
 
-  const renderSlider = (products, sliderRef, title) => {
+  const renderSlider = (products, sliderRef, title, description) => {
     if (products.length === 0) return null;
     
     return (
       <Box mb={4}>
-        <Typography variant="h4" color="primary" mb={2} sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }}>
+        <Typography variant="h4" color="primary" mb={1} sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' }, fontFamily:'Savate' }}>
           {title}
+        </Typography>
+        <Typography variant="body2" color="text.secondary" mb={2} sx={{ fontSize: { xs: '0.875rem', sm: '1rem' }, fontFamily:'Savate' }}>
+          {description}
         </Typography>
         <Box position="relative" sx={{ px: { xs: 0, sm: 2 } }}>
           {products.length > getSlidesToShow() && (
@@ -357,7 +354,7 @@ const Equipements = () => {
                     sx={{ objectFit: 'cover' }}
                   />
                   <CardContent sx={{ flexGrow: 1, p: 2 }}>
-                    <Typography variant="h6" gutterBottom sx={{ fontSize: '1rem', fontWeight: 600 }}>
+                    <Typography variant="h6" gutterBottom sx={{ fontSize: '1rem', fontWeight: 600, fontFamily:'Savate' }}>
                       {product.productName || product.name}
                     </Typography>
                     <Typography
@@ -369,15 +366,15 @@ const Equipements = () => {
                         display: '-webkit-box',
                         WebkitBoxOrient: 'vertical',
                         WebkitLineClamp: 3,
-                        mb: 1
+                        mb: 1, fontFamily:'Savate'
                       }}
                     >
                       {product.description || 'Produit de qualité professionnelle'}
                     </Typography>
-                    <Typography variant="body2" sx={{ fontSize: '0.75rem' }}>
+                    <Typography variant="body2" sx={{ fontSize: '0.75rem', fontFamily:'Savate' }}>
                       <strong>Réf:</strong> {product.reference}
                     </Typography>
-                    <Typography variant="h6" color="primary" mt={0.5} sx={{ fontSize: '0.9rem', fontWeight: 600 }}>
+                    <Typography variant="h6" color="primary" mt={0.5} sx={{ fontSize: '0.9rem', fontWeight: 600, fontFamily:'Savate' }}>
                       {product.price.toLocaleString('fr-FR')} €
                     </Typography>
                     {renderProductDetails(product)}
@@ -398,7 +395,7 @@ const Equipements = () => {
                         py: 0.5,
                         '&:hover': {
                           backgroundColor: theme.palette.primary.dark
-                        }
+                        }, fontFamily:'Savate'
                       }}
                     >
                       Ajouter au panier
@@ -418,7 +415,7 @@ const Equipements = () => {
       <ThemeProvider theme={theme}>
         <Container maxWidth="lg" sx={{ py: 10, textAlign: 'center' }}>
           <CircularProgress color="primary" />
-          <Typography variant="h6" mt={2}>Chargement des produits...</Typography>
+          <Typography variant="h6" mt={2} sx={{ fontFamily:'Savate'}}>Chargement des produits...</Typography>
         </Container>
       </ThemeProvider>
     );
@@ -428,27 +425,49 @@ const Equipements = () => {
     return (
       <ThemeProvider theme={theme}>
         <Container maxWidth="lg" sx={{ py: 10, textAlign: 'center' }}>
-          <Typography variant="h6" color="error">Erreur: {error}</Typography>
+          <Typography sx={{ fontFamily:'Savate'}} variant="h6" color="error">Erreur: {error}</Typography>
         </Container>
       </ThemeProvider>
     );
   }
 
-  
-
   return (
     <ThemeProvider theme={theme}>
       <Container maxWidth="xl" sx={{ py: 4 }}>
-        <Box textAlign="center" mb={4}>
-          <Typography variant="h1" color="primary" sx={{ fontSize: { xs: '1.75rem', sm: '2.5rem' } }}>
-            Nos Équipements Équestres
-          </Typography>
-          <Typography variant="subtitle1" color="text.secondary" maxWidth={800} mx="auto" sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
-            Une sélection professionnelle pour vos installations équestres.
-          </Typography>
-        </Box>
+<Box 
+  textAlign="center" 
+  mb={4}
+  component={motion.div}
+  initial={{ opacity: 0, y: -20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.8 }}
+>
+  <Typography 
+    variant="h1" 
+    color="primary" 
+    sx={{ fontSize: { xs: '1.75rem', sm: '2.5rem', lg:'4.75rem' , md:'3.75rem' }, fontFamily: "Savate" }}
+    component={motion.h1}
+    initial={{ opacity: 0, y: -30 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ delay: 0.2, duration: 0.8 }}
+  >
+    Nos Équipements Équestres
+  </Typography>
+  <Typography 
+    variant="subtitle1" 
+    color="black" 
+    maxWidth={800} 
+    mx="auto" 
+    sx={{ fontSize: { xs: '0.875rem', sm: '1rem', lg:'1.1rem', md:'1rem' }, fontFamily: "Savate" }}
+    component={motion.p}
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ delay: 0.4, duration: 0.8 }}
+  >
+    Une gamme complète d'équipements équestres haut de gamme, conçus par des professionnels pour répondre aux exigences des centres équestres, écuries privées et installations professionnelles. Nos produits allient qualité supérieure, sécurité optimale et design fonctionnel pour offrir des solutions durables à vos projets équestres.
+  </Typography>
+</Box>
 
-        {/* Product Type Tabs */}
         <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3, overflowX: 'auto' }}>
           <Tabs 
             value={activeTab} 
@@ -457,28 +476,27 @@ const Equipements = () => {
             scrollButtons="auto"
             sx={{
               '& .MuiTab-root': {
-                fontSize: { xs: '0.7rem', sm: '0.8rem' },
+                fontSize: { xs: '0.7rem', sm: '0.8rem', md:'0.9rem', lg:'1rem' },
                 minWidth: 'unset',
-                px: { xs: 1, sm: 2 },
-                py: 1
+                px: { xs: 1, sm: 2, md:3.5 , lg:4.5 },
+                py: 2
               }
             }}
           >
-            <Tab label="Tous les produits" value="all" />
-            <Tab label="Façades" value="facades" />
-            <Tab label="Barrières" value="barrieres" />
-            <Tab label="2 Box" value="2 Box" />
-            <Tab label="2 Box Résine" value="2 Box Résine" />
-            <Tab label="3 Box" value="3 Box" />
+            <Tab label="Tous les produits" value="all" sx={{fontFamily:'Savate'}} />
+            <Tab label="Façades" value="facades" sx={{fontFamily:'Savate'}} />
+            <Tab label="Barrières" value="barrieres" sx={{fontFamily:'Savate'}} />
+            <Tab label="2 Box" value="2 Box" sx={{fontFamily:'Savate'}} />
+            <Tab label="2 Box Résine" value="2 Box Résine" sx={{fontFamily:'Savate'}} />
+            <Tab label="3 Box" value="3 Box" sx={{fontFamily:'Savate'}} />
             <Tab label="5 Box" value="5 Box" />
-            <Tab label="Mangeoires" value="mangeoires" />
-            <Tab label="Portes" value="portes" />
-            <Tab label="Fenêtres" value="fenetres" />
-            <Tab label="Malles" value="malles" />
+            <Tab label="Mangeoires" value="mangeoires" sx={{fontFamily:'Savate'}} />
+            <Tab label="Portes" value="portes" sx={{fontFamily:'Savate'}} />
+            <Tab label="Fenêtres" value="fenetres" sx={{fontFamily:'Savate'}} />
+            <Tab label="Malles" value="malles" sx={{fontFamily:'Savate'}} />
           </Tabs>
         </Box>
 
-        {/* Filters */}
         <Grid container spacing={2} justifyContent="center" mb={3}>
           <Grid item xs={12} md={6}>
             <TextField
@@ -545,19 +563,18 @@ const Equipements = () => {
           </Grid>
         </Grid>
 
-        {/* Content Section */}
         {activeTab === 'all' ? (
           <>
-            {renderSlider(filteredFacades, sliderRefs.facades, "Nos Façades")}
-            {renderSlider(filteredBarrieres, sliderRefs.barrieres, "Nos Barrières")}
-            {renderSlider(filteredTwoBoxes, sliderRefs.twoBoxes, "Nos 2 Box")}
-            {renderSlider(filteredTwoBoxResins, sliderRefs.twoBoxResins, "Nos 2 Box Résine")}
-            {renderSlider(filteredThreeBoxes, sliderRefs.threeBoxes, "Nos 3 Box")}
-            {renderSlider(filteredFiveBoxes, sliderRefs.fiveBoxes, "Nos 5 Box")}
-            {renderSlider(filteredMangeoires, sliderRefs.mangeoires, "Nos Mangeoires")}
-            {renderSlider(filteredPortes, sliderRefs.portes, "Nos Portes")}
-            {renderSlider(filteredFenetres, sliderRefs.fenetres, "Nos Fenêtres")}
-            {renderSlider(filteredMalles, sliderRefs.malles, "Nos Malles")}
+            {renderSlider(filteredFacades, sliderRefs.facades, "Nos Façades", "Professional equestrian stall fronts designed for durability and safety, available in various configurations to suit different stable layouts and horse needs.")}
+            {renderSlider(filteredBarrieres, sliderRefs.barrieres, "Nos Barrières", "High-quality barriers and gates for equestrian facilities, providing secure boundaries while maintaining visibility and airflow in stables and paddocks.")}
+            {renderSlider(filteredTwoBoxes, sliderRefs.twoBoxes, "Nos 2 Box", "Standard two-horse stall systems offering practical and space-efficient solutions for housing two horses comfortably in a shared space.")}
+            {renderSlider(filteredTwoBoxResins, sliderRefs.twoBoxResins, "Nos 2 Box Résine", "Premium two-horse stall systems with resin components, combining durability with low-maintenance features for long-lasting performance.")}
+            {renderSlider(filteredThreeBoxes, sliderRefs.threeBoxes, "Nos 3 Box", "Spacious three-horse stall configurations designed for facilities needing to accommodate multiple horses in a single, well-organized space.")}
+            {renderSlider(filteredFiveBoxes, sliderRefs.fiveBoxes, "Nos 5 Box", "Large five-horse stall systems ideal for commercial stables or training facilities requiring high-capacity housing solutions.")}
+            {renderSlider(filteredMangeoires, sliderRefs.mangeoires, "Nos Mangeoires", "Specialized horse feeders designed for safe and convenient feeding, available in various sizes and materials to suit different stable setups.")}
+            {renderSlider(filteredPortes, sliderRefs.portes, "Nos Portes", "Durable stable doors crafted for safety and ease of use, with options for different opening mechanisms and security features.")}
+            {renderSlider(filteredFenetres, sliderRefs.fenetres, "Nos Fenêtres", "Stable windows designed to provide proper ventilation and natural light while maintaining security and weather resistance.")}
+            {renderSlider(filteredMalles, sliderRefs.malles, "Nos Malles", "Storage solutions for equestrian equipment, designed to be durable, secure, and conveniently sized for tack rooms or stable areas.")}
             
             {filteredFacades.length === 0 && 
              filteredBarrieres.length === 0 && 
@@ -578,7 +595,7 @@ const Equipements = () => {
           </>
         ) : activeTab === 'facades' ? (
           filteredFacades.length > 0 ? (
-            renderSlider(filteredFacades, sliderRefs.facades, "Nos Façades")
+            renderSlider(filteredFacades, sliderRefs.facades, "Nos Façades", "Professional equestrian stall fronts designed for durability and safety, available in various configurations to suit different stable layouts and horse needs.")
           ) : (
             <Box textAlign="center" py={4}>
               <Typography variant="h6" color="text.secondary">
@@ -588,7 +605,7 @@ const Equipements = () => {
           )
         ) : activeTab === 'barrieres' ? (
           filteredBarrieres.length > 0 ? (
-            renderSlider(filteredBarrieres, sliderRefs.barrieres, "Nos Barrières")
+            renderSlider(filteredBarrieres, sliderRefs.barrieres, "Nos Barrières", "High-quality barriers and gates for equestrian facilities, providing secure boundaries while maintaining visibility and airflow in stables and paddocks.")
           ) : (
             <Box textAlign="center" py={4}>
               <Typography variant="h6" color="text.secondary">
@@ -598,7 +615,7 @@ const Equipements = () => {
           )
         ) : activeTab === '2 Box' ? (
           filteredTwoBoxes.length > 0 ? (
-            renderSlider(filteredTwoBoxes, sliderRefs.twoBoxes, "Nos 2 Box")
+            renderSlider(filteredTwoBoxes, sliderRefs.twoBoxes, "Nos 2 Box", "Standard two-horse stall systems offering practical and space-efficient solutions for housing two horses comfortably in a shared space.")
           ) : (
             <Box textAlign="center" py={4}>
               <Typography variant="h6" color="text.secondary">
@@ -608,7 +625,7 @@ const Equipements = () => {
           )
         ) : activeTab === '2 Box Résine' ? (
           filteredTwoBoxResins.length > 0 ? (
-            renderSlider(filteredTwoBoxResins, sliderRefs.twoBoxResins, "Nos 2 Box Résine")
+            renderSlider(filteredTwoBoxResins, sliderRefs.twoBoxResins, "Nos 2 Box Résine", "Premium two-horse stall systems with resin components, combining durability with low-maintenance features for long-lasting performance.")
           ) : (
             <Box textAlign="center" py={4}>
               <Typography variant="h6" color="text.secondary">
@@ -618,7 +635,7 @@ const Equipements = () => {
           )
         ) : activeTab === '3 Box' ? (
           filteredThreeBoxes.length > 0 ? (
-            renderSlider(filteredThreeBoxes, sliderRefs.threeBoxes, "Nos 3 Box")
+            renderSlider(filteredThreeBoxes, sliderRefs.threeBoxes, "Nos 3 Box", "Spacious three-horse stall configurations designed for facilities needing to accommodate multiple horses in a single, well-organized space.")
           ) : (
             <Box textAlign="center" py={4}>
               <Typography variant="h6" color="text.secondary">
@@ -628,7 +645,7 @@ const Equipements = () => {
           )
         ) : activeTab === '5 Box' ? (
           filteredFiveBoxes.length > 0 ? (
-            renderSlider(filteredFiveBoxes, sliderRefs.fiveBoxes, "Nos 5 Box")
+            renderSlider(filteredFiveBoxes, sliderRefs.fiveBoxes, "Nos 5 Box", "Large five-horse stall systems ideal for commercial stables or training facilities requiring high-capacity housing solutions.")
           ) : (
             <Box textAlign="center" py={4}>
               <Typography variant="h6" color="text.secondary">
@@ -638,7 +655,7 @@ const Equipements = () => {
           )
         ) : activeTab === 'mangeoires' ? (
           filteredMangeoires.length > 0 ? (
-            renderSlider(filteredMangeoires, sliderRefs.mangeoires, "Nos Mangeoires")
+            renderSlider(filteredMangeoires, sliderRefs.mangeoires, "Nos Mangeoires", "Specialized horse feeders designed for safe and convenient feeding, available in various sizes and materials to suit different stable setups.")
           ) : (
             <Box textAlign="center" py={4}>
               <Typography variant="h6" color="text.secondary">
@@ -648,7 +665,7 @@ const Equipements = () => {
           )
         ) : activeTab === 'portes' ? (
           filteredPortes.length > 0 ? (
-            renderSlider(filteredPortes, sliderRefs.portes, "Nos Portes")
+            renderSlider(filteredPortes, sliderRefs.portes, "Nos Portes", "Durable stable doors crafted for safety and ease of use, with options for different opening mechanisms and security features.")
           ) : (
             <Box textAlign="center" py={4}>
               <Typography variant="h6" color="text.secondary">
@@ -658,7 +675,7 @@ const Equipements = () => {
           )
         ) : activeTab === 'fenetres' ? (
           filteredFenetres.length > 0 ? (
-            renderSlider(filteredFenetres, sliderRefs.fenetres, "Nos Fenêtres")
+            renderSlider(filteredFenetres, sliderRefs.fenetres, "Nos Fenêtres", "Stable windows designed to provide proper ventilation and natural light while maintaining security and weather resistance.")
           ) : (
             <Box textAlign="center" py={4}>
               <Typography variant="h6" color="text.secondary">
@@ -668,7 +685,7 @@ const Equipements = () => {
           )
         ) : (
           filteredMalles.length > 0 ? (
-            renderSlider(filteredMalles, sliderRefs.malles, "Nos Malles")
+            renderSlider(filteredMalles, sliderRefs.malles, "Nos Malles", "Storage solutions for equestrian equipment, designed to be durable, secure, and conveniently sized for tack rooms or stable areas.")
           ) : (
             <Box textAlign="center" py={4}>
               <Typography variant="h6" color="text.secondary">
@@ -678,7 +695,6 @@ const Equipements = () => {
           )
         )}
 
-        {/* Snackbar for cart notifications */}
         <Snackbar
           open={snackbarOpen}
           autoHideDuration={3000}

@@ -12,7 +12,6 @@ import toast, { Toaster } from 'react-hot-toast';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
 
-// Configuration du thème personnalisé
 const theme = createTheme({
   palette: {
     primary: {
@@ -27,7 +26,6 @@ const theme = createTheme({
   },
 });
 
-// Style personnalisé pour les avatars
 const StyledAvatar = styled(Avatar)({
   width: 70,
   height: 70,
@@ -39,7 +37,6 @@ const StyledAvatar = styled(Avatar)({
   },
 });
 
-// Style pour les éléments du panier
 const CartItem = styled(Box)({
   display: 'flex',
   alignItems: 'center',
@@ -51,7 +48,6 @@ const CartItem = styled(Box)({
   },
 });
 
-// Style pour le bouton de commande
 const OrderButton = styled(Button)({
   fontWeight: 'bold',
   letterSpacing: '1px',
@@ -63,7 +59,6 @@ const OrderButton = styled(Button)({
   },
 });
 
-// Fonction utilitaire pour les URLs d'images
 const getValidImageUrl = (imageUrl) => {
   if (!imageUrl) return '/placeholder-facade.jpg';
   if (imageUrl.startsWith('/') || !imageUrl.startsWith('http')) {
@@ -84,7 +79,6 @@ const CartDialog = ({ open, onClose }) => {
     message: ''
   });
 
-  // Calcul du total lorsque le panier change
   useEffect(() => {
     const newTotal = cartItems.reduce((sum, item) => {
       return sum + (item.price || 0) * (item.quantity || 1);

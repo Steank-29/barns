@@ -207,7 +207,7 @@ const Signin = () => {
                         Mot de passe oublié ?
                       </Link>
                     </Grid>
-                    <Grid item>
+                    {/**                     <Grid item>
                       <Link 
                         href="/signup" 
                         variant="body2" 
@@ -224,7 +224,8 @@ const Signin = () => {
                       >
                         Créer un nouveau compte
                       </Link>
-                    </Grid>
+                    </Grid> */}
+
                   </Grid>
                 </Box>
               </Paper>

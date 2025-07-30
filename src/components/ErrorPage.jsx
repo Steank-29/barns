@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Typography, Box, IconButton, Tooltip } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'; // Changed from HomeIcon
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'; 
 import Lottie from 'lottie-react';
 import errorAnimation from '../assets/error.json';
 import { useNavigate } from 'react-router-dom';

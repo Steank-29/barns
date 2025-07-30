@@ -62,7 +62,7 @@ const Signup = () => {
     birthDate: '',
     gender: '',
     country: '',
-    region: '', // Changed from state to region for clarity
+    region: '', 
     street: '',
     email: '',
     picture: null,
@@ -77,7 +77,6 @@ const Signup = () => {
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [previewImage, setPreviewImage] = useState(null);
 
-  // Calculate password strength
   useEffect(() => {
     if (formData.password) {
       let strength = 0;
@@ -98,7 +97,6 @@ const Signup = () => {
       [name]: type === 'checkbox' ? checked : (files ? files[0] : value)
     }));
 
-    // Handle image preview
     if (name === 'picture' && files && files[0]) {
       const reader = new FileReader();
       reader.onload = (event) => {
@@ -112,7 +110,6 @@ const Signup = () => {
     event.preventDefault();
     setSubmitError(null);
     
-    // Validation
     if (formData.password !== formData.confirmPassword) {
       setSubmitError("Les mots de passe ne correspondent pas");
       return;
@@ -126,7 +123,6 @@ const Signup = () => {
     setIsSubmitting(true);
     
     try {
-      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
       console.log('Form submitted:', formData);
       setSubmitSuccess(true);
@@ -261,7 +257,6 @@ const Signup = () => {
                           />
                         </Grid>
 
-                        {/* Date de naissance et Genre */}
                         <Grid item xs={12} sm={6}>
                           <TextField
                             required
@@ -306,7 +301,6 @@ const Signup = () => {
                           </TextField>
                         </Grid>
 
-                        {/* Adresse */}
                         <Grid item xs={12}>
                         </Grid>
                         <Grid item xs={12} sm={6}>
@@ -375,7 +369,6 @@ const Signup = () => {
                           />
                         </Grid>
 
-                        {/* Email et Photo */}
                         <Grid item xs={12} sm={6}>
                           <TextField
                             required
@@ -426,7 +419,6 @@ const Signup = () => {
                           </Box>
                         </Grid>
 
-                        {/* Mot de passe */}
                         <Grid item xs={12} sm={6}>
                           <TextField
                             required
@@ -509,7 +501,6 @@ const Signup = () => {
                           )}
                         </Grid>
 
-                        {/* Nombre de chevaux */}
                         <Grid item xs={12}>
                           <TextField
                             required
@@ -530,7 +521,6 @@ const Signup = () => {
                           />
                         </Grid>
 
-                        {/* Terms and conditions */}
                         <Grid item xs={12}>
                           <FormControlLabel
                             control={
@@ -556,7 +546,6 @@ const Signup = () => {
                           />
                         </Grid>
 
-                        {/* Bouton d'inscription */}
                         <Grid item xs={12}>
                           <Button
                             type="submit"
@@ -584,7 +573,6 @@ const Signup = () => {
                           </Button>
                         </Grid>
 
-                        {/* Lien vers la connexion */}
                         <Grid item xs={12}>
                           <Typography variant="body2" align="center" sx={{ mt: 1 }}>
                             Déjà un compte?{' '}

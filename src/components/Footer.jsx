@@ -16,7 +16,6 @@ const Footer = () => {
     >
       <Container maxWidth="lg">
         <Grid container spacing={5} alignItems="flex-start">
-          {/* About Us Section */}
           <Grid item xs={12} sm={3} sx={{ mt: 4 }}>
             <Typography 
               variant="h6" 
@@ -56,7 +55,6 @@ const Footer = () => {
             </Typography>
           </Grid>
           
-          {/* Navigation Sections */}
           <Grid item xs={12} sm={2} sx={{ mt: 4 }}>
             <Typography variant="h6" sx={{ 
               color: 'white', 
@@ -100,7 +98,7 @@ const Footer = () => {
             <Box component="ul" sx={{ listStyle: 'none', p: 0 }}>
               {['Barn Standard', 'Barn Premium', 'Barn Équestre', 'Barn Luxe', 'Box Mobile', 'Accessoires'].map((item) => (
                 <li key={item}>
-                  <Link href="#" variant="body2" sx={{ 
+                  <Link href="/equipmenets" variant="body2" sx={{ 
                     color: 'white', 
                     display: 'block', 
                     mb: 1.5,
@@ -130,7 +128,7 @@ const Footer = () => {
             <Box component="ul" sx={{ listStyle: 'none', p: 0 }}>
               {['Conception', 'Installation', 'Personnalisation', 'Maintenance', 'Livraison', 'Consultation'].map((item) => (
                 <li key={item}>
-                  <Link href="#" variant="body2" sx={{ 
+                  <Link href="/barn" variant="body2" sx={{ 
                     color: 'white', 
                     display: 'block', 
                     mb: 1.5,
@@ -147,10 +145,8 @@ const Footer = () => {
             </Box>
           </Grid>
           
-          {/* Combined Newsletter & Social Section */}
           <Grid item xs={12} sm={3}>
             <Grid container spacing={3}>
-              {/* Newsletter - Left side */}
               <Grid item xs={12} md={6}>
                 <Box>
                   <Typography variant="h6" sx={{ 
@@ -199,17 +195,16 @@ const Footer = () => {
                 </Box>
               </Grid>
               
-              {/* Social Icons - Right side */}
               <Grid item xs={12} md={6}>
                 <Box sx={{ pl: { md: 2 } }}>
                   <Typography variant="h6" sx={{ 
                     color: 'white', 
                     fontWeight: 'bold',
                     textTransform: 'uppercase',
-                    letterSpacing: 1.5,
+                    letterSpacing: 0.5,
                     mb: 1
                   }}>
-                    Connect With Us
+                    Connectez-vous avec nous
                   </Typography>
                   <Box sx={{ 
                     display: 'flex', 
@@ -255,7 +250,6 @@ const Footer = () => {
                     ))}
                   </Box>
                   
-                  {/* Creative Horse Element */}
                   <Box sx={{ 
                     mt: 2, 
                     textAlign: 'center',
@@ -290,7 +284,6 @@ const Footer = () => {
           </Grid>
         </Grid>
         
-        {/* Copyright */}
         <Box mt={5} sx={{ 
           textAlign: 'center',
           pt: 3,
