@@ -299,7 +299,7 @@ const EditPorte = () => {
         mb: isMobile ? 2 : 4,
         mt: isMobile ? 1 : 0
       }}>
-        Module de Gestion des Portes
+        Portes Management – Solutions Intelligentes de Gestion et de Suivi
       </Typography>
 
       {/* Search Bar */}

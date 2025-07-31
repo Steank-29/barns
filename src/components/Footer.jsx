@@ -22,7 +22,6 @@ const Footer = () => {
   const handleSubscribe = async (e) => {
     e.preventDefault();
     
-    // Basic email validation
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setSnackbarMessage('Please enter a valid email address');
       setSnackbarSeverity('error');

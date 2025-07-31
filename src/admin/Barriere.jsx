@@ -20,7 +20,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import axios from 'axios';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-// Custom theme
 const theme = createTheme({
   palette: {
     primary: {
@@ -51,7 +50,6 @@ const Equipements = () => {
   const [typeFilter, setTypeFilter] = React.useState('');
   const [priceFilter, setPriceFilter] = React.useState('');
 
-  // Fetch facades from backend
   React.useEffect(() => {
     const fetchFacades = async () => {
       try {
@@ -67,7 +65,6 @@ const Equipements = () => {
     fetchFacades();
   }, []);
 
-  // Extract unique types for filter
   const types = [...new Set(facades.map(facade => facade.type))].filter(Boolean);
 
   const filteredFacades = facades.filter(facade => {
@@ -79,7 +76,6 @@ const Equipements = () => {
         (priceFilter === 'high' && facade.price > 25000))
   )});
 
-  // Function to chunk array into groups of 5 for perfect rows
   const chunkArray = (array, size) => {
     const result = [];
     for (let i = 0; i < array.length; i += size) {
@@ -114,7 +110,6 @@ const Equipements = () => {
   return (
     <ThemeProvider theme={theme}>
       <Container maxWidth="xl" sx={{ py: 4 }}>
-        {/* Main Title Section */}
         <Box textAlign="center" mb={6}>
           <Typography variant="h1" component="h1" gutterBottom sx={{ color: 'primary.main' }}>
             Découvrez nos façades pour équipements équestres
@@ -124,7 +119,6 @@ const Equipements = () => {
           </Typography>
         </Box>
 
-        {/* Search and Filter Section */}
         <Box sx={{ 
           mb: 6, 
           display: "flex", 
@@ -187,7 +181,6 @@ const Equipements = () => {
           </Grid>
         </Box>
 
-        {/* Products Grid - Now with perfect 5-card rows */}
         {facadeRows.length > 0 ? (
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
             {facadeRows.map((row, rowIndex) => (

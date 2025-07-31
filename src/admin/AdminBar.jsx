@@ -390,7 +390,6 @@ const AdminBar = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Contact Support Dialog State
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
     email1: '',
@@ -494,15 +493,14 @@ const handleFormSubmit = async (e) => {
     const tab = sidebarTabs.find(tab => tab.id === tabId);
     if (tab?.nested) {
       setOpenMenus(prev => ({
-        [tabId]: !prev[tabId] // Toggle only the clicked menu, close others
+        [tabId]: !prev[tabId] 
       }));
     } else {
-      setOpenMenus({}); // Close all nested menus when clicking a non-nested tab
+      setOpenMenus({}); 
     }
-    setOpen(true); // Close the sidebar when any tab is clicked
+    setOpen(true); 
   };
 
-  // Close sidebar and nested menus when route changes
   useEffect(() => {
     setOpen(false);
     setOpenMenus({});
@@ -794,7 +792,6 @@ const handleFormSubmit = async (e) => {
         {children}
       </Box>
 
-      {/* Contact Support Dialog */}
       <Dialog
         open={contactDialogOpen}
         onClose={handleContactDialogClose}
@@ -909,7 +906,6 @@ const handleFormSubmit = async (e) => {
         </DialogContent>
       </Dialog>
 
-      {/* Snackbar Notification */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}

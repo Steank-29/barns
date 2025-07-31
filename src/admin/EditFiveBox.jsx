@@ -105,7 +105,6 @@ const buttonStyles = (variant) => ({
     }));
   };
 
-  // Function to validate and fix image URLs
   const getValidImageUrl = (imageUrl) => {
     if (!imageUrl) return null;
     
@@ -116,7 +115,6 @@ const buttonStyles = (variant) => ({
     return imageUrl;
   };
 
-  // Fetch all threeBoxes
   useEffect(() => {
     const fetchThreeBoxes = async () => {
       try {
@@ -142,7 +140,6 @@ const buttonStyles = (variant) => ({
     fetchThreeBoxes();
   }, []);
 
-  // Search functionality
   useEffect(() => {
     if (searchTerm.trim() === '') {
       setFilteredThreeBoxes(threeBoxes);
@@ -155,13 +152,11 @@ const buttonStyles = (variant) => ({
     }
   }, [searchTerm, threeBoxes]);
 
-  // Handle view threeBox details
   const handleView = (threeBox) => {
     setSelectedThreeBox(threeBox);
     setViewMode(true);
   };
 
-  // Handle edit threeBox
 const handleEdit = (threeBox) => {
   setSelectedThreeBox({ 
     ...threeBox,
@@ -171,13 +166,11 @@ const handleEdit = (threeBox) => {
   setEditMode(true);
 };
 
-  // Handle delete confirmation
   const handleDeleteClick = (threeBox) => {
     setThreeBoxToDelete(threeBox);
     setDeleteConfirm(true);
   };
 
-  // Confirm delete
   const confirmDelete = async () => {
     try {
       const response = await fetch(`http://localhost:5000/api/fivebox/deletefivebox/${threeBoxToDelete.reference}`, {
@@ -209,7 +202,6 @@ const handleEdit = (threeBox) => {
     }
   };
 
-  // Handle form field changes
   const handleFieldChange = (e) => {
     const { name, value } = e.target;
     setSelectedThreeBox(prev => ({
@@ -219,20 +211,16 @@ const handleEdit = (threeBox) => {
   };
 
 
-  // Save updated threeBox
-// Replace the existing saveChanges function with this:
 const saveChanges = async () => {
   try {
     const formData = new FormData();
     
-    // Append all fields to formData
     Object.keys(selectedThreeBox).forEach(key => {
       if (key !== 'imageFile' && key !== 'imagePreview' && selectedThreeBox[key] !== null) {
         formData.append(key, selectedThreeBox[key]);
       }
     });
     
-    // Append the image file if it exists
     if (selectedThreeBox.imageFile) {
       formData.append('image', selectedThreeBox.imageFile);
     }
@@ -240,7 +228,6 @@ const saveChanges = async () => {
     const response = await fetch(`http://localhost:5000/api/fivebox/updatefivebox/${selectedThreeBox.reference}`, {
       method: 'PUT',
       body: formData,
-      // Don't set Content-Type header - the browser will set it automatically with the correct boundary
     });
 
     if (response.ok) {
@@ -267,19 +254,16 @@ const saveChanges = async () => {
   }
 };
 
-  // Close all dialogs
   const closeDialog = () => {
     setViewMode(false);
     setEditMode(false);
     setSelectedThreeBox(null);
   };
 
-  // Close snackbar
   const handleCloseSnackbar = () => {
     setSnackbar(prev => ({ ...prev, open: false }));
   };
 
-  // Render image with loading states
   const renderThreeBoxImage = (threeBox) => {
     const imageUrl = getValidImageUrl(threeBox.imageURL);
     const loadState = imageLoadStates[threeBox._id];
@@ -348,7 +332,6 @@ const saveChanges = async () => {
         5 Box Management – Solutions Intelligentes de Gestion et de Suivi
       </Typography>
 
-      {/* Search Bar */}
       <Box mb={isMobile ? 2 : 4}>
         <TextField
           fullWidth
@@ -371,7 +354,6 @@ const saveChanges = async () => {
         />
       </Box>
 
-      {/* ThreeBoxes Grid */}
       <Box sx={{ 
         display: 'flex', 
         justifyContent: 'center',
@@ -402,7 +384,6 @@ const saveChanges = async () => {
                   color: 'white',
                   borderRadius: 2
                 }}>
-                  {/* ThreeBox Image */}
                   <Box sx={{ 
                     position: 'relative',
                     overflow: 'hidden',
@@ -412,7 +393,6 @@ const saveChanges = async () => {
                     {renderThreeBoxImage(threeBox)}
                   </Box>
 
-                  {/* ThreeBox Information */}
                   <CardContent sx={{ 
                     flexGrow: 1,
                     display: 'flex',
@@ -427,7 +407,6 @@ const saveChanges = async () => {
                       {threeBox.name}
                     </Typography>
 
-                    {/* Reference and Price */}
                     <Box sx={{ 
                       display: 'flex',
                       alignItems: 'center',
@@ -474,7 +453,6 @@ const saveChanges = async () => {
                       {threeBox.description}
                     </Typography>
 
-                    {/* Action Buttons */}
                     <Box sx={{ 
                       display: 'flex', 
                       justifyContent: 'space-between',
@@ -538,7 +516,6 @@ const saveChanges = async () => {
         </Grid>
       </Box>
 
-      {/* View ThreeBox Dialog */}
       <Dialog 
         open={viewMode} 
         onClose={closeDialog} 
@@ -553,7 +530,6 @@ const saveChanges = async () => {
           }
         }}
       >
-        {/* Dialog Header with gradient background */}
         <DialogTitle sx={{ 
           p: 0,
           background: 'linear-gradient(135deg, #38598b 0%, #2a4365 100%)',
@@ -581,7 +557,6 @@ const saveChanges = async () => {
         <DialogContent dividers sx={{ p: 0 }}>
           {selectedThreeBox && (
             <Box>
-              {/* Full-width image section with shadow */}
               <Box sx={{
                 width: '100%',
                 height: isMobile ? '200px' : isTablet ? '300px' : '400px',
@@ -623,13 +598,11 @@ const saveChanges = async () => {
                 )}
               </Box>
 
-              {/* ThreeBox details section with modern card layout */}
               <Box sx={{ 
                 p: isMobile ? 2 : isTablet ? 3 : 4,
                 backgroundColor: '#fff'
               }}>
                 <Grid container spacing={isMobile ? 2 : 4}>
-                  {/* ThreeBox Description Section */}
                   <Grid item xs={12} md={6}>
                     <Box sx={{
                       p: isMobile ? 1.5 : 3,
@@ -729,7 +702,6 @@ const saveChanges = async () => {
                     </Box>
                   </Grid>
 
-                  {/* Additional Specifications Section */}
                   <Grid item xs={12} md={6}>
                     <Box sx={{
                       p: isMobile ? 1.5 : 3,
@@ -884,7 +856,6 @@ const saveChanges = async () => {
         </DialogContent>
       </Dialog>
 
-      {/* Edit ThreeBox Dialog */}
 <Dialog
   open={editMode}
   onClose={closeDialog}
@@ -907,8 +878,7 @@ const saveChanges = async () => {
     },
   }}
 >
-  {/* Header with gradient and subtle pattern */}
-  <DialogTitle
+      <DialogTitle
     sx={{
       background: `
         linear-gradient(135deg, #38598b 0%, #3f7acc 100%),
@@ -970,7 +940,6 @@ const saveChanges = async () => {
     </Box>
   </DialogTitle>
 
-  {/* Content with consistent card-like fields */}
   <DialogContent
     dividers
     sx={{
@@ -981,7 +950,6 @@ const saveChanges = async () => {
   >
     {selectedThreeBox && (
       <Grid container spacing={isMobile ? 3 : 4}>
-        {/* Field Grid - All fields now have consistent height */}
         {[
           ['Nom', 'name'],
           ['Référence', 'reference', true],
@@ -1041,7 +1009,6 @@ const saveChanges = async () => {
           </Grid>
         ))}
 
-        {/* Image URL Field with Preview */}
 <Grid item xs={12}>
   <Box sx={{ 
     display: 'flex', 
@@ -1145,7 +1112,6 @@ const saveChanges = async () => {
   </Box>
 </Grid>
 
-        {/* Description Field - Full Width with matching style */}
         <Grid item xs={12}>
           <TextField
             fullWidth
@@ -1186,7 +1152,6 @@ const saveChanges = async () => {
     )}
   </DialogContent>
 
-  {/* Actions with matching width and creative buttons */}
   <DialogActions
     sx={{
       px: isMobile ? 2 : 3,
@@ -1249,7 +1214,6 @@ const saveChanges = async () => {
 </Dialog>
 
 
-      {/* Delete Confirmation Dialog */}
       <Dialog
         open={deleteConfirm}
         onClose={() => setDeleteConfirm(false)}
@@ -1330,7 +1294,6 @@ const saveChanges = async () => {
         </DialogActions>
       </Dialog>
 
-      {/* Snackbar for notifications */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}

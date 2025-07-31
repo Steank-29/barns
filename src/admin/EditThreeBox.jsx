@@ -298,7 +298,7 @@ const EditThreeBox = () => {
         mb: isMobile ? 2 : 4,
         mt: isMobile ? 1 : 0
       }}>
-        Gestion des 3 Box
+        3 Box Management – Solutions Intelligentes de Gestion et de Suivi
       </Typography>
 
       {/* Search Bar */}

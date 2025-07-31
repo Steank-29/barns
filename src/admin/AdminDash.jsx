@@ -145,7 +145,6 @@ const handleDeleteConfirm = async () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch products data
         const productsRes = await Promise.all([
           axios.get('http://localhost:5000/api/facade/getallfacades'),
           axios.get('http://localhost:5000/api/barriere/getallbarrieres'),
@@ -380,7 +379,6 @@ const handleDeleteConfirm = async () => {
         </TableContainer>
       )}
 
-      {/* Delete Confirmation Dialog */}
       <Dialog
         open={deleteDialogOpen}
         onClose={handleDeleteCancel}
@@ -416,7 +414,6 @@ const handleDeleteConfirm = async () => {
         </DialogActions>
       </Dialog>
 
-      {/* Snackbar for notifications */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}

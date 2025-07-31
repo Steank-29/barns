@@ -54,7 +54,6 @@ const EditBarriere = () => {
     severity: 'success'
   });
 
-  // Handle image load states
   const handleImageLoad = (barriereId) => {
     setImageLoadStates(prev => ({
       ...prev,
@@ -76,7 +75,6 @@ const EditBarriere = () => {
     }));
   };
 
-  // Function to validate and fix image URLs
   const getValidImageUrl = (imageUrl) => {
     if (!imageUrl) return null;
     
@@ -87,7 +85,6 @@ const EditBarriere = () => {
     return imageUrl;
   };
 
-  // Fetch all barrieres
   useEffect(() => {
     const fetchBarrieres = async () => {
       try {
@@ -113,7 +110,6 @@ const EditBarriere = () => {
     fetchBarrieres();
   }, []);
 
-  // Search functionality
   useEffect(() => {
     if (searchTerm.trim() === '') {
       setFilteredBarrieres(barrieres);
@@ -126,25 +122,21 @@ const EditBarriere = () => {
     }
   }, [searchTerm, barrieres]);
 
-  // Handle view barriere details
   const handleView = (barriere) => {
     setSelectedBarriere(barriere);
     setViewMode(true);
   };
 
-  // Handle edit barriere
   const handleEdit = (barriere) => {
     setSelectedBarriere({ ...barriere });
     setEditMode(true);
   };
 
-  // Handle delete confirmation
   const handleDeleteClick = (barriere) => {
     setBarriereToDelete(barriere);
     setDeleteConfirm(true);
   };
 
-  // Confirm delete
   const confirmDelete = async () => {
     try {
       const response = await fetch(`http://localhost:5000/api/barriere/deletebarriere/${barriereToDelete.reference}`, {
@@ -176,7 +168,6 @@ const EditBarriere = () => {
     }
   };
 
-  // Handle form field changes
   const handleFieldChange = (e) => {
     const { name, value } = e.target;
     setSelectedBarriere(prev => ({
@@ -185,7 +176,6 @@ const EditBarriere = () => {
     }));
   };
 
-  // Save updated barriere
   const saveChanges = async () => {
     try {
       const response = await fetch(`http://localhost:5000/api/barriere/updatebarriere/${selectedBarriere.reference}`, {
@@ -220,19 +210,16 @@ const EditBarriere = () => {
     }
   };
 
-  // Close all dialogs
   const closeDialog = () => {
     setViewMode(false);
     setEditMode(false);
     setSelectedBarriere(null);
   };
 
-  // Close snackbar
   const handleCloseSnackbar = () => {
     setSnackbar(prev => ({ ...prev, open: false }));
   };
 
-  // Render image with loading states
   const renderBarriereImage = (barriere) => {
     const imageUrl = getValidImageUrl(barriere.imageURL);
     const loadState = imageLoadStates[barriere._id];
@@ -298,10 +285,9 @@ const EditBarriere = () => {
         mb: isMobile ? 2 : 4,
         mt: isMobile ? 1 : 0
       }}>
-       Centre de Contrôle des Barrières
+       Barrières Management – Solutions Intelligentes de Gestion et de Suivi
       </Typography>
 
-      {/* Search Bar */}
       <Box mb={isMobile ? 2 : 4}>
         <TextField
           fullWidth
@@ -324,7 +310,6 @@ const EditBarriere = () => {
         />
       </Box>
 
-      {/* Barrieres Grid */}
       <Box sx={{ 
         display: 'flex', 
         justifyContent: 'center',
@@ -355,7 +340,6 @@ const EditBarriere = () => {
                   color: 'white',
                   borderRadius: 2
                 }}>
-                  {/* Barriere Image */}
                   <Box sx={{ 
                     position: 'relative',
                     overflow: 'hidden',
@@ -365,7 +349,6 @@ const EditBarriere = () => {
                     {renderBarriereImage(barriere)}
                   </Box>
 
-                  {/* Barriere Information */}
                   <CardContent sx={{ 
                     flexGrow: 1,
                     display: 'flex',
@@ -380,7 +363,6 @@ const EditBarriere = () => {
                       {barriere.name}
                     </Typography>
 
-                    {/* Reference and Price */}
                     <Box sx={{ 
                       display: 'flex',
                       alignItems: 'center',
@@ -427,7 +409,6 @@ const EditBarriere = () => {
                       {barriere.description}
                     </Typography>
 
-                    {/* Action Buttons */}
                     <Box sx={{ 
                       display: 'flex', 
                       justifyContent: 'space-between',
@@ -491,7 +472,6 @@ const EditBarriere = () => {
         </Grid>
       </Box>
 
-      {/* View Barriere Dialog */}
       <Dialog 
         open={viewMode} 
         onClose={closeDialog} 
@@ -506,7 +486,6 @@ const EditBarriere = () => {
           }
         }}
       >
-        {/* Dialog Header with gradient background */}
         <DialogTitle sx={{ 
           p: 0,
           background: 'linear-gradient(135deg, #38598b 0%, #2a4365 100%)',
@@ -534,7 +513,6 @@ const EditBarriere = () => {
         <DialogContent dividers sx={{ p: 0 }}>
           {selectedBarriere && (
             <Box>
-              {/* Full-width image section with shadow */}
               <Box sx={{
                 width: '100%',
                 height: isMobile ? '200px' : isTablet ? '300px' : '400px',
@@ -576,13 +554,11 @@ const EditBarriere = () => {
                 )}
               </Box>
 
-              {/* Barriere details section with modern card layout */}
               <Box sx={{ 
                 p: isMobile ? 2 : isTablet ? 3 : 4,
                 backgroundColor: '#fff'
               }}>
                 <Grid container spacing={isMobile ? 2 : 4}>
-                  {/* Barriere Description Section */}
                   <Grid item xs={12} md={6}>
                     <Box sx={{
                       p: isMobile ? 1.5 : 3,
@@ -721,7 +697,6 @@ const EditBarriere = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Edit Barriere Dialog */}
       <Dialog 
         open={editMode} 
         onClose={closeDialog} 
@@ -740,7 +715,6 @@ const EditBarriere = () => {
           }
         }}
       >
-        {/* Enhanced Dialog Header with gradient */}
         <DialogTitle sx={{ 
           background: 'linear-gradient(135deg, #38598b 0%,rgb(63, 122, 204) 100%)',
           color: '#fff',
@@ -771,7 +745,6 @@ const EditBarriere = () => {
           </Box>
         </DialogTitle>
 
-        {/* Dialog Content with improved spacing and styling */}
         <DialogContent dividers sx={{ 
           px: isMobile ? 1 : 3, 
           py: isMobile ? 2 : 3,
@@ -899,7 +872,6 @@ const EditBarriere = () => {
           )}
         </DialogContent>
 
-        {/* Enhanced Dialog Actions with better button styling */}
         <DialogActions sx={{ 
           px: isMobile ? 1 : 3, 
           py: isMobile ? 1.5 : 2,
@@ -951,7 +923,6 @@ const EditBarriere = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Delete Confirmation Dialog */}
       <Dialog 
         open={deleteConfirm} 
         onClose={() => setDeleteConfirm(false)}
@@ -993,7 +964,6 @@ const EditBarriere = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Snackbar for notifications */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}

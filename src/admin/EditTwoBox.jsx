@@ -298,7 +298,7 @@ const EditTwoBox = () => {
         mb: isMobile ? 2 : 4,
         mt: isMobile ? 1 : 0
       }}>
-        Gestion des 2 Box
+        2 Box Management – Solutions Intelligentes de Gestion et de Suivi
       </Typography>
 
       {/* Search Bar */}

@@ -299,7 +299,7 @@ const EditMalle = () => {
         mb: isMobile ? 2 : 4,
         mt: isMobile ? 1 : 0
       }}>
-        Module de Gestion des Malles
+        Malles Management – Solutions Intelligentes de Gestion et de Suivi
       </Typography>
 
       {/* Search Bar */}

@@ -170,7 +170,6 @@ const Barn = () => {
       p: isMobile ? 1 : 2,
       gap: isMobile ? 2 : 0
     }}>
-      {/* Left Side Form */}
       <Toaster 
         position={isMobile ? "top-center" : "top-right"}
         toastOptions={{
@@ -205,7 +204,6 @@ const Barn = () => {
         <StyledPaper elevation={3}>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={isMobile ? 1 : 2}>
-              {/* Reference */}
               <Grid item xs={12}>
                 <StyledTextField
                   label="Référence"
@@ -217,7 +215,6 @@ const Barn = () => {
                 />
               </Grid>
 
-              {/* Product Name */}
               <Grid item xs={12} md={6}>
                 <StyledTextField
                   label="Nom de Barn"
@@ -229,7 +226,6 @@ const Barn = () => {
                 />
               </Grid>
 
-              {/* Image Upload */}
               <Grid item xs={12}>
                 <StyledTextField
                   type="file"
@@ -242,7 +238,6 @@ const Barn = () => {
                 />
               </Grid>
 
-              {/* Dimensions */}
               <Grid item xs={12} sm={4}>
                 <StyledTextField
                   label="Hauteur (m)"
@@ -270,7 +265,6 @@ const Barn = () => {
                 />
               </Grid>
 
-              {/* Price */}
               <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Prix (€)"
@@ -286,7 +280,6 @@ const Barn = () => {
                 />
               </Grid>
 
-              {/* Description */}
               <Grid item xs={12} sm={6}>
                 <StyledTextarea
                   name="description"
@@ -296,7 +289,6 @@ const Barn = () => {
                 />
               </Grid>
 
-              {/* Buttons */}
               <Grid item xs={12} sx={{ 
                 display: 'flex', 
                 justifyContent: isMobile ? 'center' : 'flex-end',
@@ -345,7 +337,6 @@ const Barn = () => {
         </StyledPaper>
       </Box>
 
-      {/* Divider - Only show on desktop */}
       {!isMobile && (
         <Divider 
           orientation="vertical" 
@@ -358,7 +349,6 @@ const Barn = () => {
         />
       )}
 
-      {/* Preview Section */}
       <Box sx={{ 
         width: isMobile ? '100%' : '50%', 
         backgroundColor: isMobile ? 'transparent' : 'white', 

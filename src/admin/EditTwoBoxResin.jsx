@@ -54,7 +54,6 @@ const EditTwoBoxResin = () => {
     severity: 'success'
   });
 
-  // Handle image load states
   const handleImageLoad = (twoBoxResinId) => {
     setImageLoadStates(prev => ({
       ...prev,
@@ -76,7 +75,6 @@ const EditTwoBoxResin = () => {
     }));
   };
 
-  // Function to validate and fix image URLs
   const getValidImageUrl = (imageUrl) => {
     if (!imageUrl) return null;
     
@@ -87,7 +85,6 @@ const EditTwoBoxResin = () => {
     return imageUrl;
   };
 
-  // Fetch all twoBoxResins
   useEffect(() => {
     const fetchTwoBoxResins = async () => {
       try {
@@ -113,7 +110,6 @@ const EditTwoBoxResin = () => {
     fetchTwoBoxResins();
   }, []);
 
-  // Search functionality
   useEffect(() => {
     if (searchTerm.trim() === '') {
       setFilteredTwoBoxResins(twoBoxResins);
@@ -126,25 +122,21 @@ const EditTwoBoxResin = () => {
     }
   }, [searchTerm, twoBoxResins]);
 
-  // Handle view twoBoxResin details
   const handleView = (twoBoxResin) => {
     setSelectedTwoBoxResin(twoBoxResin);
     setViewMode(true);
   };
 
-  // Handle edit twoBoxResin
   const handleEdit = (twoBoxResin) => {
     setSelectedTwoBoxResin({ ...twoBoxResin });
     setEditMode(true);
   };
 
-  // Handle delete confirmation
   const handleDeleteClick = (twoBoxResin) => {
     setTwoBoxResinToDelete(twoBoxResin);
     setDeleteConfirm(true);
   };
 
-  // Confirm delete
   const confirmDelete = async () => {
     try {
       const response = await fetch(`http://localhost:5000/api/twoboxresin/deletetwoboxresin/${twoBoxResinToDelete.reference}`, {
@@ -176,7 +168,6 @@ const EditTwoBoxResin = () => {
     }
   };
 
-  // Handle form field changes
   const handleFieldChange = (e) => {
     const { name, value } = e.target;
     setSelectedTwoBoxResin(prev => ({
@@ -185,7 +176,6 @@ const EditTwoBoxResin = () => {
     }));
   };
 
-  // Save updated twoBoxResin
   const saveChanges = async () => {
     try {
       const response = await fetch(`http://localhost:5000/api/twoboxresin/updatetwoboxresin/${selectedTwoBoxResin.reference}`, {
@@ -220,19 +210,16 @@ const EditTwoBoxResin = () => {
     }
   };
 
-  // Close all dialogs
   const closeDialog = () => {
     setViewMode(false);
     setEditMode(false);
     setSelectedTwoBoxResin(null);
   };
 
-  // Close snackbar
   const handleCloseSnackbar = () => {
     setSnackbar(prev => ({ ...prev, open: false }));
   };
 
-  // Render image with loading states
   const renderTwoBoxResinImage = (twoBoxResin) => {
     const imageUrl = getValidImageUrl(twoBoxResin.imageURL);
     const loadState = imageLoadStates[twoBoxResin._id];
@@ -298,10 +285,9 @@ const EditTwoBoxResin = () => {
         mb: isMobile ? 2 : 4,
         mt: isMobile ? 1 : 0
       }}>
-        Gestion des 2 Box Résine
+        2 Box Résine Management – Solutions Intelligentes de Gestion et de Suivi
       </Typography>
 
-      {/* Search Bar */}
       <Box mb={isMobile ? 2 : 4}>
         <TextField
           fullWidth
@@ -324,7 +310,6 @@ const EditTwoBoxResin = () => {
         />
       </Box>
 
-      {/* TwoBoxResins Grid */}
       <Box sx={{ 
         display: 'flex', 
         justifyContent: 'center',
@@ -355,7 +340,6 @@ const EditTwoBoxResin = () => {
                   color: 'white',
                   borderRadius: 2
                 }}>
-                  {/* TwoBoxResin Image */}
                   <Box sx={{ 
                     position: 'relative',
                     overflow: 'hidden',
@@ -365,7 +349,6 @@ const EditTwoBoxResin = () => {
                     {renderTwoBoxResinImage(twoBoxResin)}
                   </Box>
 
-                  {/* TwoBoxResin Information */}
                   <CardContent sx={{ 
                     flexGrow: 1,
                     display: 'flex',
@@ -380,7 +363,6 @@ const EditTwoBoxResin = () => {
                       {twoBoxResin.name}
                     </Typography>
 
-                    {/* Reference and Price */}
                     <Box sx={{ 
                       display: 'flex',
                       alignItems: 'center',
@@ -427,7 +409,6 @@ const EditTwoBoxResin = () => {
                       {twoBoxResin.description}
                     </Typography>
 
-                    {/* Action Buttons */}
                     <Box sx={{ 
                       display: 'flex', 
                       justifyContent: 'space-between',
@@ -491,7 +472,6 @@ const EditTwoBoxResin = () => {
         </Grid>
       </Box>
 
-      {/* View TwoBoxResin Dialog */}
       <Dialog 
         open={viewMode} 
         onClose={closeDialog} 
@@ -506,7 +486,6 @@ const EditTwoBoxResin = () => {
           }
         }}
       >
-        {/* Dialog Header with gradient background */}
         <DialogTitle sx={{ 
           p: 0,
           background: 'linear-gradient(135deg, #38598b 0%, #2a4365 100%)',
@@ -534,7 +513,6 @@ const EditTwoBoxResin = () => {
         <DialogContent dividers sx={{ p: 0 }}>
           {selectedTwoBoxResin && (
             <Box>
-              {/* Full-width image section with shadow */}
               <Box sx={{
                 width: '100%',
                 height: isMobile ? '200px' : isTablet ? '300px' : '400px',
@@ -576,14 +554,12 @@ const EditTwoBoxResin = () => {
                 )}
               </Box>
 
-              {/* TwoBoxResin details section with modern card layout */}
               <Box sx={{ 
                 p: isMobile ? 2 : isTablet ? 3 : 4,
                 backgroundColor: '#fff'
               }}>
                 <Grid container spacing={isMobile ? 2 : 4}>
-                  {/* TwoBoxResin Description Section */}
-                  <Grid item xs={12} md={6}>
+$                  <Grid item xs={12} md={6}>
                     <Box sx={{
                       p: isMobile ? 1.5 : 3,
                       borderRadius: '12px',
@@ -682,7 +658,6 @@ const EditTwoBoxResin = () => {
                     </Box>
                   </Grid>
 
-                  {/* Additional Specifications Section */}
                   <Grid item xs={12} md={6}>
                     <Box sx={{
                       p: isMobile ? 1.5 : 3,
@@ -837,7 +812,6 @@ const EditTwoBoxResin = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Edit TwoBoxResin Dialog */}
       <Dialog 
         open={editMode} 
         onClose={closeDialog} 
@@ -856,7 +830,6 @@ const EditTwoBoxResin = () => {
           }
         }}
       >
-        {/* Enhanced Dialog Header with gradient */}
         <DialogTitle sx={{ 
           background: 'linear-gradient(135deg, #38598b 0%,rgb(63, 122, 204) 100%)',
           color: '#fff',
@@ -887,7 +860,6 @@ const EditTwoBoxResin = () => {
           </Box>
         </DialogTitle>
 
-        {/* Dialog Content with improved spacing and styling */}
         <DialogContent dividers sx={{ 
           px: isMobile ? 1 : 3, 
           py: isMobile ? 2 : 3,
@@ -1241,7 +1213,6 @@ const EditTwoBoxResin = () => {
           )}
         </DialogContent>
 
-        {/* Dialog Actions with improved styling */}
         <DialogActions sx={{ 
           px: isMobile ? 2 : 3, 
           py: 2,
@@ -1288,7 +1259,6 @@ const EditTwoBoxResin = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Delete Confirmation Dialog */}
       <Dialog
         open={deleteConfirm}
         onClose={() => setDeleteConfirm(false)}
@@ -1369,7 +1339,6 @@ const EditTwoBoxResin = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Snackbar for notifications */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}

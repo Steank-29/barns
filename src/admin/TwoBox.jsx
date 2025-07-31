@@ -236,7 +236,6 @@ const TwoBox = () => {
     }}>
       <Toaster position="top-right" />
       
-      {/* Left Side Form */}
       <Box sx={{ 
         width: isSmallScreen ? '100%' : '50%', 
         pr: isSmallScreen ? 0 : 2,
@@ -257,7 +256,6 @@ const TwoBox = () => {
         <StyledPaper elevation={3}>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
-              {/* Row 1: Référence et Nom */}
               <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Référence"
@@ -288,7 +286,6 @@ const TwoBox = () => {
                 </StyledFormControl>
               </Grid>
 
-              {/* Row 2: Image */}
               <Grid item xs={12}>
                 <StyledTextField
                   type="file"
@@ -299,7 +296,6 @@ const TwoBox = () => {
                 />
               </Grid>
 
-              {/* Row 3: Prix et Type */}
               <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Prix (€)"
@@ -329,7 +325,6 @@ const TwoBox = () => {
                 </StyledFormControl>
               </Grid>
 
-              {/* Row 4: Conception et Épaisseur */}
               <Grid item xs={12} sm={6}>
                 <StyledFormControl>
                   <InputLabel id="conception-select-label">Conception</InputLabel>
@@ -361,7 +356,6 @@ const TwoBox = () => {
                 />
               </Grid>
 
-              {/* Row 5: Hauteurs */}
               <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Hauteur partie basse (m)"
@@ -387,7 +381,6 @@ const TwoBox = () => {
                 />
               </Grid>
 
-              {/* Row 6: Avancée */}
               <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Avancée (ML)"
@@ -410,7 +403,6 @@ const TwoBox = () => {
                 />
               </Grid>
 
-              {/* Row 7: Poteaux et Tôle */}
               <Grid item xs={12} sm={6}>
                 <StyledFormControl>
                   <InputLabel id="poteaux-select-label">Poteaux</InputLabel>
@@ -448,7 +440,6 @@ const TwoBox = () => {
                 </StyledFormControl>
               </Grid>
 
-              {/* Row 8: Couleur et Ouverture */}
               <Grid item xs={12} sm={6}>
                 <StyledFormControl>
                   <InputLabel id="couleur-select-label">Couleur</InputLabel>
@@ -486,7 +477,6 @@ const TwoBox = () => {
                 </StyledFormControl>
               </Grid>
 
-              {/* Row 9: Description */}
               <Grid item xs={12}>
                 <StyledTextarea
                   name="description"
@@ -496,7 +486,6 @@ const TwoBox = () => {
                 />
               </Grid>
 
-              {/* Buttons */}
               <Grid item xs={12} sx={{ 
                 display: 'flex', 
                 justifyContent: isExtraSmallScreen ? 'center' : 'flex-end', 
@@ -542,7 +531,6 @@ const TwoBox = () => {
         </StyledPaper>
       </Box>
 
-      {/* Divider - Only show on larger screens */}
       {!isSmallScreen && (
         <Divider 
           orientation="vertical" 
@@ -551,7 +539,6 @@ const TwoBox = () => {
         />
       )}
 
-      {/* Show horizontal divider on small screens */}
       {isSmallScreen && (
         <Divider 
           orientation="horizontal" 
@@ -560,7 +547,6 @@ const TwoBox = () => {
         />
       )}
 
-      {/* Preview */}
       <Box sx={{ 
         width: isSmallScreen ? '100%' : '50%', 
         backgroundColor: 'white', 

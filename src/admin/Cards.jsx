@@ -234,7 +234,6 @@ const Cards = () => {
       p: isMobile ? 1 : 2,
       gap: isMobile ? 2 : 0
     }}>
-      {/* Left Side Form */}
       <Toaster 
         position={isMobile ? "top-center" : "top-right"}
         toastOptions={{
@@ -269,7 +268,6 @@ const Cards = () => {
         <StyledPaper elevation={3}>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={isMobile ? 1 : 2}>
-              {/* Reference */}
               <Grid item xs={12}>
                 <StyledTextField
                   label="Référence"
@@ -281,7 +279,6 @@ const Cards = () => {
                 />
               </Grid>
 
-              {/* Product Name */}
               <Grid item xs={12} md={6}>
                 <StyledTextField
                   label="Nom de Façade"
@@ -294,7 +291,6 @@ const Cards = () => {
                 />
               </Grid>
 
-              {/* Facade Type */}
               <Grid item xs={12} md={6}>
                 <StyledFormControl>
                   <InputLabel id="type-select-label">Type de façade</InputLabel>
@@ -316,7 +312,6 @@ const Cards = () => {
                 </StyledFormControl>
               </Grid>
 
-              {/* Image Upload */}
               <Grid item xs={12}>
                 <StyledTextField
                   type="file"
@@ -329,7 +324,6 @@ const Cards = () => {
                 />
               </Grid>
 
-              {/* Dimensions */}
               <Grid item xs={12} sm={4}>
                 <StyledTextField
                   label="Hauteur (cm)"
@@ -370,7 +364,6 @@ const Cards = () => {
                 />
               </Grid>
 
-              {/* Price */}
               <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Prix (€)"
@@ -386,7 +379,6 @@ const Cards = () => {
                 />
               </Grid>
 
-              {/* Description */}
               <Grid item xs={12} sm={6}>
                 <StyledTextarea
                   name="description"
@@ -396,7 +388,6 @@ const Cards = () => {
                 />
               </Grid>
 
-              {/* Buttons */}
               <Grid item xs={12} sx={{ 
                 display: 'flex', 
                 justifyContent: isMobile ? 'center' : 'flex-end',
@@ -445,7 +436,6 @@ const Cards = () => {
         </StyledPaper>
       </Box>
 
-      {/* Divider - Only show on desktop */}
       {!isMobile && (
         <Divider 
           orientation="vertical" 
@@ -458,7 +448,6 @@ const Cards = () => {
         />
       )}
 
-      {/* Preview Section */}
       <Box sx={{ 
         width: isMobile ? '100%' : '50%', 
         backgroundColor: isMobile ? 'transparent' : 'white', 

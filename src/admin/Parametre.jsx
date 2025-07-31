@@ -47,7 +47,6 @@ const Parametre = () => {
     severity: 'success'
   });
 
-  // Récupérer l'ID de l'utilisateur depuis le token
   const getUserIdFromToken = () => {
     const token = localStorage.getItem('usersdatatoken');
     if (!token) return null;
@@ -63,7 +62,6 @@ const Parametre = () => {
 
   const userId = getUserIdFromToken();
 
-  // Configuration Axios pour inclure le token
   const authAxios = axios.create({
     baseURL: 'http://localhost:5000/api/auth',
     headers: {
@@ -71,7 +69,6 @@ const Parametre = () => {
     }
   });
 
-  // Charger les données de l'administrateur
   const fetchAdminData = async () => {
     try {
       const response = await authAxios.get(`/users/${userId}`);
@@ -92,7 +89,6 @@ const Parametre = () => {
     }
   }, [userId]);
 
-  // Gestion des modifications
   const handleEditStart = (fieldName) => {
     setEditingField(fieldName);
     setTempValue(adminData[fieldName]);
@@ -117,7 +113,6 @@ const Parametre = () => {
     }
   };
 
-  // Gestion du mot de passe
   const handlePasswordChange = async () => {
     if (password.new !== password.confirm) {
       showSnackbar('Les mots de passe ne correspondent pas', 'error');
@@ -137,7 +132,6 @@ const Parametre = () => {
     }
   };
 
-  // Gestion de la suppression
   const handleDeleteAccount = async () => {
     try {
       await authAxios.delete(`/users/${userId}`);
@@ -148,7 +142,6 @@ const Parametre = () => {
     }
   };
 
-  // Affichage des notifications
   const showSnackbar = (message, severity) => {
     setSnackbar({ open: true, message, severity });
   };
@@ -187,7 +180,6 @@ const Parametre = () => {
         Paramètres Administrateur
       </Typography>
 
-      {/* Section Informations Personnelles */}
       <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
         <Typography variant="h6" gutterBottom sx={{ color: '#38598b' }}>
           Informations Personnelles
@@ -253,7 +245,6 @@ const Parametre = () => {
         </Grid>
       </Paper>
 
-      {/* Section Informations de l'Entreprise */}
       <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
         <Typography variant="h6" gutterBottom sx={{ color: '#38598b' }}>
           Informations de l'Entreprise
@@ -464,7 +455,6 @@ const Parametre = () => {
         </Grid>
       </Paper>
 
-      {/* Section Mot de Passe */}
       <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
         <Typography variant="h6" gutterBottom sx={{ color: '#38598b' }}>
           Changer le Mot de Passe
@@ -517,7 +507,6 @@ const Parametre = () => {
         </Grid>
       </Paper>
 
-      {/* Section Suppression de Compte */}
       <Paper elevation={3} sx={{ p: 3 }}>
         <Typography variant="h6" gutterBottom sx={{ color: 'error.main' }}>
           Zone Danger
@@ -537,7 +526,6 @@ const Parametre = () => {
         </Button>
       </Paper>
 
-      {/* Dialogue de Confirmation pour la Suppression */}
       <Dialog
         open={openDeleteDialog}
         onClose={() => setOpenDeleteDialog(false)}
@@ -562,7 +550,6 @@ const Parametre = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Notification Snackbar */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}

@@ -259,7 +259,6 @@ const FiveBox = () => {
       p: isMobile ? 1 : 2,
       gap: isMobile ? 2 : 0
     }}>
-      {/* Left Side Form */}
       <Toaster 
         position={isMobile ? "top-center" : "top-right"}
         toastOptions={{
@@ -294,7 +293,6 @@ const FiveBox = () => {
         <StyledPaper elevation={3}>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={isMobile ? 1 : 2}>
-              {/* Reference and Name */}
               <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Référence"
@@ -327,7 +325,6 @@ const FiveBox = () => {
                 </StyledFormControl>
               </Grid>
 
-              {/* Image Upload */}
               <Grid item xs={12}>
                 <StyledTextField
                   type="file"
@@ -339,7 +336,6 @@ const FiveBox = () => {
                 />
               </Grid>
 
-              {/* Price and Type */}
               <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Prix (€)"
@@ -371,7 +367,6 @@ const FiveBox = () => {
                 </StyledFormControl>
               </Grid>
 
-              {/* Conception and Thickness */}
               <Grid item xs={12} sm={6}>
                 <StyledFormControl>
                   <InputLabel id="conception-select-label">Conception</InputLabel>
@@ -405,7 +400,6 @@ const FiveBox = () => {
                 />
               </Grid>
 
-              {/* Heights */}
               <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Hauteur partie basse (m)"
@@ -433,7 +427,6 @@ const FiveBox = () => {
                 />
               </Grid>
 
-              {/* Advance and Option */}
               <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Avancée (ML)"
@@ -458,7 +451,6 @@ const FiveBox = () => {
                 />
               </Grid>
 
-              {/* Posts and Sheet */}
               <Grid item xs={12} sm={6}>
                 <StyledFormControl>
                   <InputLabel id="poteaux-select-label">Poteaux</InputLabel>
@@ -498,7 +490,6 @@ const FiveBox = () => {
                 </StyledFormControl>
               </Grid>
 
-              {/* Color and Opening */}
               <Grid item xs={12} sm={6}>
                 <StyledFormControl>
                   <InputLabel id="couleur-select-label">Couleur</InputLabel>
@@ -538,7 +529,6 @@ const FiveBox = () => {
                 </StyledFormControl>
               </Grid>
 
-              {/* Description */}
               <Grid item xs={12}>
                 <StyledTextarea
                   name="description"
@@ -548,7 +538,6 @@ const FiveBox = () => {
                 />
               </Grid>
 
-              {/* Buttons */}
               <Grid item xs={12} sx={{ 
                 display: 'flex', 
                 justifyContent: isMobile ? 'center' : 'flex-end',
@@ -597,7 +586,6 @@ const FiveBox = () => {
         </StyledPaper>
       </Box>
 
-      {/* Divider - Only show on desktop */}
       {!isMobile && (
         <Divider 
           orientation="vertical" 
@@ -610,7 +598,6 @@ const FiveBox = () => {
         />
       )}
 
-      {/* Preview Section */}
       <Box sx={{ 
         width: isMobile ? '100%' : '50%', 
         backgroundColor: isMobile ? 'transparent' : 'white', 

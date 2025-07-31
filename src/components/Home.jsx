@@ -68,7 +68,6 @@ import {
   HeadsetMic as SupportIcon,
 } from '@mui/icons-material';
 
-// Animation Variants
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -100,7 +99,6 @@ const cardHoverVariants = {
   }
 };
 
-// Styled Components
 const Ship = styled(Box)(({ isFounder, theme }) => ({
   width: isFounder ? 180 : 140,
   height: isFounder ? 200 : 160,
@@ -225,7 +223,6 @@ const PriceText = styled(Typography)(({ theme }) => ({
   marginTop: theme.spacing(1)
 }));
 
-// Data
 const products = [
   {
     id: 1,

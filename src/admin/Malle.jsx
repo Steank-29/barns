@@ -171,7 +171,6 @@ const Malle = () => {
       p: isMobile ? 1 : 2,
       gap: isMobile ? 2 : 0
     }}>
-      {/* Left Side Form */}
       <Toaster 
         position={isMobile ? "top-center" : "top-right"}
         toastOptions={{
@@ -206,7 +205,6 @@ const Malle = () => {
         <StyledPaper elevation={3}>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={isMobile ? 1 : 2}>
-              {/* Reference */}
               <Grid item xs={12}>
                 <StyledTextField
                   label="Référence"
@@ -218,7 +216,6 @@ const Malle = () => {
                 />
               </Grid>
 
-              {/* Product Name */}
               <Grid item xs={12} md={6}>
                 <StyledTextField
                   label="Nom de Malle"
@@ -231,7 +228,6 @@ const Malle = () => {
                 />
               </Grid>
 
-              {/* Image Upload */}
               <Grid item xs={12}>
                 <StyledTextField
                   type="file"
@@ -244,7 +240,6 @@ const Malle = () => {
                 />
               </Grid>
 
-              {/* Dimensions */}
               <Grid item xs={12} sm={4}>
                 <StyledTextField
                   label="Hauteur (cm)"
@@ -285,7 +280,6 @@ const Malle = () => {
                 />
               </Grid>
 
-              {/* Price */}
               <Grid item xs={12} sm={6}>
                 <StyledTextField
                   label="Prix (€)"
@@ -301,7 +295,6 @@ const Malle = () => {
                 />
               </Grid>
 
-              {/* Description */}
               <Grid item xs={12} sm={6}>
                 <StyledTextarea
                   name="description"
@@ -311,7 +304,6 @@ const Malle = () => {
                 />
               </Grid>
 
-              {/* Buttons */}
               <Grid item xs={12} sx={{ 
                 display: 'flex', 
                 justifyContent: isMobile ? 'center' : 'flex-end',
@@ -360,7 +352,6 @@ const Malle = () => {
         </StyledPaper>
       </Box>
 
-      {/* Divider - Only show on desktop */}
       {!isMobile && (
         <Divider 
           orientation="vertical" 
@@ -373,7 +364,6 @@ const Malle = () => {
         />
       )}
 
-      {/* Preview Section */}
       <Box sx={{ 
         width: isMobile ? '100%' : '50%', 
         backgroundColor: isMobile ? 'transparent' : 'white', 

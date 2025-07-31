@@ -54,7 +54,6 @@ const EditCards = () => {
     severity: 'success'
   });
 
-  // Handle image load states
   const handleImageLoad = (productId) => {
     setImageLoadStates(prev => ({
       ...prev,
@@ -76,7 +75,6 @@ const EditCards = () => {
     }));
   };
 
-  // Function to validate and fix image URLs
   const getValidImageUrl = (imageUrl) => {
     if (!imageUrl) return null;
     
@@ -87,7 +85,6 @@ const EditCards = () => {
     return imageUrl;
   };
 
-  // Fetch all products
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -113,7 +110,6 @@ const EditCards = () => {
     fetchProducts();
   }, []);
 
-  // Search functionality
   useEffect(() => {
     if (searchTerm.trim() === '') {
       setFilteredProducts(products);
@@ -126,25 +122,21 @@ const EditCards = () => {
     }
   }, [searchTerm, products]);
 
-  // Handle view product details
   const handleView = (product) => {
     setSelectedProduct(product);
     setViewMode(true);
   };
 
-  // Handle edit product
   const handleEdit = (product) => {
     setSelectedProduct({ ...product });
     setEditMode(true);
   };
 
-  // Handle delete confirmation
   const handleDeleteClick = (product) => {
     setProductToDelete(product);
     setDeleteConfirm(true);
   };
 
-  // Confirm delete
   const confirmDelete = async () => {
     try {
       const response = await fetch(`http://localhost:5000/api/facade/deletefacade/${productToDelete.reference}`, {
@@ -176,7 +168,6 @@ const EditCards = () => {
     }
   };
 
-  // Handle form field changes
   const handleFieldChange = (e) => {
     const { name, value } = e.target;
     setSelectedProduct(prev => ({
@@ -186,7 +177,6 @@ const EditCards = () => {
     }));
   };
 
-  // Save updated product
   const saveChanges = async () => {
     try {
       const response = await fetch(`http://localhost:5000/api/facade/updatefacade/${selectedProduct.reference}`, {
@@ -221,19 +211,16 @@ const EditCards = () => {
     }
   };
 
-  // Close all dialogs
   const closeDialog = () => {
     setViewMode(false);
     setEditMode(false);
     setSelectedProduct(null);
   };
 
-  // Close snackbar
   const handleCloseSnackbar = () => {
     setSnackbar(prev => ({ ...prev, open: false }));
   };
 
-  // Render image with loading states
   const renderProductImage = (product) => {
     const imageUrl = getValidImageUrl(product.imageUrl);
     const loadState = imageLoadStates[product._id];
@@ -299,10 +286,9 @@ const EditCards = () => {
         mb: isMobile ? 2 : 4,
         mt: isMobile ? 1 : 0
       }}>
-        Module de Gestion des Façades
+        Façades Management – Solutions Intelligentes de Gestion et de Suivi
       </Typography>
 
-      {/* Search Bar */}
       <Box mb={isMobile ? 2 : 4}>
         <TextField
           fullWidth
@@ -325,7 +311,6 @@ const EditCards = () => {
         />
       </Box>
 
-      {/* Products Grid */}
       <Box sx={{ 
         display: 'flex', 
         justifyContent: 'center',
@@ -356,7 +341,6 @@ const EditCards = () => {
                   color: 'white',
                   borderRadius: 2
                 }}>
-                  {/* Product Image */}
                   <Box sx={{ 
                     position: 'relative',
                     overflow: 'hidden',
@@ -366,7 +350,6 @@ const EditCards = () => {
                     {renderProductImage(product)}
                   </Box>
 
-                  {/* Product Information */}
                   <CardContent sx={{ 
                     flexGrow: 1,
                     display: 'flex',
@@ -381,7 +364,6 @@ const EditCards = () => {
                       {product.productName}
                     </Typography>
 
-                    {/* Reference and Price */}
                     <Box sx={{ 
                       display: 'flex',
                       alignItems: 'center',
@@ -428,7 +410,6 @@ const EditCards = () => {
                       {product.description}
                     </Typography>
 
-                    {/* Action Buttons */}
                     <Box sx={{ 
                       display: 'flex', 
                       justifyContent: 'space-between',
@@ -488,7 +469,6 @@ const EditCards = () => {
         </Grid>
       </Box>
 
-      {/* View Product Dialog */}
       <Dialog 
         open={viewMode} 
         onClose={closeDialog} 
@@ -503,7 +483,6 @@ const EditCards = () => {
           }
         }}
       >
-        {/* Dialog Header with gradient background */}
         <DialogTitle sx={{ 
           p: 0,
           background: 'linear-gradient(135deg, #38598b 0%, #2a4365 100%)',
@@ -531,7 +510,6 @@ const EditCards = () => {
         <DialogContent dividers sx={{ p: 0 }}>
           {selectedProduct && (
             <Box>
-              {/* Full-width image section with shadow */}
               <Box sx={{
                 width: '100%',
                 height: isMobile ? '200px' : isTablet ? '300px' : '400px',
@@ -573,13 +551,11 @@ const EditCards = () => {
                 )}
               </Box>
 
-              {/* Product details section with modern card layout */}
               <Box sx={{ 
                 p: isMobile ? 2 : isTablet ? 3 : 4,
                 backgroundColor: '#fff'
               }}>
                 <Grid container spacing={isMobile ? 2 : 4}>
-                  {/* Product Description Section */}
                   <Grid item xs={12} md={6}>
                     <Box sx={{
                       p: isMobile ? 1.5 : 3,
@@ -720,7 +696,6 @@ const EditCards = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Edit Product Dialog */}
       <Dialog 
         open={editMode} 
         onClose={closeDialog} 
@@ -739,7 +714,6 @@ const EditCards = () => {
           }
         }}
       >
-        {/* Enhanced Dialog Header with gradient */}
         <DialogTitle sx={{ 
           background: 'linear-gradient(135deg, #38598b 0%, #2a4365 100%)',
           color: '#fff',
@@ -770,7 +744,6 @@ const EditCards = () => {
           </Box>
         </DialogTitle>
 
-        {/* Dialog Content with improved spacing and styling */}
         <DialogContent dividers sx={{ 
           px: isMobile ? 1 : 3, 
           py: isMobile ? 2 : 3,
@@ -971,7 +944,6 @@ const EditCards = () => {
           )}
         </DialogContent>
 
-        {/* Enhanced Dialog Actions with better button styling */}
         <DialogActions sx={{ 
           px: isMobile ? 1 : 3, 
           py: isMobile ? 1.5 : 2,
@@ -1023,7 +995,6 @@ const EditCards = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Delete Confirmation Dialog */}
       <Dialog 
         open={deleteConfirm} 
         onClose={() => setDeleteConfirm(false)}
@@ -1065,7 +1036,6 @@ const EditCards = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Snackbar for notifications */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}
