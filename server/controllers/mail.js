@@ -37,7 +37,6 @@ exports.sendOrderEmail = async (req, res) => {
       </tr>
     `).join('');
 
-    // Admin Email
     const mailOptions = {
       from:  process.env.EMAIL_FROM ,
       to: process.env.EMAIL_FROM,

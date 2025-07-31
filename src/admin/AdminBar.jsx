@@ -26,7 +26,6 @@ import Collapse from '@mui/material/Collapse';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import SettingsIcon from '@mui/icons-material/Settings';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import Logout from '@mui/icons-material/Logout';
 import CloseIcon from '@mui/icons-material/Close';
 import Dialog from '@mui/material/Dialog';
@@ -556,18 +555,6 @@ const handleFormSubmit = async (e) => {
           </Box>
           
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <IconButton 
-              size="large" 
-              color="inherit"
-              sx={{ 
-                display: { xs: 'flex', sm: 'flex' },
-                p: { xs: 0.5, sm: 1 }
-              }}
-            >
-              <Badge badgeContent={4} color="error">
-                <MailIcon fontSize="small" />
-              </Badge>
-            </IconButton>
             
             <IconButton
               onClick={handleProfileMenuOpen}
