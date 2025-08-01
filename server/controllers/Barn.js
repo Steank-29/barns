@@ -67,28 +67,27 @@ const getProductByRef = async (req, res) => {
 
 const updateProductByRef = async (req, res) => {
   try {
-    const updateData = {
-      ...req.body,
-      ...(req.file && { imageURL: `/uploads/${req.file.filename}` })
-    };
+    const updateData = req.body;
+    
+    if (req.file) updateData.imageUrl = `/uploads/${req.file.filename}`;
 
-    const updatedProduct = await Product.findOneAndUpdate(
+    const updatedBarn = await Product.findOneAndUpdate(
       { reference: req.params.ref },
       updateData,
       { new: true }
     );
 
-    if (!updatedProduct) {
-      return res.status(404).json({ message: 'Produit non trouvé' });
+    if (!updatedBarn) {
+      return res.status(404).json({ message: 'Barn non trouvée' });
     }
 
     res.status(200).json({ 
-      message: 'Produit mis à jour', 
-      product: updatedProduct 
+      message: 'Barn mise à jour', 
+      barn: updatedBarn 
     });
   } catch (err) {
-    console.error('Erreur de mise à jour:', err);
-    res.status(500).json({ message: 'Erreur lors de la mise à jour du produit' });
+    console.error(err);
+    res.status(500).json({ message: 'Erreur lors de la mise à jour de la barn' });
   }
 };
 

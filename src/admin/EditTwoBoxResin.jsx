@@ -30,7 +30,8 @@ import {
   Check as SaveIcon,
   Cancel as CancelIcon,
   Search as SearchIcon,
-  ImageNotSupported as ImageNotSupportedIcon
+  ImageNotSupported as ImageNotSupportedIcon,
+  Visibility as VisibilityOutlinedIcon
 } from '@mui/icons-material';
 
 const EditTwoBoxResin = () => {
@@ -41,8 +42,10 @@ const EditTwoBoxResin = () => {
   const [twoBoxResins, setTwoBoxResins] = useState([]);
   const [filteredTwoBoxResins, setFilteredTwoBoxResins] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedTwoBoxResin, setSelectedTwoBoxResin] = useState(null);
-  const [viewMode, setViewMode] = useState(false);
+const [selectedTwoBoxResin, setSelectedTwoBoxResin] = useState({
+  imageFile: null,
+  imagePreview: null
+});  const [viewMode, setViewMode] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [twoBoxResinToDelete, setTwoBoxResinToDelete] = useState(null);
@@ -127,10 +130,14 @@ const EditTwoBoxResin = () => {
     setViewMode(true);
   };
 
-  const handleEdit = (twoBoxResin) => {
-    setSelectedTwoBoxResin({ ...twoBoxResin });
-    setEditMode(true);
-  };
+const handleEdit = (twoBoxResin) => {
+  setSelectedTwoBoxResin({ 
+    ...twoBoxResin,
+    imageFile: null,
+    imagePreview: null
+  });
+  setEditMode(true);
+};
 
   const handleDeleteClick = (twoBoxResin) => {
     setTwoBoxResinToDelete(twoBoxResin);
@@ -176,39 +183,51 @@ const EditTwoBoxResin = () => {
     }));
   };
 
-  const saveChanges = async () => {
-    try {
-      const response = await fetch(`http://localhost:5000/api/twoboxresin/updatetwoboxresin/${selectedTwoBoxResin.reference}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(selectedTwoBoxResin)
-      });
-
-      if (response.ok) {
-        const updatedTwoBoxResin = await response.json();
-        const updatedTwoBoxResins = twoBoxResins.map(b => b._id === updatedTwoBoxResin._id ? updatedTwoBoxResin : b);
-        setTwoBoxResins(updatedTwoBoxResins);
-        setFilteredTwoBoxResins(updatedTwoBoxResins);
-        setSnackbar({
-          open: true,
-          message: 'TwoBoxResin mise à jour avec succès',
-          severity: 'success'
-        });
-        setEditMode(false);
-      } else {
-        throw new Error('Failed to update twoBoxResin');
+const saveChanges = async () => {
+  try {
+    const formData = new FormData();
+    
+    // Append all twoBoxResin data except image fields
+    Object.keys(selectedTwoBoxResin).forEach(key => {
+      if (key !== 'imageFile' && key !== 'imagePreview' && selectedTwoBoxResin[key] !== null) {
+        formData.append(key, selectedTwoBoxResin[key]);
       }
-    } catch (error) {
-      console.error('Error updating twoBoxResin:', error);
+    });
+    
+    // Append image file if it exists
+    if (selectedTwoBoxResin.imageFile) {
+      formData.append('image', selectedTwoBoxResin.imageFile);
+    }
+    
+    const response = await fetch(`http://localhost:5000/api/twoboxresin/updatetwoboxresin/${selectedTwoBoxResin.reference}`, {
+      method: 'PUT',
+      body: formData,
+    });
+
+    if (response.ok) {
+      const updatedTwoBoxResin = await response.json();
+      const updatedTwoBoxResins = twoBoxResins.map(b => b._id === updatedTwoBoxResin._id ? updatedTwoBoxResin : b);
+      setTwoBoxResins(updatedTwoBoxResins);
+      setFilteredTwoBoxResins(updatedTwoBoxResins);
       setSnackbar({
         open: true,
-        message: 'Erreur lors de la mise à jour de la twoBoxResin',
-        severity: 'error'
+        message: 'TwoBoxResin mise à jour avec succès',
+        severity: 'success'
       });
+      setEditMode(false);
+      window.location.reload();
+    } else {
+      throw new Error('Échec de la mise à jour de la TwoBoxResin');
     }
-  };
+  } catch (error) {
+    console.error('Erreur lors de la mise à jour de la TwoBoxResin:', error);
+    setSnackbar({
+      open: true,
+      message: 'Erreur lors de la mise à jour de la TwoBoxResin',
+      severity: 'error'
+    });
+  }
+};
 
   const closeDialog = () => {
     setViewMode(false);
@@ -1189,26 +1208,112 @@ $                  <Grid item xs={12} md={6}>
                 />
               </Grid>
 
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="URL de l'image"
-                  name="imageURL"
-                  value={selectedTwoBoxResin.imageURL || ''}
-                  onChange={handleFieldChange}
-                  variant="outlined"
-                  size={isMobile ? 'small' : 'medium'}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: '8px',
-                      backgroundColor: '#fff'
-                    }
-                  }}
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                />
-              </Grid>
+<Grid item xs={12}>
+  <Box sx={{ 
+    display: 'flex', 
+    flexDirection: isMobile ? 'column' : 'row', 
+    gap: 3,
+    alignItems: 'center',
+    mb: 2
+  }}>
+    {(selectedTwoBoxResin.imageURL || selectedTwoBoxResin.imagePreview) && (
+      <Box sx={{
+        width: 220,
+        height: 180,
+        borderRadius: '8px',
+        overflow: 'hidden',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+        position: 'relative',
+        flexShrink: 0
+      }}>
+        <img 
+          src={selectedTwoBoxResin.imagePreview || getValidImageUrl(selectedTwoBoxResin.imageURL)} 
+          alt="TwoBoxResin preview" 
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover'
+          }}
+        />
+        <IconButton
+          sx={{
+            position: 'absolute',
+            top: 4,
+            right: 4,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            color: 'white',
+            '&:hover': {
+              backgroundColor: 'rgba(0,0,0,0.7)'
+            }
+          }}
+          size="small"
+          onClick={() => window.open(
+            selectedTwoBoxResin.imagePreview || getValidImageUrl(selectedTwoBoxResin.imageURL), 
+            '_blank'
+          )}
+        >
+          <VisibilityOutlinedIcon fontSize="small" />
+        </IconButton>
+      </Box>
+    )}
+    <Box sx={{ width: '100%' }}>
+      <Button
+        variant="contained"
+        component="label"
+        fullWidth
+        sx={{
+          backgroundColor: '#3f7acc',
+          color: 'white',
+          textTransform: 'none',
+          py: 1.5,
+          mb: 2,
+          '&:hover': {
+            backgroundColor: '#38598b'
+          }
+        }}
+      >
+        {selectedTwoBoxResin.imageURL ? 'Changer l\'image' : 'Ajouter une image'}
+        <input
+          type="file"
+          hidden
+          name="image"
+          accept="image/*"
+          onChange={(e) => {
+            const file = e.target.files[0];
+            if (file) {
+              setSelectedTwoBoxResin(prev => ({
+                ...prev,
+                imageFile: file,
+                imagePreview: URL.createObjectURL(file)
+              }));
+            }
+          }}
+        />
+      </Button>
+      {selectedTwoBoxResin.imageURL && (
+        <Button
+          variant="outlined"
+          color="error"
+          fullWidth
+          sx={{
+            textTransform: 'none',
+            py: 1.5
+          }}
+          onClick={() => {
+            setSelectedTwoBoxResin(prev => ({
+              ...prev,
+              imageURL: null,
+              imageFile: null,
+              imagePreview: null
+            }));
+          }}
+        >
+          Supprimer l'image
+        </Button>
+      )}
+    </Box>
+  </Box>
+</Grid>
             </Grid>
           )}
         </DialogContent>

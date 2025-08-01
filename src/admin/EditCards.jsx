@@ -30,7 +30,8 @@ import {
   Check as SaveIcon,
   Cancel as CancelIcon,
   Search as SearchIcon,
-  ImageNotSupported as ImageNotSupportedIcon
+  ImageNotSupported as ImageNotSupportedIcon,
+  Visibility as VisibilityOutlinedIcon
 } from '@mui/icons-material';
 
 const EditCards = () => {
@@ -41,7 +42,10 @@ const EditCards = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState({
+    imageFile: null,
+    imagePreview: null
+  });
   const [viewMode, setViewMode] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
@@ -54,6 +58,7 @@ const EditCards = () => {
     severity: 'success'
   });
 
+  // Image handling functions
   const handleImageLoad = (productId) => {
     setImageLoadStates(prev => ({
       ...prev,
@@ -128,7 +133,11 @@ const EditCards = () => {
   };
 
   const handleEdit = (product) => {
-    setSelectedProduct({ ...product });
+    setSelectedProduct({ 
+      ...product,
+      imageFile: null,
+      imagePreview: null
+    });
     setEditMode(true);
   };
 
@@ -179,12 +188,22 @@ const EditCards = () => {
 
   const saveChanges = async () => {
     try {
+      const formData = new FormData();
+      
+      // Append all product data except image fields
+      Object.keys(selectedProduct).forEach(key => {
+        if (key !== 'imageFile' && key !== 'imagePreview' && selectedProduct[key] !== null) {
+          formData.append(key, selectedProduct[key]);
+        }
+      });
+      
+      if (selectedProduct.imageFile) {
+        formData.append('image', selectedProduct.imageFile);
+      }
+      
       const response = await fetch(`http://localhost:5000/api/facade/updatefacade/${selectedProduct.reference}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(selectedProduct)
+        body: formData,
       });
 
       if (response.ok) {
@@ -198,6 +217,7 @@ const EditCards = () => {
           severity: 'success'
         });
         setEditMode(false);
+        window.location.reload();
       } else {
         throw new Error('Failed to update product');
       }
@@ -725,7 +745,7 @@ const EditCards = () => {
             <Box display="flex" alignItems="center">
               <EditIcon sx={{ mr: 1.5, fontSize: isMobile ? '1.2rem' : '1.5rem' }} />
               <Typography variant={isMobile ? 'h6' : 'h6'} fontWeight={600} sx={{ letterSpacing: '0.5px' }}>
-              Gérer et Modifier les Détails de Façade
+                Gérer et Modifier les Détails de Façade
               </Typography>
             </Box>
             <IconButton 
@@ -743,7 +763,6 @@ const EditCards = () => {
             </IconButton>
           </Box>
         </DialogTitle>
-
         <DialogContent dividers sx={{ 
           px: isMobile ? 1 : 3, 
           py: isMobile ? 2 : 3,
@@ -919,6 +938,113 @@ const EditCards = () => {
               </Grid>
 
               <Grid item xs={12}>
+                <Box sx={{ 
+                  display: 'flex', 
+                  flexDirection: isMobile ? 'column' : 'row', 
+                  gap: 3,
+                  alignItems: 'center',
+                  mb: 2
+                }}>
+                  {(selectedProduct.imageUrl || selectedProduct.imagePreview) && (
+                    <Box sx={{
+                      width: 220,
+                      height: 180,
+                      borderRadius: '8px',
+                      overflow: 'hidden',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                      position: 'relative',
+                      flexShrink: 0
+                    }}>
+                      <img 
+                        src={selectedProduct.imagePreview || getValidImageUrl(selectedProduct.imageUrl)} 
+                        alt="Product preview" 
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover'
+                        }}
+                      />
+                      <IconButton
+                        sx={{
+                          position: 'absolute',
+                          top: 4,
+                          right: 4,
+                          backgroundColor: 'rgba(0,0,0,0.5)',
+                          color: 'white',
+                          '&:hover': {
+                            backgroundColor: 'rgba(0,0,0,0.7)'
+                          }
+                        }}
+                        size="small"
+                        onClick={() => window.open(
+                          selectedProduct.imagePreview || getValidImageUrl(selectedProduct.imageUrl), 
+                          '_blank'
+                        )}
+                      >
+                        <VisibilityOutlinedIcon fontSize="small" />
+                      </IconButton>
+                    </Box>
+                  )}
+                  <Box sx={{ width: '100%' }}>
+                    <Button
+                      variant="contained"
+                      component="label"
+                      fullWidth
+                      sx={{
+                        backgroundColor: '#3f7acc',
+                        color: 'white',
+                        textTransform: 'none',
+                        py: 1.5,
+                        mb: 2,
+                        '&:hover': {
+                          backgroundColor: '#38598b'
+                        }
+                      }}
+                    >
+                      {selectedProduct.imageUrl ? 'Change Image' : 'Add Image'}
+                      <input
+                        type="file"
+                        hidden
+                        name="image"
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            setSelectedProduct(prev => ({
+                              ...prev,
+                              imageFile: file,
+                              imagePreview: URL.createObjectURL(file)
+                            }));
+                          }
+                        }}
+                      />
+                    </Button>
+                    {selectedProduct.imageUrl && (
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        fullWidth
+                        sx={{
+                          textTransform: 'none',
+                          py: 1.5
+                        }}
+                        onClick={() => {
+                          setSelectedProduct(prev => ({
+                            ...prev,
+                            imageUrl: null,
+                            imageFile: null,
+                            imagePreview: null
+                          }));
+                        }}
+                      >
+                        Remove Image
+                      </Button>
+                    )}
+                  </Box>
+                </Box>
+              </Grid>
+
+              <Grid item xs={12}>
                 <TextField
                   fullWidth
                   label="Description"
@@ -969,7 +1095,7 @@ const EditCards = () => {
               fontSize: isMobile ? '0.8rem' : '0.9rem'
             }}
           >
-            Cancel
+            Annuler
           </Button>
           <Button
             startIcon={<SaveIcon fontSize={isMobile ? 'small' : 'medium'} />}
@@ -990,7 +1116,7 @@ const EditCards = () => {
               fontSize: isMobile ? '0.8rem' : '0.9rem'
             }}
           >
-            Save Changes
+            Enregistrer les modifications
           </Button>
         </DialogActions>
       </Dialog>

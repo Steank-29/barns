@@ -30,7 +30,8 @@ import {
   Check as SaveIcon,
   Cancel as CancelIcon,
   Search as SearchIcon,
-  ImageNotSupported as ImageNotSupportedIcon
+  ImageNotSupported as ImageNotSupportedIcon,
+  Visibility as VisibilityOutlinedIcon
 } from '@mui/icons-material';
 
 const EditThreeBox = () => {
@@ -41,7 +42,10 @@ const EditThreeBox = () => {
   const [threeBoxes, setThreeBoxes] = useState([]);
   const [filteredThreeBoxes, setFilteredThreeBoxes] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedThreeBox, setSelectedThreeBox] = useState(null);
+  const [selectedThreeBox, setSelectedThreeBox] = useState({
+    imageFile: null,
+    imagePreview: null
+  });  
   const [viewMode, setViewMode] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
@@ -132,11 +136,14 @@ const EditThreeBox = () => {
     setViewMode(true);
   };
 
-  // Handle edit threeBox
-  const handleEdit = (threeBox) => {
-    setSelectedThreeBox({ ...threeBox });
-    setEditMode(true);
-  };
+const handleEdit = (threeBox) => {
+  setSelectedThreeBox({ 
+    ...threeBox,
+    imageFile: null,
+    imagePreview: null
+  });
+  setEditMode(true);
+};
 
   // Handle delete confirmation
   const handleDeleteClick = (threeBox) => {
@@ -185,40 +192,51 @@ const EditThreeBox = () => {
     }));
   };
 
-  // Save updated threeBox
-  const saveChanges = async () => {
-    try {
-      const response = await fetch(`http://localhost:5000/api/threebox/updatethreebox/${selectedThreeBox.reference}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(selectedThreeBox)
-      });
-
-      if (response.ok) {
-        const updatedThreeBox = await response.json();
-        const updatedThreeBoxes = threeBoxes.map(b => b._id === updatedThreeBox._id ? updatedThreeBox : b);
-        setThreeBoxes(updatedThreeBoxes);
-        setFilteredThreeBoxes(updatedThreeBoxes);
-        setSnackbar({
-          open: true,
-          message: 'ThreeBox mise à jour avec succès',
-          severity: 'success'
-        });
-        setEditMode(false);
-      } else {
-        throw new Error('Failed to update threeBox');
+const saveChanges = async () => {
+  try {
+    const formData = new FormData();
+    
+    // Append all threeBox data except image fields
+    Object.keys(selectedThreeBox).forEach(key => {
+      if (key !== 'imageFile' && key !== 'imagePreview' && selectedThreeBox[key] !== null) {
+        formData.append(key, selectedThreeBox[key]);
       }
-    } catch (error) {
-      console.error('Error updating threeBox:', error);
+    });
+    
+    // Append image file if it exists
+    if (selectedThreeBox.imageFile) {
+      formData.append('image', selectedThreeBox.imageFile);
+    }
+    
+    const response = await fetch(`http://localhost:5000/api/threebox/updatethreebox/${selectedThreeBox.reference}`, {
+      method: 'PUT',
+      body: formData,
+    });
+
+    if (response.ok) {
+      const updatedThreeBox = await response.json();
+      const updatedThreeBoxes = threeBoxes.map(b => b._id === updatedThreeBox._id ? updatedThreeBox : b);
+      setThreeBoxes(updatedThreeBoxes);
+      setFilteredThreeBoxes(updatedThreeBoxes);
       setSnackbar({
         open: true,
-        message: 'Erreur lors de la mise à jour de la threeBox',
-        severity: 'error'
+        message: 'ThreeBox mise à jour avec succès',
+        severity: 'success'
       });
+      setEditMode(false);
+      window.location.reload();
+    } else {
+      throw new Error('Échec de la mise à jour de la threeBox');
     }
-  };
+  } catch (error) {
+    console.error('Erreur lors de la mise à jour de la threeBox:', error);
+    setSnackbar({
+      open: true,
+      message: 'Erreur lors de la mise à jour de la threeBox',
+      severity: 'error'
+    });
+  }
+};
 
   // Close all dialogs
   const closeDialog = () => {
@@ -1194,6 +1212,114 @@ const EditThreeBox = () => {
                 />
               </Grid>
 
+
+              <Grid item xs={12}>
+  <Box sx={{ 
+    display: 'flex', 
+    flexDirection: isMobile ? 'column' : 'row', 
+    gap: 3,
+    alignItems: 'center',
+    mb: 2
+  }}>
+    {(selectedThreeBox.imageURL || selectedThreeBox.imagePreview) && (
+      <Box sx={{
+        width: 220,
+        height: 180,
+        borderRadius: '8px',
+        overflow: 'hidden',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+        position: 'relative',
+        flexShrink: 0
+      }}>
+        <img 
+          src={selectedThreeBox.imagePreview || getValidImageUrl(selectedThreeBox.imageURL)} 
+          alt="ThreeBox preview" 
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover'
+          }}
+        />
+        <IconButton
+          sx={{
+            position: 'absolute',
+            top: 4,
+            right: 4,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            color: 'white',
+            '&:hover': {
+              backgroundColor: 'rgba(0,0,0,0.7)'
+            }
+          }}
+          size="small"
+          onClick={() => window.open(
+            selectedThreeBox.imagePreview || getValidImageUrl(selectedThreeBox.imageURL), 
+            '_blank'
+          )}
+        >
+          <VisibilityOutlinedIcon fontSize="small" />
+        </IconButton>
+      </Box>
+    )}
+    <Box sx={{ width: '100%' }}>
+      <Button
+        variant="contained"
+        component="label"
+        fullWidth
+        sx={{
+          backgroundColor: '#3f7acc',
+          color: 'white',
+          textTransform: 'none',
+          py: 1.5,
+          mb: 2,
+          '&:hover': {
+            backgroundColor: '#38598b'
+          }
+        }}
+      >
+        {selectedThreeBox.imageURL ? 'Changer l\'image' : 'Ajouter une image'}
+        <input
+          type="file"
+          hidden
+          name="image"
+          accept="image/*"
+          onChange={(e) => {
+            const file = e.target.files[0];
+            if (file) {
+              setSelectedThreeBox(prev => ({
+                ...prev,
+                imageFile: file,
+                imagePreview: URL.createObjectURL(file)
+              }));
+            }
+          }}
+        />
+      </Button>
+      {selectedThreeBox.imageURL && (
+        <Button
+          variant="outlined"
+          color="error"
+          fullWidth
+          sx={{
+            textTransform: 'none',
+            py: 1.5
+          }}
+          onClick={() => {
+            setSelectedThreeBox(prev => ({
+              ...prev,
+              imageURL: null,
+              imageFile: null,
+              imagePreview: null
+            }));
+          }}
+        >
+          Supprimer l'image
+        </Button>
+      )}
+    </Box>
+  </Box>
+</Grid>
+
               <Grid item xs={12}>
                 <TextField
                   fullWidth
@@ -1217,26 +1343,7 @@ const EditThreeBox = () => {
                 />
               </Grid>
 
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="URL de l'image"
-                  name="imageURL"
-                  value={selectedThreeBox.imageURL || ''}
-                  onChange={handleFieldChange}
-                  variant="outlined"
-                  size={isMobile ? 'small' : 'medium'}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: '8px',
-                      backgroundColor: '#fff'
-                    }
-                  }}
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                />
-              </Grid>
+
             </Grid>
           )}
         </DialogContent>

@@ -30,9 +30,9 @@ import {
   Check as SaveIcon,
   Cancel as CancelIcon,
   Search as SearchIcon,
-  ImageNotSupported as ImageNotSupportedIcon
+  ImageNotSupported as ImageNotSupportedIcon,
+  Visibility as VisibilityOutlinedIcon 
 } from '@mui/icons-material';
-
 const EditMangeoire = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -41,7 +41,10 @@ const EditMangeoire = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState({
+    imageFile: null,
+    imagePreview: null
+  });
   const [viewMode, setViewMode] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
@@ -54,7 +57,6 @@ const EditMangeoire = () => {
     severity: 'success'
   });
 
-  // Handle image load states
   const handleImageLoad = (productId) => {
     setImageLoadStates(prev => ({
       ...prev,
@@ -76,7 +78,6 @@ const EditMangeoire = () => {
     }));
   };
 
-  // Function to validate and fix image URLs
   const getValidImageUrl = (imageUrl) => {
     if (!imageUrl) return null;
     
@@ -87,7 +88,6 @@ const EditMangeoire = () => {
     return imageUrl;
   };
 
-  // Fetch all products
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -113,7 +113,6 @@ const EditMangeoire = () => {
     fetchProducts();
   }, []);
 
-  // Search functionality
   useEffect(() => {
     if (searchTerm.trim() === '') {
       setFilteredProducts(products);
@@ -126,25 +125,25 @@ const EditMangeoire = () => {
     }
   }, [searchTerm, products]);
 
-  // Handle view product details
   const handleView = (product) => {
     setSelectedProduct(product);
     setViewMode(true);
   };
 
-  // Handle edit product
-  const handleEdit = (product) => {
-    setSelectedProduct({ ...product });
-    setEditMode(true);
-  };
+const handleEdit = (product) => {
+  setSelectedProduct({ 
+    ...product,
+    imageFile: null,
+    imagePreview: null
+  });
+  setEditMode(true);
+};
 
-  // Handle delete confirmation
   const handleDeleteClick = (product) => {
     setProductToDelete(product);
     setDeleteConfirm(true);
   };
 
-  // Confirm delete
   const confirmDelete = async () => {
     try {
       const response = await fetch(`http://localhost:5000/api/mang/deletemang/${productToDelete.reference}`, {
@@ -176,7 +175,6 @@ const EditMangeoire = () => {
     }
   };
 
-  // Handle form field changes
   const handleFieldChange = (e) => {
     const { name, value } = e.target;
     setSelectedProduct(prev => ({
@@ -186,54 +184,60 @@ const EditMangeoire = () => {
     }));
   };
 
-  // Save updated product
-  const saveChanges = async () => {
-    try {
-      const response = await fetch(`http://localhost:5000/api/mang/updatemang/${selectedProduct.reference}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(selectedProduct)
-      });
-
-      if (response.ok) {
-        const updatedProduct = await response.json();
-        const updatedProducts = products.map(p => p._id === updatedProduct._id ? updatedProduct : p);
-        setProducts(updatedProducts);
-        setFilteredProducts(updatedProducts);
-        setSnackbar({
-          open: true,
-          message: 'Product updated successfully',
-          severity: 'success'
-        });
-        setEditMode(false);
-      } else {
-        throw new Error('Failed to update product');
+const saveChanges = async () => {
+  try {
+    const formData = new FormData();
+    
+    Object.keys(selectedProduct).forEach(key => {
+      if (key !== 'imageFile' && key !== 'imagePreview' && selectedProduct[key] !== null) {
+        formData.append(key, selectedProduct[key]);
       }
-    } catch (error) {
-      console.error('Error updating product:', error);
+    });
+    
+    if (selectedProduct.imageFile) {
+      formData.append('image', selectedProduct.imageFile);
+    }
+    
+    const response = await fetch(`http://localhost:5000/api/mang/updatemang/${selectedProduct.reference}`, {
+      method: 'PUT',
+      body: formData,
+    });
+
+    if (response.ok) {
+      const updatedProduct = await response.json();
+      const updatedProducts = products.map(p => p._id === updatedProduct._id ? updatedProduct : p);
+      setProducts(updatedProducts);
+      setFilteredProducts(updatedProducts);
       setSnackbar({
         open: true,
-        message: 'Error updating product',
-        severity: 'error'
+        message: 'Mangeoire mise à jour avec succès',
+        severity: 'success'
       });
+      setEditMode(false);
+      window.location.reload();
+    } else {
+      throw new Error('Échec de la mise à jour de la mangeoire');
     }
-  };
+  } catch (error) {
+    console.error('Erreur lors de la mise à jour de la mangeoire:', error);
+    setSnackbar({
+      open: true,
+      message: 'Erreur lors de la mise à jour de la mangeoire',
+      severity: 'error'
+    });
+  }
+};
 
-  // Close all dialogs
   const closeDialog = () => {
     setViewMode(false);
     setEditMode(false);
     setSelectedProduct(null);
   };
 
-  // Close snackbar
   const handleCloseSnackbar = () => {
     setSnackbar(prev => ({ ...prev, open: false }));
   };
 
-  // Render image with loading states
   const renderProductImage = (product) => {
     const imageUrl = getValidImageUrl(product.imageUrl);
     const loadState = imageLoadStates[product._id];
@@ -302,7 +306,6 @@ const EditMangeoire = () => {
         Mangeoires Management – Solutions Intelligentes de Gestion et de Suivi
       </Typography>
 
-      {/* Search Bar */}
       <Box mb={isMobile ? 2 : 4}>
         <TextField
           fullWidth
@@ -325,7 +328,6 @@ const EditMangeoire = () => {
         />
       </Box>
 
-      {/* Products Grid */}
       <Box sx={{ 
         display: 'flex', 
         justifyContent: 'center',
@@ -356,7 +358,6 @@ const EditMangeoire = () => {
                   color: 'white',
                   borderRadius: 2
                 }}>
-                  {/* Product Image */}
                   <Box sx={{ 
                     position: 'relative',
                     overflow: 'hidden',
@@ -366,7 +367,6 @@ const EditMangeoire = () => {
                     {renderProductImage(product)}
                   </Box>
 
-                  {/* Product Information */}
                   <CardContent sx={{ 
                     flexGrow: 1,
                     display: 'flex',
@@ -381,7 +381,6 @@ const EditMangeoire = () => {
                       {product.productName}
                     </Typography>
 
-                    {/* Reference and Price */}
                     <Box sx={{ 
                       display: 'flex',
                       alignItems: 'center',
@@ -428,7 +427,6 @@ const EditMangeoire = () => {
                       {product.description}
                     </Typography>
 
-                    {/* Action Buttons */}
                     <Box sx={{ 
                       display: 'flex', 
                       justifyContent: 'space-between',
@@ -488,7 +486,6 @@ const EditMangeoire = () => {
         </Grid>
       </Box>
 
-      {/* View Product Dialog */}
       <Dialog 
         open={viewMode} 
         onClose={closeDialog} 
@@ -503,7 +500,6 @@ const EditMangeoire = () => {
           }
         }}
       >
-        {/* Dialog Header with gradient background */}
         <DialogTitle sx={{ 
           p: 0,
           background: 'linear-gradient(135deg, #38598b 0%, #2a4365 100%)',
@@ -531,7 +527,6 @@ const EditMangeoire = () => {
         <DialogContent dividers sx={{ p: 0 }}>
           {selectedProduct && (
             <Box>
-              {/* Full-width image section with shadow */}
               <Box sx={{
                 width: '100%',
                 height: isMobile ? '200px' : isTablet ? '300px' : '400px',
@@ -573,13 +568,11 @@ const EditMangeoire = () => {
                 )}
               </Box>
 
-              {/* Product details section with modern card layout */}
               <Box sx={{ 
                 p: isMobile ? 2 : isTablet ? 3 : 4,
                 backgroundColor: '#fff'
               }}>
                 <Grid container spacing={isMobile ? 2 : 4}>
-                  {/* Product Description Section */}
                   <Grid item xs={12} md={6}>
                     <Box sx={{
                       p: isMobile ? 1.5 : 3,
@@ -720,7 +713,6 @@ const EditMangeoire = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Edit Product Dialog */}
       <Dialog 
         open={editMode} 
         onClose={closeDialog} 
@@ -739,7 +731,6 @@ const EditMangeoire = () => {
           }
         }}
       >
-        {/* Enhanced Dialog Header with gradient */}
         <DialogTitle sx={{ 
           background: 'linear-gradient(135deg, #38598b 0%, #2a4365 100%)',
           color: '#fff',
@@ -770,7 +761,6 @@ const EditMangeoire = () => {
           </Box>
         </DialogTitle>
 
-        {/* Dialog Content with improved spacing and styling */}
         <DialogContent dividers sx={{ 
           px: isMobile ? 1 : 3, 
           py: isMobile ? 2 : 3,
@@ -925,6 +915,114 @@ const EditMangeoire = () => {
                 />
               </Grid>
 
+                  <Grid item xs={12}>
+  <Box sx={{ 
+    display: 'flex', 
+    flexDirection: isMobile ? 'column' : 'row', 
+    gap: 3,
+    alignItems: 'center',
+    mb: 2
+  }}>
+    {(selectedProduct.imageUrl || selectedProduct.imagePreview) && (
+      <Box sx={{
+        width: 220,
+        height: 180,
+        borderRadius: '8px',
+        overflow: 'hidden',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+        position: 'relative',
+        flexShrink: 0
+      }}>
+        <img 
+          src={selectedProduct.imagePreview || getValidImageUrl(selectedProduct.imageUrl)} 
+          alt="Mangeoire preview" 
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover'
+          }}
+        />
+        <IconButton
+          sx={{
+            position: 'absolute',
+            top: 4,
+            right: 4,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            color: 'white',
+            '&:hover': {
+              backgroundColor: 'rgba(0,0,0,0.7)'
+            }
+          }}
+          size="small"
+          onClick={() => window.open(
+            selectedProduct.imagePreview || getValidImageUrl(selectedProduct.imageUrl), 
+            '_blank'
+          )}
+        >
+          <VisibilityOutlinedIcon fontSize="small" />
+        </IconButton>
+      </Box>
+    )}
+    <Box sx={{ width: '100%' }}>
+      <Button
+        variant="contained"
+        component="label"
+        fullWidth
+        sx={{
+          backgroundColor: '#3f7acc',
+          color: 'white',
+          textTransform: 'none',
+          py: 1.5,
+          mb: 2,
+          '&:hover': {
+            backgroundColor: '#38598b'
+          }
+        }}
+      >
+        {selectedProduct.imageUrl ? 'Changer l\'image' : 'Ajouter une image'}
+        <input
+          type="file"
+          hidden
+          name="image"
+          accept="image/*"
+          onChange={(e) => {
+            const file = e.target.files[0];
+            if (file) {
+              setSelectedProduct(prev => ({
+                ...prev,
+                imageFile: file,
+                imagePreview: URL.createObjectURL(file)
+              }));
+            }
+          }}
+        />
+      </Button>
+      {selectedProduct.imageUrl && (
+        <Button
+          variant="outlined"
+          color="error"
+          fullWidth
+          sx={{
+            textTransform: 'none',
+            py: 1.5
+          }}
+          onClick={() => {
+            setSelectedProduct(prev => ({
+              ...prev,
+              imageUrl: null,
+              imageFile: null,
+              imagePreview: null
+            }));
+          }}
+        >
+          Supprimer l'image
+        </Button>
+      )}
+    </Box>
+  </Box>
+</Grid>
+
+
               <Grid item xs={12}>
                 <TextField
                   fullWidth
@@ -951,7 +1049,6 @@ const EditMangeoire = () => {
           )}
         </DialogContent>
 
-        {/* Enhanced Dialog Actions with better button styling */}
         <DialogActions sx={{ 
           px: isMobile ? 1 : 3, 
           py: isMobile ? 1.5 : 2,
@@ -1003,7 +1100,6 @@ const EditMangeoire = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Delete Confirmation Dialog */}
       <Dialog 
         open={deleteConfirm} 
         onClose={() => setDeleteConfirm(false)}
@@ -1045,7 +1141,6 @@ const EditMangeoire = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Snackbar for notifications */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}

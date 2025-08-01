@@ -30,7 +30,8 @@ import {
   Check as SaveIcon,
   Cancel as CancelIcon,
   Search as SearchIcon,
-  ImageNotSupported as ImageNotSupportedIcon
+  ImageNotSupported as ImageNotSupportedIcon,
+  Visibility as VisibilityOutlinedIcon
 } from '@mui/icons-material';
 
 const EditBarn = () => {
@@ -41,7 +42,10 @@ const EditBarn = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState({
+    imageFile: null,
+    imagePreview: null
+  });
   const [viewMode, setViewMode] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
@@ -127,10 +131,14 @@ const EditBarn = () => {
     setViewMode(true);
   };
 
-  const handleEdit = (product) => {
-    setSelectedProduct({ ...product });
-    setEditMode(true);
-  };
+const handleEdit = (product) => {
+  setSelectedProduct({ 
+    ...product,
+    imageFile: null,
+    imagePreview: null
+  });
+  setEditMode(true);
+};
 
   const handleDeleteClick = (product) => {
     setProductToDelete(product);
@@ -177,39 +185,49 @@ const EditBarn = () => {
     }));
   };
 
-  const saveChanges = async () => {
-    try {
-      const response = await fetch(`http://localhost:5000/api/barn/updatebarn/${selectedProduct.reference}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(selectedProduct)
-      });
-
-      if (response.ok) {
-        const updatedProduct = await response.json();
-        const updatedProducts = products.map(p => p._id === updatedProduct._id ? updatedProduct : p);
-        setProducts(updatedProducts);
-        setFilteredProducts(updatedProducts);
-        setSnackbar({
-          open: true,
-          message: 'Product updated successfully',
-          severity: 'success'
-        });
-        setEditMode(false);
-      } else {
-        throw new Error('Failed to update product');
+const saveChanges = async () => {
+  try {
+    const formData = new FormData();
+    
+    Object.keys(selectedProduct).forEach(key => {
+      if (key !== 'imageFile' && key !== 'imagePreview' && selectedProduct[key] !== null) {
+        formData.append(key, selectedProduct[key]);
       }
-    } catch (error) {
-      console.error('Error updating product:', error);
+    });
+    
+    if (selectedProduct.imageFile) {
+      formData.append('image', selectedProduct.imageFile);
+    }
+    
+    const response = await fetch(`http://localhost:5000/api/barn/updatebarn/${selectedProduct.reference}`, {
+      method: 'PUT',
+      body: formData, 
+    });
+
+    if (response.ok) {
+      const updatedProduct = await response.json();
+      const updatedProducts = products.map(p => p._id === updatedProduct._id ? updatedProduct : p);
+      setProducts(updatedProducts);
+      setFilteredProducts(updatedProducts);
       setSnackbar({
         open: true,
-        message: 'Error updating product',
-        severity: 'error'
+        message: 'Barn updated successfully',
+        severity: 'success'
       });
+      setEditMode(false);
+      window.location.reload();
+    } else {
+      throw new Error('Failed to update barn');
     }
-  };
+  } catch (error) {
+    console.error('Error updating barn:', error);
+    setSnackbar({
+      open: true,
+      message: 'Error updating barn',
+      severity: 'error'
+    });
+  }
+};
 
   const closeDialog = () => {
     setViewMode(false);
@@ -870,6 +888,114 @@ const EditBarn = () => {
                   }}
                 />
               </Grid>
+
+
+              <Grid item xs={12}>
+  <Box sx={{ 
+    display: 'flex', 
+    flexDirection: isMobile ? 'column' : 'row', 
+    gap: 3,
+    alignItems: 'center',
+    mb: 2
+  }}>
+    {(selectedProduct.imageUrl || selectedProduct.imagePreview) && (
+      <Box sx={{
+        width: 220,
+        height: 180,
+        borderRadius: '8px',
+        overflow: 'hidden',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+        position: 'relative',
+        flexShrink: 0
+      }}>
+        <img 
+          src={selectedProduct.imagePreview || getValidImageUrl(selectedProduct.imageUrl)} 
+          alt="Barn preview" 
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover'
+          }}
+        />
+        <IconButton
+          sx={{
+            position: 'absolute',
+            top: 4,
+            right: 4,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            color: 'white',
+            '&:hover': {
+              backgroundColor: 'rgba(0,0,0,0.7)'
+            }
+          }}
+          size="small"
+          onClick={() => window.open(
+            selectedProduct.imagePreview || getValidImageUrl(selectedProduct.imageUrl), 
+            '_blank'
+          )}
+        >
+          <VisibilityOutlinedIcon fontSize="small" />
+        </IconButton>
+      </Box>
+    )}
+    <Box sx={{ width: '100%' }}>
+      <Button
+        variant="contained"
+        component="label"
+        fullWidth
+        sx={{
+          backgroundColor: '#3f7acc',
+          color: 'white',
+          textTransform: 'none',
+          py: 1.5,
+          mb: 2,
+          '&:hover': {
+            backgroundColor: '#38598b'
+          }
+        }}
+      >
+        {selectedProduct.imageUrl ? 'Changer l\'image' : 'Ajouter une image'}
+        <input
+          type="file"
+          hidden
+          name="image"
+          accept="image/*"
+          onChange={(e) => {
+            const file = e.target.files[0];
+            if (file) {
+              setSelectedProduct(prev => ({
+                ...prev,
+                imageFile: file,
+                imagePreview: URL.createObjectURL(file)
+              }));
+            }
+          }}
+        />
+      </Button>
+      {selectedProduct.imageUrl && (
+        <Button
+          variant="outlined"
+          color="error"
+          fullWidth
+          sx={{
+            textTransform: 'none',
+            py: 1.5
+          }}
+          onClick={() => {
+            setSelectedProduct(prev => ({
+              ...prev,
+              imageUrl: null,
+              imageFile: null,
+              imagePreview: null
+            }));
+          }}
+        >
+          Supprimer l'image
+        </Button>
+      )}
+    </Box>
+  </Box>
+</Grid>
 
               <Grid item xs={12}>
                 <TextField
