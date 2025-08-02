@@ -282,13 +282,11 @@ const Footer = () => {
                   <Box sx={{ 
                     display: 'flex', 
                     flexWrap: 'wrap',
-                    gap: 1,
+                    gap: 2,
                     mt: 1
                   }}>
                     {[
                       { icon: <Facebook />, color: '#3b5998', url: '#' },
-                      { icon: <Twitter />, color: '#1DA1F2', url: '#' },
-                      { icon: <Instagram />, color: '#E1306C', url: '#' },
                       { icon: <LinkedIn />, color: '#0077B5', url: '#' }
                     ].map((social, index) => (
                       <Link 

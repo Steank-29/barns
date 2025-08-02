@@ -30,7 +30,8 @@ import {
   Check as SaveIcon,
   Cancel as CancelIcon,
   Search as SearchIcon,
-  ImageNotSupported as ImageNotSupportedIcon
+  ImageNotSupported as ImageNotSupportedIcon,
+  Visibility as VisibilityOutlinedIcon
 } from '@mui/icons-material';
 
 const EditBarriere = () => {
@@ -41,8 +42,10 @@ const EditBarriere = () => {
   const [barrieres, setBarrieres] = useState([]);
   const [filteredBarrieres, setFilteredBarrieres] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedBarriere, setSelectedBarriere] = useState(null);
-  const [viewMode, setViewMode] = useState(false);
+const [selectedBarriere, setSelectedBarriere] = useState({
+  imageFile: null,
+  imagePreview: null
+});  const [viewMode, setViewMode] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [barriereToDelete, setBarriereToDelete] = useState(null);
@@ -53,6 +56,7 @@ const EditBarriere = () => {
     message: '',
     severity: 'success'
   });
+    const [isSaving, setIsSaving] = useState(false);
 
   const handleImageLoad = (barriereId) => {
     setImageLoadStates(prev => ({
@@ -60,6 +64,17 @@ const EditBarriere = () => {
       [barriereId]: 'loaded'
     }));
   };
+
+  const handleImageChange = (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    setSelectedBarriere(prev => ({
+      ...prev,
+      imageFile: file,
+      imagePreview: URL.createObjectURL(file)
+    }));
+  }
+};
 
   const handleImageError = (barriereId) => {
     setImageLoadStates(prev => ({
@@ -127,10 +142,14 @@ const EditBarriere = () => {
     setViewMode(true);
   };
 
-  const handleEdit = (barriere) => {
-    setSelectedBarriere({ ...barriere });
-    setEditMode(true);
-  };
+const handleEdit = (barriere) => {
+  setSelectedBarriere({ 
+    ...barriere,
+    imageFile: null,
+    imagePreview: null
+  });
+  setEditMode(true);
+};
 
   const handleDeleteClick = (barriere) => {
     setBarriereToDelete(barriere);
@@ -176,39 +195,67 @@ const EditBarriere = () => {
     }));
   };
 
-  const saveChanges = async () => {
-    try {
-      const response = await fetch(`http://localhost:5000/api/barriere/updatebarriere/${selectedBarriere.reference}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(selectedBarriere)
-      });
+const saveChanges = async () => {
 
-      if (response.ok) {
-        const updatedBarriere = await response.json();
-        const updatedBarrieres = barrieres.map(b => b._id === updatedBarriere._id ? updatedBarriere : b);
-        setBarrieres(updatedBarrieres);
-        setFilteredBarrieres(updatedBarrieres);
-        setSnackbar({
-          open: true,
-          message: 'Barrière mise à jour avec succès',
-          severity: 'success'
-        });
-        setEditMode(false);
-      } else {
-        throw new Error('Failed to update barrière');
+  setIsSaving(true); 
+
+  try {
+    const formData = new FormData();
+    
+    Object.keys(selectedBarriere).forEach(key => {
+      if (key !== 'imageFile' && key !== 'imagePreview' && selectedBarriere[key] !== null) {
+        formData.append(key, selectedBarriere[key]);
       }
-    } catch (error) {
-      console.error('Error updating barrière:', error);
+    });
+    
+    if (selectedBarriere.imageFile) {
+      formData.append('image', selectedBarriere.imageFile);
+    }
+
+    const response = await fetch(
+      `http://localhost:5000/api/barriere/updatebarriere/${selectedBarriere.reference}`,
+      {
+        method: 'PUT',
+        body: formData, 
+      }
+    );
+
+    if (response.ok) {
+      const updatedBarriere = await response.json();
+            const updatedBarrieres = barrieres.map(b => 
+        b._id === updatedBarriere._id ? updatedBarriere : b
+      );
+      
+      setBarrieres(updatedBarrieres);
+      setFilteredBarrieres(updatedBarrieres);
+      
       setSnackbar({
         open: true,
-        message: 'Erreur lors de la mise à jour de la barrière',
-        severity: 'error'
+        message: 'Barrière mise à jour avec succès',
+        severity: 'success'
       });
+      window.location.reload();
+      
+      // Close edit dialog
+      setEditMode(false);
+    } else {
+      // Handle API errors
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Échec de la mise à jour de la barrière');
     }
-  };
+  } catch (error) {
+    console.error('Error updating barrière:', error);
+    
+    // Show error notification
+    setSnackbar({
+      open: true,
+      message: error.message || 'Erreur lors de la mise à jour de la barrière',
+      severity: 'error'
+    });
+  } finally {
+    setIsSaving(false);
+  }
+};
 
   const closeDialog = () => {
     setViewMode(false);
@@ -845,6 +892,104 @@ const EditBarriere = () => {
                   }}
                 />
               </Grid>
+
+<Grid item xs={12}>
+  <Box sx={{ 
+    display: 'flex', 
+    flexDirection: isMobile ? 'column' : 'row', 
+    gap: 3,
+    alignItems: 'center'
+  }}>
+    {selectedBarriere.imageURL && (
+      <Box sx={{
+        width: 220,
+        height: 180,
+        borderRadius: '8px',
+        overflow: 'hidden',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+        position: 'relative',
+        flexShrink: 0
+      }}>
+        <img 
+          src={selectedBarriere.imagePreview || getValidImageUrl(selectedBarriere.imageURL)} 
+          alt="Barrière preview" 
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover'
+          }}
+        />
+        <IconButton
+          sx={{
+            position: 'absolute',
+            top: 4,
+            right: 4,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            color: 'white',
+            '&:hover': {
+              backgroundColor: 'rgba(0,0,0,0.7)'
+            }
+          }}
+          size="small"
+          onClick={() => window.open(
+            selectedBarriere.imagePreview || getValidImageUrl(selectedBarriere.imageURL), 
+            '_blank'
+          )}
+        >
+          <VisibilityOutlinedIcon fontSize="small" />
+        </IconButton>
+      </Box>
+    )}
+    <Box sx={{ width: '100%' }}>
+      <Button
+        variant="contained"
+        component="label"
+        fullWidth
+        sx={{
+          backgroundColor: '#3f7acc',
+          color: 'white',
+          textTransform: 'none',
+          py: 1.5,
+          mb: 2,
+          '&:hover': {
+            backgroundColor: '#38598b'
+          }
+        }}
+      >
+        {selectedBarriere.imageURL ? "Changer l'image" : "Ajouter une image"}
+        <input
+          type="file"
+          hidden
+          name="image"
+          accept="image/*"
+          onChange={handleImageChange}
+        />
+      </Button>
+      {selectedBarriere.imageURL && (
+        <Button
+          variant="outlined"
+          color="error"
+          fullWidth
+          sx={{
+            textTransform: 'none',
+            py: 1.5
+          }}
+          onClick={() => {
+            setSelectedBarriere(prev => ({
+              ...prev,
+              imageURL: null,
+              imageFile: null,
+              imagePreview: null
+            }));
+          }}
+        >
+          Supprimer l'image
+        </Button>
+      )}
+    </Box>
+  </Box>
+</Grid>
+
 
               <Grid item xs={12}>
                 <TextField

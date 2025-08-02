@@ -313,29 +313,29 @@ const infoItems = [
     id: 1,
     icon: <img src={HorseIcon} alt='horse' style={{ width: '100%', height: '100%', objectFit: 'contain', color:'white' }}/>,
     position: { top: '20%', left: '20%', backgroundColor:'#222831' },
-    title: 'Horse Breeds',
-    content: 'We specialize in caring for various horse breeds including Thoroughbreds, Arabians, and Quarter Horses. Each breed has unique needs we accommodate.'
+    title: 'Races de chevaux',
+    content: "Nous sommes spécialisés dans les soins aux chevaux de différentes races, dont les pur-sang, les arabes et les quarter horse. Chaque race a des besoins spécifiques et nous nous adaptons à leurs besoins."
   },
   {
     id: 2,
     icon: <img src={BarnIcon} alt='barn' style={{ width: '100%', height: '100%', objectFit: 'contain', color:'white' }}/>,
     position: { top: '20%', right: '20%', backgroundColor:'#222831' },
-    title: 'Barn Features',
-    content: 'Our demountable barns feature weather-resistant materials, optimal ventilation, and modular designs that can be customized to your needs.'
+    title: 'Caractéristiques de la grange',
+    content: "Nos granges démontables sont dotées de matériaux résistants aux intempéries, d'une ventilation optimale et de conceptions modulaires qui peuvent être personnalisées selon vos besoins."
   },
   {
     id: 3,
     icon: <img src={ConstructionIcon} alt='ConstructionIcon' style={{ width: '100%', height: '100%', objectFit: 'contain', color:'white' }}/>,
     position: { bottom: '20%', left: '20%', backgroundColor:'#222831' },
     title: 'Construction',
-    content: 'Quick assembly structures that maintain structural integrity while being eco-friendly. No foundation required for most installations.'
+    content: " Structures à montage rapide qui préservent l'intégrité structurelle tout en étant respectueuses de l'environnement. Aucune fondation n'est requise pour la plupart des installations."
   },
   {
     id: 4,
     icon: <img src={HealthIcon} alt='HealthIcon' style={{ width: '100%', height: '100%', objectFit: 'contain', color:'white' }}/>,
     position: { bottom: '20%', right: '20%', backgroundColor:'#222831' },
-    title: 'Horse Health',
-    content: 'Our designs prioritize equine welfare with features that reduce stress, prevent injuries, and promote overall health.'
+    title: 'Santé du cheval',
+    content: 'Nos conceptions donnent la priorité au bien-être des équidés avec des fonctionnalités qui réduisent le stress, préviennent les blessures et favorisent la santé globale.'
   }
 ];
 
@@ -414,9 +414,9 @@ const faqItems = [
 
 const steps = [
   { label: 'Introduction' },
-  { label: 'Structural Safety' },
-  { label: 'Weather Protection' },
-  { label: 'Flexibility' },
+  { label: 'Sécurité structurelle' },
+  { label: 'Protection contre les intempéries' },
+  { label: 'Flexibilité' },
   { label: 'Conclusion' }
 ];
 
@@ -898,7 +898,7 @@ const Home = () => {
                   variant="outlined"
                   sx={{ width: 120, backgroundColor: 'white',borderColor:'white', color: '#38598b', '&:hover': { transform: 'scale(1.03)', backgroundColor: '#38598b', color: 'white',borderColor:'#38598b' } }}
                 >
-                  Back
+                  Retour 
                 </Button>
                 
                 <Button
@@ -906,7 +906,7 @@ const Home = () => {
                   variant="contained"
                   sx={{ width: 120, backgroundColor: '#38598b', borderColor:'#38598b', color: 'white', '&:hover': { transform: 'scale(1.03)', backgroundColor: 'white', color: '#38598b', borderColor:'white' } }}
                 >
-                  {activeStep === steps.length - 1 ? 'Finish' : 'Continue'}
+                  {activeStep === steps.length - 1 ? 'terminer' : 'continuer'}
                 </Button>
               </Box>
             </Paper>

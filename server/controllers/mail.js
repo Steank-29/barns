@@ -38,8 +38,8 @@ exports.sendOrderEmail = async (req, res) => {
     `).join('');
 
     const mailOptions = {
-      from:  process.env.EMAIL_FROM ,
-      to: process.env.EMAIL_FROM,
+      from:  customer.email,
+      to: process.env.GMAIL_USER,
       replyTo: customer.email,
       subject: `Nouvelle commande de ${customer.name}`,
       html: `
@@ -165,8 +165,8 @@ exports.sendOrderEmail = async (req, res) => {
     // Customer Email
     if (customer.email) {
       const customerMailOptions = {
-        from: process.env.EMAIL_FROM || 'no-reply@yourdomain.com',
-        to: customer.email,
+        from: customer.email,
+        to: process.env.GMAIL_USER ,
         subject: 'Confirmation de votre commande',
         html: `
           <!DOCTYPE html>
