@@ -21,21 +21,40 @@ export const CartProvider = ({ children }) => {
   }, [cartItems]);
 
   // Add to cart with quantity handling
-  const addToCart = (product, quantity = 1) => {
-    setCartItems((prev) => {
-      const existingItem = prev.find(item => item._id === product._id);
-      
-      if (existingItem) {
-        return prev.map(item =>
-          item._id === product._id
-            ? { ...item, quantity: (item.quantity || 1) + quantity }
-            : item
-        );
-      }
-      
-      return [...prev, { ...product, quantity }];
-    });
-  };
+const addToCart = (product, quantity = 1) => {
+  setCartItems((prev) => {
+    // Find if this exact product with the same lot already exists in cart
+    const existingItem = prev.find(item => 
+      item._id === product._id && 
+      item.lotLabel === product.lotLabel
+    );
+    
+    if (existingItem) {
+      // If exists, just increase the quantity
+      return prev.map(item =>
+        item._id === product._id && item.lotLabel === product.lotLabel
+          ? { 
+              ...item, 
+              quantity: (item.quantity || 1) + quantity,
+              // Keep all other product details including price
+              price: product.price,
+              originalPrice: product.originalPrice
+            }
+          : item
+      );
+    }
+    
+    // If not exists, add as new item with all lot information
+    return [...prev, { 
+      ...product, 
+      quantity,
+      // Ensure these fields are included
+      price: product.price,
+      originalPrice: product.originalPrice,
+      lotLabel: product.lotLabel || 'Lot de 4' // Default if not specified
+    }];
+  });
+};
 
   // Remove item completely
   const removeFromCart = (productId) => {

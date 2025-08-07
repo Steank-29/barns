@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   Dialog, DialogTitle, DialogContent, DialogActions,
   Button, Typography, TextField, IconButton, Box, Avatar,
-  Chip, Divider, Badge, styled
+  Chip, Divider, Badge, styled, Select, MenuItem, FormControl, InputLabel
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
@@ -67,8 +67,10 @@ const getValidImageUrl = (imageUrl) => {
   return imageUrl;
 };
 
+
+
 const CartDialog = ({ open, onClose }) => {
-  const { cartItems, removeFromCart, clearCart, updateQuantity } = useCart();
+  const { cartItems, removeFromCart, clearCart, updateQuantity, updateLot } = useCart();
   const [total, setTotal] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -125,7 +127,9 @@ const CartDialog = ({ open, onClose }) => {
           quantity: item.quantity || 1,
           unitPrice: item.price || 0,
           image: getImageSource(item),
-          totalPrice: (item.price || 0) * (item.quantity || 1)
+          totalPrice: (item.price || 0) * (item.quantity || 1),
+          lotLabel: item.lotLabel || 'Lot de 4',
+          originalPrice: item.originalPrice || item.price
         })),
         orderTotal: total,
         orderDate: new Date().toISOString()
@@ -199,7 +203,7 @@ const CartDialog = ({ open, onClose }) => {
           ) : (
             <>
               {cartItems.map(item => (
-                <React.Fragment key={item._id}>
+                <React.Fragment key={`${item._id}-${item.lotLabel}`}>
                   <CartItem>
                     <Box display="flex" alignItems="center" flexGrow={1}>
                       <StyledAvatar
@@ -210,36 +214,43 @@ const CartDialog = ({ open, onClose }) => {
                       <Box ml={2}>
                         <Typography fontWeight="bold">{item.productName || item.name}</Typography>
                         <Typography color="primary.main" fontWeight="bold">
-                          {item.price ? `${item.price}€` : 'Prix non disponible'}
+                          {item.price ? `${item.price.toLocaleString('fr-FR')}€` : 'Prix non disponible'}
+                          {item.lotLabel && (
+                            <Typography variant="caption" display="block" color="text.secondary">
+                              {item.lotLabel}
+                            </Typography>
+                          )}
                         </Typography>
                       </Box>
                     </Box>
                     
-                    <Box display="flex" alignItems="center">
-                      <IconButton 
-                        onClick={() => handleQuantityChange(item._id, (item.quantity || 1) - 1)}
-                        size="small"
-                        disabled={isSubmitting}
-                      >
-                        <RemoveIcon fontSize="small" />
-                      </IconButton>
-                      
-                      <Chip 
-                        label={item.quantity || 1} 
-                        sx={{ mx: 1, fontWeight: 'bold' }}
-                      />
-                      
-                      <IconButton 
-                        onClick={() => handleQuantityChange(item._id, (item.quantity || 1) + 1)}
-                        size="small"
-                        disabled={isSubmitting}
-                      >
-                        <AddIcon fontSize="small" />
-                      </IconButton>
+                    <Box display="flex" alignItems="center" flexDirection={{ xs: 'column', sm: 'row' }} gap={1}>                      
+                      <Box display="flex" alignItems="center" ml={{ sm: 1 }}>
+                        <IconButton 
+                          onClick={() => handleQuantityChange(item._id, (item.quantity || 1) - 1)}
+                          size="small"
+                          disabled={isSubmitting}
+                        >
+                          <RemoveIcon fontSize="small" />
+                        </IconButton>
+                        
+                        <Chip 
+                          label={item.quantity || 1} 
+                          sx={{ mx: 1, fontWeight: 'bold' }}
+                        />
+                        
+                        <IconButton 
+                          onClick={() => handleQuantityChange(item._id, (item.quantity || 1) + 1)}
+                          size="small"
+                          disabled={isSubmitting}
+                        >
+                          <AddIcon fontSize="small" />
+                        </IconButton>
+                      </Box>
                       
                       <IconButton 
                         onClick={() => removeFromCart(item._id)}
-                        sx={{ ml: 2, color: 'error.main' }}
+                        sx={{ ml: { sm: 2 }, color: 'error.main' }}
                         disabled={isSubmitting}
                       >
                         <DeleteIcon />
@@ -252,7 +263,7 @@ const CartDialog = ({ open, onClose }) => {
               
               <Box mt={3} textAlign="right">
                 <Typography variant="h6" fontWeight="bold">
-                  Total: <span style={{ color: '#38598b' }}>{total}€</span>
+                  Total: <span style={{ color: '#38598b' }}>{total.toLocaleString('fr-FR')}€</span>
                 </Typography>
               </Box>
 
@@ -333,7 +344,7 @@ const CartDialog = ({ open, onClose }) => {
             color="primary"
             disabled={cartItems.length === 0 || isSubmitting}
           >
-            {isSubmitting ? 'Envoi en cours...' : `Passer la commande (${total}€)`}
+            {isSubmitting ? 'Envoi en cours...' : `Passer la commande (${total.toLocaleString('fr-FR')}€)`}
           </OrderButton>
         </DialogActions>
       </Dialog>

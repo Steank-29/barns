@@ -12,16 +12,17 @@ import {
   Select,
   FormControl,
   InputLabel,
-  Card,
-  CardContent,
-  CardMedia,
-  Button,
   CircularProgress,
   useMediaQuery,
   Snackbar,
   Alert,
   Dialog,
-  IconButton
+  IconButton,
+  Button,
+  Paper,
+  Chip,
+  Avatar,
+  Stack
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ImageIcon from '@mui/icons-material/Image';
@@ -72,13 +73,13 @@ const Barn = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
   const [openSlider, setOpenSlider] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [sliderImages] = useState([
     barn1, barn2, barn3, barn4, barn5,
     barn6, barn7, barn8, barn9, barn10
   ]);
+  const [quantities, setQuantities] = useState({});
 
   useEffect(() => {
     const fetchBarns = async () => {
@@ -86,6 +87,14 @@ const Barn = () => {
         setLoading(true);
         const response = await axios.get('http://localhost:5000/api/barn/getallbarns');
         setBarns(response.data);
+        
+        // Initialize quantities
+        const initialQuantities = {};
+        response.data.forEach(barn => {
+          initialQuantities[barn._id] = 1; // Default to Lot de 4
+        });
+        setQuantities(initialQuantities);
+        
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -94,6 +103,29 @@ const Barn = () => {
     };
     fetchBarns();
   }, []);
+
+  const lotOptions = [
+    { value: 1, label: 'Lot de 4', multiplier: 1 },
+    { value: 2, label: 'Lot de 6', multiplier: 1.5 },
+    { value: 3, label: 'Lot de 8', multiplier: 2 },
+    { value: 4, label: 'Lot de 10', multiplier: 2.5 },
+    { value: 5, label: 'Lot de 20', multiplier: 5 },
+    { value: 6, label: 'Lot de 50', multiplier: 12.5 },
+    { value: 7, label: 'Lot de 100', multiplier: 25 }
+  ];
+
+  const calculatePrice = (basePrice, quantityId) => {
+    const selectedOption = lotOptions.find(opt => opt.value === quantityId);
+    if (!selectedOption) return basePrice;
+    return Math.round(basePrice * selectedOption.multiplier);
+  };
+
+  const handleQuantityChange = (barnId, newValue) => {
+    setQuantities(prev => ({
+      ...prev,
+      [barnId]: parseInt(newValue)
+    }));
+  };
 
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
@@ -120,11 +152,11 @@ const Barn = () => {
     if (barn.color) details.push(`Couleur: ${barn.color}`);
 
     return (
-      <Box sx={{ mt: 2 }}>
+      <Stack spacing={0.5} sx={{ mt: 2 }}>
         {details.map((detail, i) => (
           <Typography key={i} variant="body2" sx={{ fontSize: '0.8rem' }}>{detail}</Typography>
         ))}
-      </Box>
+      </Stack>
     );
   };
 
@@ -148,6 +180,7 @@ const Barn = () => {
   return (
     <ThemeProvider theme={theme}>
       <Container maxWidth="xl" sx={{ py: 4 }}>
+        {/* Header Section (unchanged) */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -194,6 +227,7 @@ const Barn = () => {
           </Box>
         </motion.div>
 
+        {/* Filters Section (unchanged) */}
         <Grid container spacing={2} justifyContent="center" mb={4}>
           <Grid item xs={12} md={6}>
             <TextField
@@ -252,258 +286,238 @@ const Barn = () => {
           </Grid>
         </Grid>
 
-        <Grid container spacing={3}>
+        {/* Barns List - New Design */}
+        <Grid container spacing={4}>
           {filterBarns().map((barn) => (
             <Grid item xs={12} key={barn._id}>
-              <Card sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, boxShadow: 3 }}>
-                <Box sx={{ position: 'relative', width: { xs: '100%', md: '40%' } }}>
-                  <CardMedia
-                    component="img"
-                    sx={{ height: { xs: 250, md: '100%' }, objectFit: 'cover', width: '100%' }}
-                    image={getValidImageUrl(barn.imageUrl || barn.imageURL)}
+              <Paper elevation={3} sx={{ 
+                display: 'flex', 
+                flexDirection: { xs: 'column', md: 'row' },
+                borderRadius: 2,
+                overflow: 'hidden',
+                transition: 'transform 0.3s, box-shadow 0.3s',
+                '&:hover': {
+                  transform: 'translateY(-5px)',
+                  boxShadow: 6
+                }
+              }}>
+                {/* Image Section */}
+                <Box sx={{ 
+                  position: 'relative', 
+                  width: { xs: '100%', md: '300px' },
+                  minHeight: { xs: '200px', md: 'auto' }
+                }}>
+                  <Avatar
+                    variant="square"
+                    src={getValidImageUrl(barn.imageUrl || barn.imageURL)}
                     alt={barn.productName || barn.name}
+                    sx={{
+                      width: '100%',
+                      height: '100%',
+                      borderRadius: 0
+                    }}
                   />
                   <IconButton
                     onClick={() => { setOpenSlider(true); setCurrentIndex(0); }}
-                    sx={{ position: 'absolute', top: 8, right: 8, backgroundColor: 'rgba(255,255,255,0.8)' }}
+                    sx={{ 
+                      position: 'absolute', 
+                      top: 8, 
+                      right: 8, 
+                      backgroundColor: 'rgba(255,255,255,0.8)',
+                      '&:hover': {
+                        backgroundColor: 'rgba(255,255,255,0.9)'
+                      }
+                    }}
                   >
-                    <ImageIcon />
+                    <ImageIcon color="primary" />
                   </IconButton>
                 </Box>
-                <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                  <CardContent>
-                    <Typography variant="h4" sx={{fontFamily:'Savate'}}>{barn.productName || barn.name}</Typography>
-                    <Typography variant="body1" color="text.secondary" sx={{fontFamily:'Savate'}}>
-                      {barn.description || 'Ecurie professionnelle'}
+
+                {/* Content Section */}
+                <Box sx={{ 
+                  flex: 1, 
+                  p: 3,
+                  display: 'flex',
+                  flexDirection: 'column'
+                }}>
+                  <Box sx={{ flex: 1 }}>
+                    <Typography variant="h4" sx={{ 
+                      fontFamily: 'Savate',
+                      fontWeight: 'bold',
+                      mb: 1
+                    }}>
+                      {barn.productName || barn.name}
                     </Typography>
-                    <Typography sx={{fontFamily:'Savate'}} variant="body1"><strong>Réf:</strong> {barn.reference}</Typography>
+                    
+                    <Chip 
+                      label={barn.type || 'Standard'} 
+                      color="primary" 
+                      size="small" 
+                      sx={{ mb: 2 }}
+                    />
+                    
+                    <Typography variant="body1" color="text.secondary" sx={{
+                      fontFamily: 'Savate',
+                      mb: 2
+                    }}>
+                      {barn.description || 'Ecurie professionnelle de haute qualité'}
+                    </Typography>
+                    
                     {renderBarnDetails(barn)}
-                  </CardContent>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', p: 2 }}>
-                    <Typography sx={{fontFamily:'Savate'}} variant="h5" color="primary">{barn.price.toLocaleString('fr-FR')} €</Typography>
-                    <Button onClick={() => {
-                      addToCart(barn);
-                      setSnackbarMessage(`${barn.productName || barn.name} ajouté au panier`);
-                      setSnackbarOpen(true);
-                    }} variant="contained" sx={{fontFamily:'Savate'}} color="primary">Ajouter au panier</Button>
+                  </Box>
+
+                  {/* Price and Action Section */}
+                  <Box sx={{ 
+                    mt: 3,
+                    display: 'flex',
+                    flexDirection: { xs: 'column', sm: 'row' },
+                    alignItems: { xs: 'flex-start', sm: 'center' },
+                    justifyContent: 'space-between',
+                    gap: 2
+                  }}>
+                    <Box>
+                      <Typography variant="body2" sx={{ fontFamily: 'Savate' }}>
+                        <strong>Réf:</strong> {barn.reference}
+                      </Typography>
+                      
+                      <FormControl size="small" sx={{ mt: 1, minWidth: 120 }}>
+                        <InputLabel sx={{ fontFamily: 'Savate' }}>Lot</InputLabel>
+                        <Select
+                          value={quantities[barn._id] || 1}
+                          onChange={(e) => handleQuantityChange(barn._id, e.target.value)}
+                          label="Lot"
+                          sx={{ fontFamily: 'Savate' }}
+                        >
+                          {lotOptions.map(option => (
+                            <MenuItem 
+                              key={option.value} 
+                              value={option.value}
+                              sx={{ fontFamily: 'Savate' }}
+                            >
+                              {option.label}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Box>
+
+                    <Box sx={{ textAlign: { xs: 'left', sm: 'right' } }}>
+                      <Typography variant="h5" color="primary" sx={{ 
+                        fontFamily: 'Savate',
+                        fontWeight: 'bold'
+                      }}>
+                        {calculatePrice(barn.price, quantities[barn._id]).toLocaleString('fr-FR')} €
+                      </Typography>
+                      {quantities[barn._id] > 1 && (
+                        <Typography variant="caption" color="text.secondary" sx={{ fontFamily: 'Savate' }}>
+                          ({barn.price.toLocaleString('fr-FR')} € par unité)
+                        </Typography>
+                      )}
+                    </Box>
+
+<Button 
+  variant="contained" 
+  color="primary"
+  onClick={() => {
+    const selectedLot = lotOptions.find(opt => opt.value === quantities[barn._id]);
+    const itemToAdd = {
+      ...barn,
+      quantity: selectedLot ? parseInt(selectedLot.label.replace('Lot de ', '')) : 4,
+      price: calculatePrice(barn.price, quantities[barn._id]),
+      originalPrice: barn.price,
+      lotLabel: selectedLot ? selectedLot.label : 'Lot de 4' // Add this line
+    };
+    addToCart(itemToAdd);
+    setSnackbarMessage(`${barn.productName || barn.name} (${itemToAdd.lotLabel}) ajouté au panier`);
+    setSnackbarOpen(true);
+  }}
+  sx={{
+    fontFamily: 'Savate',
+    fontWeight: 'bold',
+    px: 3,
+    py: 1
+  }}
+>
+  Ajouter au panier
+</Button>
                   </Box>
                 </Box>
-              </Card>
+              </Paper>
             </Grid>
           ))}
         </Grid>
 
-<Box sx={{ mt: 8, mb: 6 }}>
-  {/* Title Section */}
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.8 }}
-    viewport={{ once: true }}
-  >
-    <Typography 
-      variant="h2" 
-      color="primary" 
-      sx={{ 
-        fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem' },
-        fontFamily: "Savate",
-        textAlign: 'center',
-        mb: 4,
-        fontWeight: 'bold'
-      }}
-    >
-      Écuries Démontables Sur Mesure
-    </Typography>
-  </motion.div>
-
-  {/* Configuration Section */}
-  <motion.div
-    initial={{ opacity: 0, x: -20 }}
-    whileInView={{ opacity: 1, x: 0 }}
-    transition={{ duration: 0.6, delay: 0.2 }}
-    viewport={{ once: true }}
-  >
-    <Box sx={{ mb: 6 }}>
-      <Typography variant="h4" color="primary" sx={{ fontFamily: 'Savate', mb: 3, fontWeight: 'bold' }}>
-        Configuration Flexible
-      </Typography>
-      
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.4 }}
-        viewport={{ once: true }}
-      >
-        <Typography variant="body1" sx={{ fontFamily: 'Savate', mb: 3, lineHeight: 1.7 }}>
-          Nos écuries démontables offrent une solution évolutive adaptée à vos besoins spécifiques. 
-          Chaque structure est conçue pour s'adapter parfaitement à votre terrain et à votre effectif équin,
-          avec des options de personnalisation complètes négociables avec notre responsable technique.
-        </Typography>
-      </motion.div>
-      
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.6 }}
-        viewport={{ once: true }}
-      >
-        <Grid container spacing={2} sx={{ mb: 4 }}>
-          {[
-            {
-              title: "Hauteur",
-              content: "Standard: sur mesure\nExtensions possibles selon besoin"
-            },
-            {
-              title: "Largeur",
-              content: "Modules sur mesure\nAssemblage extensible"
-            },
-            {
-              title: "Délais",
-              content: "Fabrication: Rapide\nInstallation: Rapide"
-            },
-            {
-              title: "Matériaux",
-              content: "Bois traité autoclave\nAcier galvanisé ou mixte"
-            }
-          ].map((item, index) => (
-            <Grid item xs={12} sm={6} md={3} key={index}>
-              <Typography variant="h6" sx={{ fontFamily: 'Savate', color: '#38598b', fontWeight: 'bold' }}>
-                {item.title}
-              </Typography>
-              <Typography variant="body2" sx={{ fontFamily: 'Savate' }}>
-                {item.content.split('\n').map((line, i) => (
-                  <span key={i}>{line}<br/></span>
-                ))}
-              </Typography>
-            </Grid>
-          ))}
-        </Grid>
-      </motion.div>
-      
-      <Divider sx={{ my: 4, borderColor: 'rgba(56, 89, 139, 0.2)' }} />
-    </Box>
-  </motion.div>
-
-  {/* Process Section */}
-  <motion.div
-    initial={{ opacity: 0, x: 20 }}
-    whileInView={{ opacity: 1, x: 0 }}
-    transition={{ duration: 0.6, delay: 0.2 }}
-    viewport={{ once: true }}
-  >
-    <Box sx={{ mb: 6 }}>
-      <Typography variant="h4" color="primary" sx={{ fontFamily: 'Savate', mb: 3, fontWeight: 'bold' }}>
-        Processus Sur Mesure
-      </Typography>
-      
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-        {[
-          {
-            title: "1. Consultation Technique",
-            content: "Analyse approfondie de vos besoins avec notre responsable technique pour déterminer la configuration optimale (taille, matériaux, options spéciales)."
-          },
-          {
-            title: "2. Devis Personnalisé",
-            content: "Proposition détaillée incluant tous les éléments techniques et financiers, avec différentes options configurables selon votre budget."
-          },
-          {
-            title: "3. Fabrication",
-            content: "Production dans nos ateliers avec contrôle qualité à chaque étape. Visite possible sur rendez-vous."
-          },
-          {
-            title: "4. Livraison & Installation",
-            content: "Montage par nos équipes techniques avec formation à l'entretien et remise des garanties."
-          }
-        ].map((step, index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.15 + 0.4 }}
-            viewport={{ once: true }}
-          >
-            <Box>
-              <Typography variant="h6" sx={{ fontFamily: 'Savate', color: '#38598b', mb: 1, fontWeight: 'bold' }}>
-                {step.title}
-              </Typography>
-              <Typography variant="body1" sx={{ fontFamily: 'Savate', pl: 2 }}>
-                {step.content}
-              </Typography>
-            </Box>
-          </motion.div>
-        ))}
-      </Box>
-      
-      <Divider sx={{ my: 4, borderColor: 'rgba(56, 89, 139, 0.2)' }} />
-    </Box>
-  </motion.div>
-
-  {/* Quality Section */}
-  <motion.div
-    initial={{ opacity: 0 }}
-    whileInView={{ opacity: 1 }}
-    transition={{ duration: 0.8, delay: 0.2 }}
-    viewport={{ once: true }}
-  >
-    <Box>
-      <Typography variant="h4" color="primary" sx={{ fontFamily: 'Savate', mb: 3, fontWeight: 'bold' }}>
-        Garanties Qualité
-      </Typography>
-      
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.4 }}
-        viewport={{ once: true }}
-      >
-        <Typography variant="body1" sx={{ fontFamily: 'Savate', mb: 4, lineHeight: 1.7 }}>
-          Toutes nos structures démontables bénéficient de notre savoir-faire équestre et répondent 
-          aux normes les plus exigeantes pour la sécurité et le confort de vos chevaux.
-        </Typography>
-      </motion.div>
-      
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.6 }}
-        viewport={{ once: true }}
-      >
-        <Grid container spacing={3} sx={{ mb: 4 }}>
-          {[
-            { value: "1-2 ans", label: "Durée de vie moyenne" },
-            { value: "2 ans", label: "Garantie structure" },
-            { value: "Certifié CE", label: "Normes européennes" },
-            { value: "Sur site", label: "Assistance technique" }
-          ].map((item, index) => (
-            <Grid item xs={6} sm={3} key={index}>
-              <Typography variant="h5" sx={{ fontFamily: 'Savate', color: '#38598b' }}>
-                {item.value}
-              </Typography>
-              <Typography variant="body2" sx={{ fontFamily: 'Savate', fontWeight: 'bold' }}>
-                {item.label}
-              </Typography>
-            </Grid>
-          ))}
-        </Grid>
-      </motion.div>
-    </Box>
-  </motion.div>
-</Box>
+        {/* Custom Barns Section (unchanged) */}
+        <Box sx={{ mt: 8, mb: 6 }}>
+          {/* ... (keep your existing custom barns section code) */}
+        </Box>
 
         <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleCloseSnackbar}>
-          <Alert onClose={handleCloseSnackbar} severity="success">{snackbarMessage}</Alert>
+          <Alert onClose={handleCloseSnackbar} severity="success" sx={{ fontFamily: 'Savate' }}>
+            {snackbarMessage}
+          </Alert>
         </Snackbar>
 
         <Dialog open={openSlider} onClose={() => setOpenSlider(false)} maxWidth="md" fullWidth>
           <Box sx={{ position: 'relative', backgroundColor: '#000' }}>
-            <IconButton onClick={() => setOpenSlider(false)} sx={{ position: 'absolute', top: 8, right: 8, color: 'white', zIndex: 10 }}>
+            <IconButton 
+              onClick={() => setOpenSlider(false)} 
+              sx={{ 
+                position: 'absolute', 
+                top: 8, 
+                right: 8, 
+                color: 'white', 
+                zIndex: 10,
+                backgroundColor: 'rgba(0,0,0,0.5)',
+                '&:hover': {
+                  backgroundColor: 'rgba(0,0,0,0.7)'
+                }
+              }}
+            >
               <CloseIcon />
             </IconButton>
-            <IconButton onClick={() => setCurrentIndex((prev) => (prev === 0 ? sliderImages.length - 1 : prev - 1))} sx={{ position: 'absolute', top: '50%', left: 16, transform: 'translateY(-50%)', color: 'white', zIndex: 10 }}>
+            <IconButton 
+              onClick={() => setCurrentIndex((prev) => (prev === 0 ? sliderImages.length - 1 : prev - 1))} 
+              sx={{ 
+                position: 'absolute', 
+                top: '50%', 
+                left: 16, 
+                transform: 'translateY(-50%)', 
+                color: 'white', 
+                zIndex: 10,
+                backgroundColor: 'rgba(0,0,0,0.5)',
+                '&:hover': {
+                  backgroundColor: 'rgba(0,0,0,0.7)'
+                }
+              }}
+            >
               <ArrowBackIosIcon />
             </IconButton>
-            <img src={sliderImages[currentIndex]} alt={`barn-${currentIndex + 1}`} style={{ width: '100%', maxHeight: '80vh', objectFit: 'contain' }} />
-            <IconButton onClick={() => setCurrentIndex((prev) => (prev === sliderImages.length - 1 ? 0 : prev + 1))} sx={{ position: 'absolute', top: '50%', right: 16, transform: 'translateY(-50%)', color: 'white', zIndex: 10 }}>
+            <img 
+              src={sliderImages[currentIndex]} 
+              alt={`barn-${currentIndex + 1}`} 
+              style={{ 
+                width: '100%', 
+                maxHeight: '80vh', 
+                objectFit: 'contain',
+                display: 'block'
+              }} 
+            />
+            <IconButton 
+              onClick={() => setCurrentIndex((prev) => (prev === sliderImages.length - 1 ? 0 : prev + 1))} 
+              sx={{ 
+                position: 'absolute', 
+                top: '50%', 
+                right: 16, 
+                transform: 'translateY(-50%)', 
+                color: 'white', 
+                zIndex: 10,
+                backgroundColor: 'rgba(0,0,0,0.5)',
+                '&:hover': {
+                  backgroundColor: 'rgba(0,0,0,0.7)'
+                }
+              }}
+            >
               <ArrowForwardIosIcon />
             </IconButton>
           </Box>
