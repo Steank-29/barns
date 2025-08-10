@@ -37,6 +37,16 @@ import Barn from './admin/Barn';
 import EditBarn from './admin/EditBarn';
 import Equipements from './components/Equipements';
 import Barn1 from './components/Barn';
+import FacadePage from './hooks/FacadePage';
+import BarrierePage from '../src/hooks/BarrierePage';
+import TwoBoxPage from './hooks/TwoBoxPage';
+import TwoBoxResinPage from './hooks/TwoBoxResinPage';
+import ThreeBoxPage from './hooks/ThreeBoxPage';
+import FiveBoxPage from './hooks/FiveBoxPage';
+import MangPage from './hooks/MangPage';
+import PortePage from './hooks/PortePage';
+import FenetPage from './hooks/FenetPage';
+import MallePage from './hooks/MallePage';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -56,6 +66,106 @@ function App() {
         <>
           <Layout>
             <Home />
+          </Layout>
+        </>
+      )
+    },
+        {
+      path: '/facadepage',
+      element: (
+        <>
+          <Layout>
+            <FacadePage />
+          </Layout>
+        </>
+      )
+    },
+            {
+      path: '/barrierepage',
+      element: (
+        <>
+          <Layout>
+            <BarrierePage />
+          </Layout>
+        </>
+      )
+    },
+                {
+      path: '/threeboxpage',
+      element: (
+        <>
+          <Layout>
+            <ThreeBoxPage />
+          </Layout>
+        </>
+      )
+    },
+                    {
+      path: '/fiveboxpage',
+      element: (
+        <>
+          <Layout>
+            <FiveBoxPage />
+          </Layout>
+        </>
+      )
+    },
+                        {
+      path: '/mangpage',
+      element: (
+        <>
+          <Layout>
+            <MangPage />
+          </Layout>
+        </>
+      )
+    },
+                            {
+      path: '/portepage',
+      element: (
+        <>
+          <Layout>
+            <PortePage />
+          </Layout>
+        </>
+      )
+    },
+                                {
+      path: '/fenetpage',
+      element: (
+        <>
+          <Layout>
+            <FenetPage />
+          </Layout>
+        </>
+      )
+    },
+                                    {
+      path: '/mallepage',
+      element: (
+        <>
+          <Layout>
+            <MallePage />
+          </Layout>
+        </>
+      )
+    },
+                {
+      path: '/twoboxpage',
+      element: (
+        <>
+          <Layout>
+            <TwoBoxPage />
+          </Layout>
+        </>
+      )
+    },
+                    {
+      path: '/twoboxresinpage',
+      element: (
+        <>
+          <Layout>
+            <TwoBoxResinPage />
           </Layout>
         </>
       )
