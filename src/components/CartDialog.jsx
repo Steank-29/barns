@@ -215,11 +215,17 @@ const CartDialog = ({ open, onClose }) => {
                         <Typography fontWeight="bold">{item.productName || item.name}</Typography>
                         <Typography color="primary.main" fontWeight="bold">
                           {item.price ? `${item.price.toLocaleString('fr-FR')}€` : 'Prix non disponible'}
-                          {item.lotLabel && (
-                            <Typography variant="caption" display="block" color="text.secondary">
-                              {item.lotLabel}
-                            </Typography>
-                          )}
+                          {(item.productName || item.name || '')
+  .toLowerCase()
+  .startsWith('barn') && item.lotLabel && (
+    <Typography
+      variant="caption"
+      display="block"
+      color="text.secondary"
+    >
+      {item.lotLabel}
+    </Typography>
+)}
                         </Typography>
                       </Box>
                     </Box>

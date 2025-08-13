@@ -20,7 +20,7 @@ export default function Equipements() {
   };
 
   return (
-    <Box sx={{ width: '100%', px: { xs: 1, sm: 3, md: 5 } }}>
+    <Box sx={{ width: '90%', px: { xs: 1, sm: 3, md: 5 } }}>
       <Box
         textAlign="center"
         mb={4}
@@ -64,22 +64,20 @@ export default function Equipements() {
         </Typography>
       </Box>
 
-      <Box sx={{ mb: 3}}>
-        <Tabs
-          value={value}
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3, overflowX: 'auto', ml:9 }}>
+          <Tabs 
+value={value}
           onChange={handleChange}
-          aria-label="equipements tabs"
-          sx={{
-            '& .MuiTab-root': {
-              fontSize: { xs: '0.5rem', sm: '0.6rem', md: '0.7rem', lg: '1.3rem' },
-              px: { xs: 1, sm: 1, md: 1.5, lg: 2.5 },
-              py: 2,
-              fontFamily: 'Savate',
-              color: '#38598b',
-              textTransform: 'uppercase',
-            },
-          }}
-        >
+            variant="scrollable"
+            scrollButtons="auto"
+            sx={{
+              '& .MuiTab-root': {
+                fontSize: { xs: '0.6rem', sm: '0.6rem', md:'0.7rem', lg:'0.75rem' },
+                px: { xs: 1, sm: 2, md:3.5 , lg:4.5 },
+                py: 1
+              }
+            }}
+          >
           <Tab label="Façades" value={<FacadePage/>} />
           <Tab label="Barrières" value={<BarrierePage/>} />
           <Tab label="2 Box" value={<TwoBoxPage/>} />
